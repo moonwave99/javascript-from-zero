@@ -1,0 +1,149 @@
+# Printing some output
+
+Let's start with the most minimal example capable of producing some output:
+
+```js static
+console.log("Hello World!");
+// ** output **
+"Hello World!";
+```
+
+Why are we greeting the planet? Who is even salutating? Alright, let's generate a different output:
+
+```js static
+console.log("I expected more from my first program");
+// ** output **
+"I expected more from my first program";
+```
+
+Let's make some observations:
+
+-   both programs generate some output below;
+-   both programs are made of a sentence, and some other words and symbols like `console`, `log`, a dot, a matched pair of parentheses and a trailing semicolon;
+-   the programs differ just by the sentence that eventually gets printed.
+
+Still far from being excited? That's expected. Let's raise the stakes:
+
+```js static
+console.log(2 + 3);
+// ** output **
+5;
+```
+
+Now that's my baby! But now the output doesn't mirror the input: it looks like the machine made some considerations and produced some output according to them. Namely it recognised some mathematical expression made of **two operands** (2 and 3) and **an operator** (the plus symbol) in between, and evaluated the corresponding arithmetical operation. We'll see this syntax in detail soon.
+
+Cool you already knew how to compute two plus three. What about the rest then?
+
+Let's omit the `console.log(...)` part:
+
+```js static
+2 + 3;
+// ** output **
+```
+
+It looks like our program has lost its voice, since there is no output. We can conclude that `console.log(...)` is responsible for printing the output. That's our first item in the quest! You can save and continue now. Why is it called `console.log`? Why it's made of two words with a dot in between? Take it as given for now, I am sorry.
+
+:::info
+It's interesting to know that `2 + 3;` is **a perfectly valid** JavaScript program, being a well formatted mathematical expression. Since we are not logging anything, no output is produced making it not particularly useful.
+:::
+
+But let's make another little experiment before moving on:
+
+```js live showConsole
+console.log(2 + 3
+```
+
+We are not getting any output, or better we are not getting the output we expected but instead a nasty message:
+
+> "SyntaxError: /index.js: Unexpected token, expected , (2:0)
+
+Let's not open the can of worms but just observe what changes between the two examples:
+
+```js
+// works
+console.log(2 + 3);
+
+// doesn't work
+console.log(2 + 3
+```
+
+It looks like not matching the opening parenthesis with a closing one at the end, drives the machine mad. And rightfully so, it's more or less like leaving it hanging without knowing if you are done telling it what they have to print!
+
+(let's ignore the semicolon for a second)
+
+This is our first syntax observation: putting stuff in parentheses after `console.log` tells the computer what we want to print. If we miss the closing parenthesis our program is **not valid** and the machine doesn't know how to proceed, leading to stopping the execution there.
+
+Coming back to the semicolon:
+
+```js static
+console.log(2 + 3);
+console.log(2 + 3);
+// ** output **
+5;
+5;
+```
+
+First observe how we get two lines in the output. It looks like we can use `console.log` multiple times! As many as you want actually. Since we read `5` twice, it looks like having the semicolon or not has no impact on our program. That's mostly right. Programming languages evolved over decades though, and the language JavaScript stemmed from had mandatory semicolons at the end of every line as a grammar rule. This rule is optional is JavaScript but can be enforced by the programmer or team of programmers working on a project.
+
+Semicolons will be used in this course, get used to that!
+
+## Logging more stuff at once
+
+Sometimes we want to log multiple information on one take, like for instance:
+
+```js live showConsole
+console.log("The sum of 2 and 3 is", 2 + 3);
+console.log("The product of 2 and 3 is", 2 * 3);
+```
+
+It's observations time!
+
+-   we are using `console.log` twice, both like "sentence comma expression";
+-   the sentence before the comma is enclosed in single quotes;
+-   we made acquaintance with a new symbol (`*`), and it looks like it behaves much like the multiplication sign.
+
+Those are all sound observations, not just because I was the one to make them.
+
+Soon we'll learn that:
+
+-   the sentence is called a **string** and must be enclosed in quotes;
+-   the comma separated list constitute the **arguments passed to the `console.log` function**.
+
+That would be too much theoretical information for you to digest now, let's just explore the language behaviour intuitively.
+
+Are we limited to pass a maximum of two things to `console.log`? This you can try yourself by editing the following code: append something else after `'one'`. Remember to put a comma between the entries. You can write words in quotes, numbers, and mathematical expressions with the symbols you know. Have fun!
+
+```js live showConsole interactive
+console.log("one");
+```
+
+## Conclusion
+
+WIP
+
+:::info Recap Questions and Exercises
+
+WIP
+
+<details>
+  <summary>How do we print out information in JavaScript?</summary>
+
+With `console.log`, like:
+
+```js
+console.log("The sum of 2 and 3 is", 2 + 3);
+```
+
+</details>
+
+<details>
+  <summary>What happens if we forget to close the parenthesis after `console.log`?</summary>
+
+The machine won't know how to parse your code, and will generate an output of the following kind:
+
+```
+"SyntaxError: /index.js: Unexpected token, expected , (2:0)
+```
+
+</details>
+:::

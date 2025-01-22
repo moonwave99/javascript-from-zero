@@ -1,0 +1,282 @@
+# Returning values from functions
+
+In the [previous lesson](./taking_decisions) we introduced our first conditional statement and we should be proud of that.
+
+Let's leave the Brown and Van Pelt families in peace for a while and let's work just with numbers in this section.
+
+## Calculating the price discount
+
+Let's imagine to manage a successful business, and that we want to be gentle with our customers and offer them discount on some items. We'll write a function named `printDiscountedPrice` that:
+
+- has three parameters: the `productName`, the `price` and the `discount`;
+- the `discount` is expressed as a number from 0 to 100;
+- logs `{the product name} now cost: {the discounte price}`.
+
+```js
+function printDiscountedPrice(productName, price, discount) {
+  // function body - we'll write it together!
+}
+
+// should log 'Nasty Nachos now cost 80'
+printDiscountedPrice('Nasty Nachos', 100, 20);
+
+// should log 'Sexy Soda now cost 15'
+printDiscountedPrice('Sexy Soda', 30, 50);
+```
+
+This is the strategy that pays back. Function signature, nothing inside, then some sample calls with expectations as comments. You really cannot get it wrong this way!
+
+Let's write the function body. How do we calculate the discount? The following should do:
+
+```
+price * (100 - discount) / 100
+```
+
+By the way welcome to the **minus operator** and **divide operator**, now we completed all four basic arithmetic operations!
+
+Let's try it out:
+
+```js static
+function printDiscountedPrice(productName, price, discount) {
+  console.log(productName, 'now costs:', price * (100 - discount) / 100);
+}
+
+// should log 'Nasty Nachos now cost 80'
+printDiscountedPrice('Nasty Nachos', 100, 20);
+
+// should log 'Sexy Soda now cost 15'
+printDiscountedPrice('Sexy Soda', 30, 50);
+// ** output **
+'Nasty Nachos now cost 80'
+'Sexy Soda now cost 15'
+```
+
+## Moving the log statement outside the function
+
+People seldom buy single items. What if we want to calculate the total of an order? We really need access to those discounted prices if we want to sum them! With our current knowledge we cannot. We'll have to dismantle our function a little and things we'll be a little messy for a couple of minutes. Please pay maximum attention because we are about to introduce a fundamental concept feature of functions!
+
+We want to order some Nasty Nachos and some Sexy Soda. Or better you would, I personally wouldn't especially with those silly names. We already know their discounted price, respectively 80 and 15, so our goal is to read 95 somewhere on our screens.
+
+Let's have a look at the following function:
+
+```js static
+function getDiscountedPrice(productName, price, discount) {
+  return price * (100 - discount) / 100;
+}
+
+getDiscountedPrice('Nasty Nachos', 100, 20);
+getDiscountedPrice('Sexy Soda', 30, 50);
+// ** output **
+
+```
+
+See how despite calling it twice, it generates no output. It should make no wonder, since no `console.log` statement is present in the code.
+
+Let's fix it:
+
+```js static
+function getDiscountedPrice(productName, price, discount) {
+  return price * (100 - discount) / 100;
+}
+
+console.log('Nasty Nachos now cost', getDiscountedPrice('Nasty Nachos', 100, 20));
+console.log('Sexy Soda now cost', getDiscountedPrice('Sexy Soda', 30, 50));
+// ** output **
+'Nasty Nachos now cost 80'
+'Sexy Soda now cost 15'
+```
+
+The logs are back! Take all the time in the world to read the code.
+
+## The `return` keyword
+
+Things are working again thanks to the word preceding the formula, `return`.
+
+A line starting with `return` is called a **a return statement**. It can only appear inside a function body, and it is basically telling "hey JavaScript, whenever somebody calls this function, replace the call with whatever happens in this line".
+
+One could actually rewrite the log statements on multiple lines like:
+
+```js
+console.log(
+  'Nasty Nachos now cost',
+  getDiscountedPrice('Nasty Nachos', 100, 20)
+);
+
+console.log(
+  'Sexy Soda now cost',
+  getDiscountedPrice('Sexy Soda', 30, 50)
+);
+```
+
+Every `console.log` call is passed two arguments: a sentence with the product name, and whatever `getDiscountedPrice` is returning.
+
+:::important Returning values
+This is a milestone concept. You already know this since elementary school!
+
+```
+(2 + 3) * (5 - 2) = ?
+```
+
+See the round parentheses? They behave pretty much like function calls. Let's replace them with what they evaluate to:
+
+```
+5 * 3 = 15
+```
+
+Let's rewrite the arithmetic expression in JavaScript, using actual functions instead of operators:
+
+```js
+function add(a, b) {
+  return a + b;
+}
+
+function subtract(a, b) {
+  return a - b;
+}
+
+function multiply(a, b) {
+  return a * b;
+}
+
+// (2 + 3) * (5 - 2) = ?
+console.log(
+  multiply(
+    add(2, 3),
+    subtract(5, 2)
+  )
+);
+```
+
+That looks crazy! It actually is, that's why we have operators in programming: to save ourselves from the parentheses mess. Let's simplify the expression by evaluating the inner `add` and `subtract` calls first, just like we did in school:
+
+```js
+// (2 + 3) * (5 - 2) = ?
+console.log(
+  multiply(
+    add(2, 3),
+    subtract(5, 2)
+  )
+);
+
+// becomes:
+console.log(
+  multiply(
+    5,
+    3
+  )
+);
+```
+
+This will eventually print 15 as expected. See how we did _manually_ simplify the code: the machine does all the operations by itself, starting from the inner ones proceeding up to the top.
+:::
+
+## Back to the `getDiscountedPrice` function
+
+We were at:
+
+```js
+function getDiscountedPrice(productName, price, discount) {
+  return price * (100 - discount) / 100;
+}
+```
+
+Do we actually need to pass the `productName` to the `getDiscount` function anymore? See how we don't refer to the `productName` parameter inside the function body anymore. That makes sence since the calculation just cares about the original price and the discount percentage, so we can get rid of the `productName`:
+
+```js static
+function getDiscountedPrice(price, discount) {
+  return price * (100 - discount) / 100;
+}
+
+console.log('Nasty Nachos now cost', getDiscountedPrice(100, 20));
+console.log('Sexy Soda now cost', getDiscountedPrice(30, 50));
+// ** output **
+'Nasty Nachos now cost 80'
+'Sexy Soda now cost 15'
+```
+
+There is a reason why we renamed the function from `printDiscountedPrice` to `getDiscountedPrice`: because the function does not log anything anymore, but **returns a value**.
+
+From now on we'll try to return as much as possible from functions, using log statements just at the top level to see what's going on.
+
+If you are wondering why functions start looking a lot like mathematical formulas, it's because they are mathematical formulas! They associate an input to an output. Breathe in, breathe out.
+
+## The original task: calculating the total price
+
+We almost forgot:
+
+```js static
+function getDiscountedPrice(price, discount) {
+  return price * (100 - discount) / 100;
+}
+
+console.log(
+  'The total for the nachos and the soda is',
+  getDiscountedPrice(100, 20) + getDiscountedPrice(30, 50)
+);
+// ** output **
+'The total for the nachos and the soda is', 95
+```
+
+What is the machine doing:
+
+- it sees a `console.log` function call;
+- before proceeding to print anything on screen, it sees if there are futher function calls;
+- there are, two to `getDiscountedPrice`;
+- the machine evaluates them and replaces them with what they return;
+- the machine evauates the `+` operator and replaces it withh the result of the sum;
+- now it can finally log stuff on screen.
+
+The log statements looks a bit inconvenient to read. That's expected, and the problem will be solved in the next lesson!
+
+## Confusion about logging and returning
+
+In an ideal world we should have introduced return statements before log statements. The problem is that without printing anything on screen it would be quite hard to see what we are doing! What about returning before mentioning parameters? Well a function without parameters won't have much interesting to return I think.
+
+It's entirely normal and expected to be confused by now so I owe you a solution for such confusion, in the form of the following experiment. We have already seen if we don't use `console.log` at all:
+
+```js static
+function getDiscountedPrice(productName, price, discount) {
+  return price * (100 - discount) / 100;
+}
+
+getDiscountedPrice('Nasty Nachos', 100, 20);
+getDiscountedPrice('Sexy Soda', 30, 50);
+// ** output **
+
+```
+
+As expected, no output. Let's do the other part of the experiment by omitting the `return` keyword from the function, like:
+
+```js static
+function getDiscountedPrice(price, discount) {
+  price * (100 - discount) / 100;
+}
+
+console.log('Nasty Nachos now cost', getDiscountedPrice(100, 20));
+console.log('Sexy Soda now cost', getDiscountedPrice(30, 50));
+// ** output **
+'Nasty Nachos now cost undefined'
+'Sexy Soda now cost undefined'
+```
+
+Nasty Nachos now cost `undefined`? Are you serious? `undefined` is a big can of worms in JavaScript, for now treat it as what it is, i.e. _not what you were expecting_!
+
+The official definition of the phenomenon is that **a function returns `undefined` if it doesn't contain any explicit return statement**. So if you expect your functions to return something but they don't istead, double check if you forgot the `return` keyword somewhere.
+
+:::important Note
+Let's inspect a second the "experimental" function:
+```js
+function getDiscountedPrice(price, discount) {
+  price * (100 - discount) / 100;
+}
+```
+No logs, non return...yeah it's not particularly useful. It's still perfectly valid JavaScript, and the math gets evaluated and all! But since it's not returning anything we agree on its lack of purpose, unless we fix it.
+:::
+
+## Conclusion
+
+WIP
+
+:::info Recap Questions and Exercises
+WIP
+:::

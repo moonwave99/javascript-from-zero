@@ -1,0 +1,254 @@
+# Flexible functions
+
+Let's warm up by answering the bonus question of the [previous lesson](./your_first_function).
+
+Can you rewrite the following code by using **just two instances of `console.log`** instead of four and leaving the output untouched?
+
+```js static
+function greetSally() {
+  console.log("Hello Sally Brown");
+}
+
+function greetCharlie() {
+  console.log("Hello Charlie Brown");
+}
+
+function greetFriends() {
+  console.log("Hello Sally Brown");
+  console.log("Hello Charlie Brown");
+}
+
+greetCharlie();
+greetFriends();
+// ** output **
+"Hello Charlie Brown"
+"Hello Sally Brown"
+"Hello Charlie Brown"
+```
+
+So far we have called our functions at the end of the file, and there's nothing wrong in that. But nothing forbids us from calling them **from within other functions**:
+
+```js static
+function greetSally() {
+  console.log("Hello Sally Brown");
+}
+
+function greetCharlie() {
+  console.log("Hello Charlie Brown");
+}
+
+function greetFriends() {
+  greetSally();
+  greetCharlie();
+}
+
+greetCharlie();
+greetFriends();
+// ** output **
+"Hello Charlie Brown"
+"Hello Sally Brown"
+"Hello Charlie Brown"
+```
+
+I know, it's a lot of parentheses. You have chosen to become interested in programming. There are languages that use less symbols by the way, but we won't be covering them here. The spirit of this examples is to be exposed since the very beginning to commonly found structures, even though in a simplified form.
+
+## Making our greeting function generic
+
+I have to be honest with you: having functions named `greetSally` and `greetCharlie` in our code usually means that you are writing bad code. I have to show you some bad code so we can improve it!
+
+Let's start from this scenario:
+
+```js static
+function greetSally() {
+  console.log("Hello Sally Brown");
+}
+
+function greetCharlie() {
+  console.log("Hello Charlie Brown");
+}
+
+greetCharlie();
+greetSally();
+// ** output **
+"Hello Charlie Brown"
+"Hello Sally Brown"
+```
+
+:::important Note
+Observe that what matters is **the order in which the functions are called**, not that in which they are defined.
+:::
+
+I really don't want to have Charlie and Sally in the function names. What if we have to greet Lucy or Linus or Snoopy? There should be a way to make things smoother!
+
+```js static
+function greet(person) {
+  console.log("Hello", person);
+}
+
+greet('Charlie Brown');
+greet('Sally Brown');
+// ** output **
+"Hello Charlie Brown"
+"Hello Sally Brown"
+```
+
+Observation time:
+
+- we are still getting the same output;
+- this time we have defined a single function;
+- the functions calls do not have empty parenthesis, but the names inside them;
+- the function has the word `person` in parentheses;
+- the `person` is then forwarded to `console.log`.
+
+Want to greet the Van Pelt family? No worries!
+
+```js static
+function greet(person) {
+  console.log("Hello", person);
+}
+
+greet('Charlie Brown');
+greet('Sally Brown');
+greet('Lucy Van Pelt');
+greet('Linus Van Pelt');
+// ** output **
+"Hello Charlie Brown"
+"Hello Sally Brown"
+"Hello Lucy Van Pelt"
+"Hello Linus Van Pelt"
+```
+
+Once again: we have a single function that we call multiple times, each time telling it whom to greet.
+
+## Going into detail
+
+We say that the `greet` functions **accepts a parameter called `person`**.
+
+```js
+function greet(person) {
+  console.log("Hello", person);
+}
+```
+
+It's a placeholder for whom you want to greet each time, and can be referred inside the function. In this case we are passing it to `console.log`.
+
+A function can have multiple parameters. In this lesson we'll stick to one. See already how `console.log` can accept multiple parameters, namely a variable number of them. We'll come back to this soon.
+
+The combination of the function name and its parameters is called the **function signature**.
+
+The code between the curly brackets (`{ ... }`) is the **body of the function**. It's the set of instructions that gets excecuted whenever we call the function. It can contain as many lines as we need, and we can call other functions from inside it.
+
+These are our function calls. Once again, we can call a function how many times we want.
+
+```js
+greet('Charlie Brown');
+greet('Sally Brown');
+greet('Lucy Van Pelt');
+greet('Linus Van Pelt');
+```
+
+We say that we called `greet` every time with a different **argument**. Arguments are the concrete values that we are passing to functions at call time. We decide what they are.
+
+### The difference between parameters and arguments
+
+The two terms get often confused. This is also a recurring question in interviews, in case you want to pursue a professional carreer.
+
+- the parameters are **defined in the function signature**;
+- the arguments are **the actual values passed when we call a function**.
+
+Given the following code:
+
+```js
+function greet(person) {
+  console.log("Hello", person);
+}
+
+greet('Charlie Brown');
+greet('Sally Brown');
+```
+
+We can say that:
+
+- `greet` is a function expecting a `person` parameter;
+- `greet` has been called with `'Charlie Brown'` as an argument;
+- `greet` has then been called with `'Sally Brown'` as an argument.
+
+It's a great exercise to make this kind of observations on every code example you'll find from now on.
+
+:::important Parameter names
+Why did we name the parameter of the function `person`? Actually we could have named it however we want, as long as we refer it inside the function by the same name:
+
+```js static
+function greet(name) {
+  console.log("Hello", name);
+}
+
+greet('Charlie Brown');
+greet('Sally Brown');
+greet('Lucy Van Pelt');
+greet('Linus Van Pelt');
+// ** output **
+"Hello Charlie Brown"
+"Hello Sally Brown"
+"Hello Lucy Van Pelt"
+"Hello Linus Van Pelt"
+```
+
+We could also use a completely irrelevant name:
+
+```js static
+function greet(fluffyClouds) {
+  console.log("Hello", fluffyClouds);
+}
+
+greet('Charlie Brown');
+// ** output **
+"Hello Charlie Brown"
+```
+
+Please be relevant instead!
+
+You have freedom. Use it wisely!
+:::
+
+## Real world examples
+
+In the real (development) world, you won't probably greet Charlie Brown or Snoopy. How sad though! Let's have a look at some more concrete cases. We will omit the function body and the function output, but just focus on the signature and some example calls.
+
+### Adding items to a cart
+
+```js
+function addItemToCart(name, quantity) { ... }
+
+addItemToCart('Excalibur', 1);
+addItemToCart('Sting', 2);
+```
+
+`addItemToCart` is a fictional function. We haven't defined what a cart or an item is the context, and most important we don't know what do we mean by to add! In the context of an e-commerce website for example, one will write such function in order to keep track in memory of our desired items, and to update the graphical interface accordingly. Also we won't call such function in an isolated context, but just when the user clicks some button.
+
+We don't know how or what to write _inside_ the function yet, but we can already have a look at the function signature and some possible function calls.
+
+### Sending an e-mail
+
+```js
+function sendEmail(address, subject, body) { ... }
+
+sendEmail('charlie@brown.com', 'Hello Charlie!', 'Hello my dear, how are you?');
+sendEmail('sally@brown.com', '', 'Yo Sally, how do you do?');
+```
+
+Having the address, the subject and the message body as parameters is a good start! Of course in the future one can have attachments or a signature. We won't send any e-mails in this course sorry.
+
+## Conclusion
+
+If I had a dime for every student that had trouble grasping this concept, I wouldn't be writing this course! To my excuse I can say that I was never allowed to introduce this concept as early as possible in my courses. This is the most important thing in programming, it's so important that I have trouble in naming the runner-up in the hardship trophy.
+
+Programming is all about defining custom operations whose behaviour depend on external parameters. 
+
+:::info Recap Questions and Exercises
+<details>
+  <summary>What is the signature of a function?</summary>
+
+It's the combination of the **function name** and its parameters. It gives us the information about how to call it, and what to pass to it.
+</details>
+:::

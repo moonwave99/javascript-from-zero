@@ -1,0 +1,67 @@
+.outer {
+  margin-bottom: 2rem;
+}
+
+.wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 15px;
+}
+
+.consoleWrapper summary {
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  font-size: .9rem;
+  font-weight: bold;
+  padding: 0 .5rem;
+  cursor: pointer;
+}
+
+.consoleWrapper[open] summary::before {
+  content: '⏷'
+}
+
+.consoleWrapper summary::before {
+  content: '⏵';
+  margin-right: .5rem;
+}
+
+.console {
+  min-height: 3rem;
+}
+
+.output {
+  list-style: none;
+  background: var(--sp-colors-surface1);
+  margin: 0;
+  padding: 0;
+}
+
+.line {
+  padding: var(--sp-space-3) var(--sp-space-2);
+}
+
+.line:not(:last-child) {
+  border-bottom: 1px solid #2F2F2F;
+}
+
+.output span {
+  font-family: var(--sp-font-mono);
+  font-size: .8em;
+  line-height: var(--sp-font-lineHeight);
+}
+
+.output span:not(:last-child)::after {
+  content: ', ';
+}
+
+.string {
+  color: var(--sp-syntax-color-string);
+}
+
+.static {
+  color: var(--sp-syntax-color-static);
+}

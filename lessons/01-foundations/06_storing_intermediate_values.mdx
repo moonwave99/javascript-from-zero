@@ -1,0 +1,197 @@
+# Storing intermediate values
+
+In the [previous lesson](./returning_values_from_functions) we learnt how to return information from functions. We ended up with the following scenario:
+
+```js static
+// nachos price: 100
+// nachos discount: 20%
+// soda price: 30
+// soda discount: 50%
+function getDiscountedPrice(price, discount) {
+  return price * (100 - discount) / 100;
+}
+
+console.log(
+  'The total for the nachos and the soda is',
+  getDiscountedPrice(100, 20) + getDiscountedPrice(30, 50)
+);
+// ** output **
+'The total for the nachos and the soda is', 95
+```
+
+What if we wanted to display the individual prices of the items as well? One could call the functions again, like:
+
+```js static
+function getDiscountedPrice(price, discount) {
+  return price * (100 - discount) / 100;
+}
+
+console.log('The price for the nachos is', getDiscountedPrice(100, 20));
+console.log('The price for the soda is', getDiscountedPrice(30, 50));
+
+console.log(
+  'The total for the nachos and the soda is',
+  getDiscountedPrice(100, 20) + getDiscountedPrice(30, 50)
+);
+// ** output **
+'The price for the nachos is', 80
+'The price for the soda is', 15
+'The total for the nachos and the soda is', 95
+```
+
+Fair enough, but there should be a way to save ourselves some duplicated calculations!
+
+## Variables
+
+Once again be ready for the cold shower:
+
+```js static
+// nachos price: 100
+// nachos discount: 20%
+// soda price: 30
+// soda discount: 50%
+function getDiscountedPrice(price, discount) {
+  return price * (100 - discount) / 100;
+}
+
+const priceOfNachos = getDiscountedPrice(100, 20);
+const priceOfSoda = getDiscountedPrice(30, 50);
+
+console.log('The price for the nachos is', priceOfNachos);
+console.log('The price for the soda is', priceOfSoda);
+
+console.log(
+  'The total for the nachos and the soda is',
+  priceOfNachos + priceOfSoda
+);
+// ** output **
+'The price for the nachos is', 80
+'The price for the soda is', 15
+'The total for the nachos and the soda is', 95
+```
+
+First things first, observations:
+
+- most important: the output of the program stayed the same;
+- we introduced a new keyword, `const`, followed by a word and an equals sign;
+- we have done this `const` thing twice;
+- we are passing these words to two `console.log` statements;
+- we are calculating the sum of those two words in the last `console.log` of the program.
+
+The "word" coming after `const` is called **a variable**. A variable is a location in the computer memory that contains some information, and can be referred to via its name.
+
+Think of it as a post-it on the fridge with some person's name and a phone number:
+
+```js
+const doctorsNumber = 4173850353;
+const thingsToBuy = 'bread, milk, salad';
+```
+
+There is a lot of theory to discuss about variables, but we don't have time for it now. Let's really use them as scrapes of paper where we can scribble on.
+
+:::important Just a little variables theory
+Let's have a look at the previous statements again.  
+They are similar: `const {variable name} = {something}`:
+
+```js
+const doctorsNumber = 4173850353;
+const thingsToBuy = 'bread, milk, salad';
+```
+
+They are called **variable initialisations**. More in detail they are made of:
+
+- the `const` keyword;
+- the **variable name**;
+- the **equals sign**;
+- the **initial variable value**.
+
+The `const` keyword and the equals sign are not negotiable. The variable name is up to us (no whitespace allowed), and the initial value is what we want to store in the variable.
+
+There is another keyword for introducing variables (`let`) but we don't need it now. There were other ways as well in previous versions of the JavaScript language, but we'll skip the history lesson for now.
+:::
+
+## Storing values in variables
+
+Coming back to our program, we haven't explicitly stored values like numbers or strings in our variables, but rather the result of function calls:
+
+```js
+const priceOfNachos = getDiscountedPrice(100, 20);
+const priceOfSoda = getDiscountedPrice(30, 50);
+```
+
+There is no problem in that, the computer will evaluate the calls and store in the variable whatever the function returns for the passed arguments.
+
+There is a little problem in the two lines above: just by looking at the numbers, there is nothing that tells us whether we are passing the right nachos or soda original price!
+
+Instead of writing them in a comment at the top of the file, guess what we are going to do? We are going to store them in variables, exactly!
+
+```js static
+const originalPriceOfNachos = 100;
+const originalPriceOfSoda = 30;
+const discountOfNachos = 20;
+const discountOfSoda = 50;
+
+function getDiscountedPrice(price, discount) {
+  return price * (100 - discount) / 100;
+}
+
+const priceOfNachos = getDiscountedPrice(originalPriceOfNachos, discountOfNachos);
+const priceOfSoda = getDiscountedPrice(originalPriceOfSoda, discountOfSoda);
+
+console.log('The price for the nachos is', priceOfNachos);
+console.log('The price for the soda is', priceOfSoda);
+
+console.log(
+  'The total for the nachos and the soda is',
+  priceOfNachos + priceOfSoda
+);
+// ** output **
+'The price for the nachos is', 80
+'The price for the soda is', 15
+'The total for the nachos and the soda is', 95
+```
+
+Ta dan! Half an hour later, and our output hasn't changed. Sounds quite boring. But guess what, if you want to change the price or the discount of any product, you just have to touch things at the top of the file now:
+
+```js static
+const originalPriceOfNachos = 50;
+const originalPriceOfSoda = 20;
+const discountOfNachos = 10;
+const discountOfSoda = 20;
+
+function getDiscountedPrice(price, discount) {
+  return price * (100 - discount) / 100;
+}
+
+const priceOfNachos = getDiscountedPrice(originalPriceOfNachos, discountOfNachos);
+const priceOfSoda = getDiscountedPrice(originalPriceOfSoda, discountOfSoda);
+
+console.log('The price for the nachos is', priceOfNachos);
+console.log('The price for the soda is', priceOfSoda);
+
+console.log(
+  'The total for the nachos and the soda is',
+  priceOfNachos + priceOfSoda
+);
+// ** output **
+'The price for the nachos is', 45
+'The price for the soda is', 16
+'The total for the nachos and the soda is', 61
+```
+
+Lovely! We won't be lying should we say that the whole program behaves like big a `printPricesForNachosAndSoda` function, because it actually is.
+
+## Conclusion
+
+We have already seen two use cases for variables:
+
+- storing **return values from function calls** (`priceOfNachos`, `priceOfSoda`);
+- storing **arbitrary values** (the four variables at the top of the file).
+
+The variables of these examples are intentionally long and pompous. We'll soon encounter more idiomatic ways to deal with the presented scenario. We'll also try to avoid variables as much as possible, because naming things properly leads to headaches and ambiguity if done poorly.
+
+Variables are really not a big deal, just a necessary evil.
+
+:::info Recap Questions and Exercises
+WIP
+:::

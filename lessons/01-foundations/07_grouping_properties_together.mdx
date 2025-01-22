@@ -1,0 +1,267 @@
+# Grouping properties together
+
+In the [previous lesson](./storing_intermediate_values) we have seen how to store information in variables. We countined our journey in calculating the discounted prices of snacks of questionable nutrition score and ended up with the following code:
+
+```js static
+const originalPriceOfNachos = 50;
+const originalPriceOfSoda = 20;
+const discountOfNachos = 10;
+const discountOfSoda = 20;
+
+function getDiscountedPrice(price, discount) {
+  return price * (100 - discount) / 100;
+}
+
+const priceOfNachos = getDiscountedPrice(originalPriceOfNachos, discountOfNachos);
+const priceOfSoda = getDiscountedPrice(originalPriceOfSoda, discountOfSoda);
+
+console.log('The price for the nachos is', priceOfNachos);
+console.log('The price for the soda is', priceOfSoda);
+
+console.log(
+  'The total for the nachos and the soda is',
+  priceOfNachos + priceOfSoda
+);
+// ** output **
+'The price for the nachos is', 45
+'The price for the soda is', 16
+'The total for the nachos and the soda is', 61
+```
+
+This would probably give the itch to experienced programmers. But we are not there yet and we absolutely have a lot of to cover in our journey.
+
+The problem starts at the very beginning, where we declare the four variables:
+
+```js
+const originalPriceOfNachos = 100;
+const originalPriceOfSoda = 30;
+const discountOfNachos = 20;
+const discountOfSoda = 50;
+```
+
+Imagine adding a third product:
+
+```js
+const originalPriceOfNachos = 100;
+const originalPriceOfSoda = 30;
+const originalPriceOfWater = 10;
+const discountOfNachos = 20;
+const discountOfSoda = 50;
+const discountOfWater = 10;
+```
+
+Please stop! What about the following:
+
+```js static
+const nachos = {
+  price: 100,
+  discount: 20
+};
+
+const soda = {
+  price: 30,
+  discount: 50
+};
+
+function getDiscountedPrice(price, discount) {
+  return price * (100 - discount) / 100;
+}
+
+const priceOfNachos = getDiscountedPrice(nachos.price, nachos.discount);
+const priceOfSoda = getDiscountedPrice(soda.price, soda.discount);
+
+console.log('The price for the nachos is', priceOfNachos);
+console.log('The price for the soda is', priceOfSoda);
+
+console.log(
+  'The total for the nachos and the soda is',
+  priceOfNachos + priceOfSoda
+);
+// ** output **
+'The price for the nachos is', 80
+'The price for the soda is', 15
+'The total for the nachos and the soda is', 95
+```
+
+[insert Drake meme here] Now we are talking! The output of the program stayed the same again, but we introduced a new syntax that helped us group information together.
+
+## Objects in JavaScript
+
+We just went from storing four numbers in four different variables, i.e:
+
+```js
+const originalPriceOfNachos = 100;
+const originalPriceOfSoda = 30;
+const discountOfNachos = 20;
+const discountOfSoda = 50;
+```
+
+to just two variables, `nachos` and `soda`:
+
+```js
+const nachos = {
+  price: 100,
+  discount: 20
+};
+
+const soda = {
+  price: 30,
+  discount: 50
+};
+```
+
+These two are your first two **JavaScript objects**. An object is **a collection of related data and/or functionality**. For now we'll deal with data only.
+
+:::important Good to know
+- `price` and `discount` are **the object keys** or properties;
+- we'll refer to them as key or properties in an interchangeable manner;
+- each object key holds a **value**, in this case the numbers coming after the colon (`:`);
+- the list of key / value pairs should be comma separated;
+- an object can have as many key / value pairs as you want;
+- you can access the value for a given key with the **dot notation** - e.g. `nachos.price`, `nachos.discount`;
+- in order to use the dot notation, you have to know the name of the variable containing the object, and the name of the key you are interested in.
+:::
+
+## Reading object values
+
+Object represent composite pieces of information. Let's have a break from our sodas and practice this new syntax a little.
+
+```js static
+const user = {
+  firstName: 'Jane',
+  lastName: 'Doe',
+  email: 'jane@doe.com',
+  age: 35
+};
+
+console.log('My name is', user.firstName, user.lastName);
+console.log('I am', user.age, 'years old');
+console.log('Feel free to write me at:', user.email);
+// ** output **
+'My name is Jane Doe'
+'I am 35 years old'
+'Feel free to write me at: jane@doe.com'
+```
+
+We created an object with four properties (`firstName`, `lastName`, `email` and `age`) and stored it into a variable called `user`.
+
+Right after that we logged some information from the `user` with the aid of the **dot notation**,  
+i.e. `{name of the object variable}.{name of the key we need}`.
+
+:::important Note
+Object theory in JavaScript goes way beyond this. But key/value definition and dot notation is their main purpose and what you should get used to from the very beginning.
+:::
+
+## Nested objects
+
+Now it's when the fun starts! Jane wants to list her physical address. You could get awai with:
+
+```js
+const user = {
+  firstName: 'Jane',
+  lastName: 'Doe',
+  email: 'jane@doe.com',
+  age: 35,
+  addresss: 'Sesame Street, 7, 00040, Sin City'
+};
+```
+
+But what if you want to print just the street name and number, and not the rest of the information? We haven't discussed yet what can we use as values. Well, everything we have seen so far! Numbers (`age`) and strings (`firstName`, `lastName`, `email`)...and objects:
+
+```js
+const user = {
+  firstName: 'Jane',
+  lastName: 'Doe',
+  email: 'jane@doe.com',
+  age: 35,
+  addresss: {
+    street: 'Sesame Street',
+    number: 7,
+    zipcode: '00040',
+    city: 'Sin City'
+  }
+};
+```
+
+Mindblowing! Guess how we would access it?
+
+```js static
+const user = {
+  firstName: 'Jane',
+  lastName: 'Doe',
+  email: 'jane@doe.com',
+  age: 35,
+  address: {
+    street: 'Sesame Street',
+    number: 7,
+    zipcode: '00040',
+    city: 'Sin City'
+  }  
+};
+
+console.log('My name is', user.firstName, user.lastName);
+console.log('I am', user.age, 'years old');
+console.log('Feel free to write me at:', user.email);
+console.log('You can visit me at the number', user.address.number, 'of', user.address.street);
+// ** output **
+'My name is Jane Doe'
+'I am 35 years old'
+'Feel free to write me at: jane@doe.com'
+'You can visit me at the number 7 of Sesame Street'
+```
+
+Exactly! If the value we are reading is an object itself, we can use the dot notation one level deeper, like `user.address.number` or `user.address.street`.
+
+## Missing keys
+
+We strolled along the happy path so far. We knew the shape of all the objects we dealt with, we always found what we were looking for.
+
+Let's consider the following scenario:
+
+```js static
+const user = {
+  firstName: 'John',
+  lastName: 'Doe',
+};
+
+console.log('My name is', user.firstName, user.lastName);
+console.log('I am', user.age, 'years old');
+// ** output **
+'My name is John Doe'
+'I am undefined years old'
+```
+
+`I am undefined years old`, where have we already encountered this weird word? Of course, it's the return value of a function without a returning statement! `undefined` is the way JavaScript has to tell it did its best but hasn't found anything.
+
+In this case we tried to log `user.age`, but our `user` variable has no `age` key.  
+We say that the expected behaviour for accessing a missing key from an object is to get `undefined` back.
+
+Now this wouldn't be a big deal, until you try to do the following for instance:
+
+```js static
+const user = {
+  firstName: 'John',
+  lastName: 'Doe',
+};
+
+console.log('My name is', user.firstName, user.lastName);
+console.log('You can visit me at the number', user.address.number, 'of', user.address.street);
+// ** output **
+'My name is John Doe'
+"TypeError: Cannot read properties of undefined (reading 'number')"
+```
+
+`"TypeError: Cannot read properties of undefined (reading 'number')"` - what? Let's break it down.
+First and last name have been logged with no problem, so the culprit lies in the second log statement. We are trying to access `user.address.number`.
+
+Let's read it as `(user.address).number`. What do we know about accessing missing keys in objects? Since our `user` has just `firstName` and `lastName`, it definitely has no `address` property, so `user.address` evaluates to `undefined`. And since `undefined` is not an object, we cannot use the dot notation on it, mystery solved!
+
+The solution of the problem is not trivial. In this case we could provide an `address` to the user, or avoid logging the address information altogether. In the next lesson we'll see how to check beforehand if an object has a specific property.
+
+## Conclusion
+
+WIP
+
+:::info Recap Questions and Exercises
+WIP
+:::

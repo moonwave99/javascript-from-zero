@@ -1,0 +1,211 @@
+# Making decisions
+
+In the [previous lesson](./flexible_functions) we went from some fixed functions to a flexible one that accepts an argument.
+
+Before:
+
+```js
+function greetSally() {
+  console.log("Hello Sally Brown");
+}
+
+function greetCharlie() {
+  console.log("Hello Charlie Brown");
+}
+
+greetSally();
+greetCharlie();
+```
+
+And after:
+
+```js
+function greet(person) {
+  console.log("Hello", person);
+}
+
+greet('Sally Brown');
+greet('Charlie Brown');
+```
+
+## Updating the function signature
+
+Now we want to enhance our `greet` function to adjust the greeting to the time of the day, let's say "Good morning" it it's not noon yet, and "Good afternoon" after that.
+
+Since functions wear no watches, it's hard for them the guess the hour. We have to tell them, any idea how? Exactly, **we need another parameter**!
+
+In order to keep things simple, we'll assume that the time is expressed in integer numbers, no minutes nor seconds. We'll also greet just Charlie for a moment, sorry Sally!
+
+```js static
+function greet(person, time) {
+  console.log("Good morning", person);
+}
+
+greet('Charlie Brown', 9);
+greet('Charlie Brown', 15);
+// ** output **
+'Good morning Charlie Brown'
+'Good morning Charlie Brown'
+```
+
+See how we adjusted the greeting to be `Good morning` and not `Hello` anymore. We are calling the function twice, first with a morning hour, then with an afternoon one. We still see no difference in behaviour, because we haven't changed much inside the function!
+
+## Our first conditional
+
+Let's go straight to business:
+
+```js static
+function greet(person, time) {
+  if (time > 12) {
+    console.log("Good afternoon", person);
+  } else {
+    console.log("Good morning", person);
+  }
+}
+
+greet('Charlie Brown', 9);
+greet('Charlie Brown', 15);
+// ** output **
+'Good morning Charlie Brown'
+'Good afternoon Charlie Brown'
+```
+
+Bunch of stranger symbols and keywords we salute you! Don't panic and look at the results: they do what we wanted!
+
+First let's observe how we have two `console.log` statements in the function body, but just one per call gets excecuted. That means that there should be some decision mechanism that chooses which one to run. Such mechanism is called an `if / else statement`:
+
+```js
+if (time > 12) {
+  console.log("Good afternoon", person);
+} else {
+  console.log("Good morning", person);
+}
+```
+
+More generally we have:
+
+```js
+if ( some condition ) {
+  // if block:
+  // stuff that gets excecuted if the condition is met
+} else {
+  // else block:
+  // stuff that gets excecuted if the condition is not met
+}
+```
+
+A **block statement** is used to group zero or more statements. The block is delimited by a pair of curly braces and contains a list of zero or more statements and declarations.
+
+The two blocks are mutually exclusive: if the condition is met, just the **if block**
+We have to rigorously define what "some condition" is, and how the machine checks if it is met. We'll do it in a couple of lessons.
+
+:::important How the number comparison works
+The `>` symbol is called the **greater than operator**. It behaves similarly to the other operators you already know, like the plus or the multiplication operators: they all take two numbers and associate them with something else.
+
+```js static
+console.log('2 + 3', 2 + 3);
+console.log('2 * 3', 2 * 3);
+console.log('2 > 3', 2 > 3);
+// ** output **
+'2 + 3', 5
+'2 * 3', 6
+'2 > 3', false
+```
+
+As you can imagine, there is also a **lesser than** operator (`<`):
+
+```js static
+console.log('2 > 3', 2 > 3);
+console.log('2 < 3', 2 < 3);
+// ** output **
+'2 > 3', false
+'2 < 3', true
+```
+
+Wait wait, what are those `true` and `false` things now? They are called **boolean valuse**, we'll see them in detail soon. For now think that they are **answers to a yes or no question**.
+
+As you can imagine there are also the **equals operator**, the **lesser or equals to operator** and the **greater or equals to operator**. They'll also be covered at a later moment.
+:::
+
+We introduced a lot of notation and concepts. Covering all of them in detail would make you lose focus from the main story, that is to enchance our `greet` function. Let's reinforce what we have seen so far by reinspecting the code we have written so far. For instance we named the parameters `person` and `time`. Remember that your can rename them!
+
+```js static
+function greet(name, hour) {
+  if (hour > 12) {
+    console.log("Good afternoon", name);
+  } else {
+    console.log("Good morning", name);
+  }
+}
+
+greet('Charlie Brown', 9);
+greet('Charlie Brown', 15);
+// ** output **
+'Good morning Charlie Brown'
+'Good afternoon Charlie Brown'
+```
+
+The output stays the same. Once again it's up to your how you name the params. Let's greet Sally and some Van Pelts as well:
+
+```js static
+function greet(name, hour) {
+  if (hour > 12) {
+    console.log("Good afternoon", name);
+  } else {
+    console.log("Good morning", name);
+  }
+}
+
+greet('Linus Van Pelt', 15);
+greet('Sally Brown', 17);
+greet('Lucy Van Pelt', 8);
+greet('Lucy Van Pelt', 19);
+// ** output **
+'Good afternoon Linus Van Pelt'
+'Good afternoon Sally Brown'
+'Good morning Lucy Van Pelt'
+'Good afternoon Lucy Van Pelt'
+```
+
+See how the output varies depending on the input. That's programming, an input and output mantra, just like breathing. That new age sloganism at its finest! Get familiar with this aspects and you'll be ace.
+
+What? You want to know about how to fine tune our function further so it can say good evening as well? Stay tuned!
+
+## The strategy for writing code that works
+
+There are two main things that cause problems to developers: knowing **how to do something**, and knowing **what to do**. You can ask for help for the former, but it's much harder to clarify the latter.
+
+Let's pretend that we haven't gone through the `greet` function story yet, and we get the following requirement / exercise:
+
+> Write a function called `greet` that takes two parameters - a person's name and the time of the day, and logs `Good morning {the name}` if the time is lesser than 12, and `Good afternoon {the name}` otherwise.
+
+You want to have a solid strategy in tacking the problem. I strongly suggest to do the following:
+
+- write the **function signature** first, without anything in the function body;
+- write some **function calls** below the function, with **different arguments** covering all the expected cases;
+- **comment the calls** with the expected out;
+- review what you have done so far, sit back and relax.
+
+```js
+function greet(person, time) {
+  // NOTHING HERE
+}
+
+// should log 'Good morning Charlie Brown'
+greet('Charlie Brown', 9);
+
+// should log 'Good afternoon Charlie Brown'
+greet('Charlie Brown', 15);
+```
+
+This generates no output, it's an empty function after all. But I already know _what the function should do_. Now I can write the function body and fulfill _the how_.
+
+## Conclusion
+
+I've met various students and fellow developers that start frantically typing like headless chickens before knowing _what_ they are supposed to do. Well I haven't actually seen headless chickens approach a computer but I guess that's what they would do. You don't have to rush! Programming is about functions, and functions are about their input and their output. If you don't put most of your attention on those two aspects, it's worthless to invest energy in what happens inside them!
+
+:::info Recap Questions and Exercises
+WIP
+
+Write a func that takes three arguments - two strings that represent the plans for the evening, and the time of the day as a number. If it's later than 20 log the second plan, else log the first.
+:::
