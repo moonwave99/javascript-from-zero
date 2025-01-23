@@ -97,12 +97,12 @@ if ( some condition ) {
 A **block statement** is used to group zero or more statements. The block is delimited by a pair of curly braces and contains a list of zero or more statements and declarations.
 
 The two blocks are mutually exclusive: if the condition is met, just the **if block**
-We have to rigorously define what "some condition" is, and how the machine checks if it is met. We'll do it in a couple of lessons.
+We have to rigorously define what "some condition" is, and how the machine checks if it is met. We'll do it in at the end of this cycle of lessons.
 
 :::important How the number comparison works
 The `>` symbol is called the **greater than operator**. It behaves similarly to the other operators you already know, like the plus or the multiplication operators: they all take two numbers and associate them with something else.
 
-```js static
+```js static showConsole
 console.log('2 + 3', 2 + 3);
 console.log('2 * 3', 2 * 3);
 console.log('2 > 3', 2 > 3);
@@ -114,7 +114,7 @@ console.log('2 > 3', 2 > 3);
 
 As you can imagine, there is also a **lesser than** operator (`<`):
 
-```js static
+```js static showConsole
 console.log('2 > 3', 2 > 3);
 console.log('2 < 3', 2 < 3);
 // ** output **
@@ -122,7 +122,9 @@ console.log('2 < 3', 2 < 3);
 '2 < 3', true
 ```
 
-Wait wait, what are those `true` and `false` things now? They are called **boolean valuse**, we'll see them in detail soon. For now think that they are **answers to a yes or no question**.
+### True and false
+
+Wait wait, what are those `true` and `false` things now? They are called **boolean valuse**, we'll cover them in detail soon. For now think that they are **answers to a yes or no question**.
 
 As you can imagine there are also the **equals operator**, the **lesser or equals to operator** and the **greater or equals to operator**. They'll also be covered at a later moment.
 :::
@@ -167,9 +169,25 @@ greet('Lucy Van Pelt', 19);
 'Good afternoon Lucy Van Pelt'
 ```
 
-See how the output varies depending on the input. That's programming, an input and output mantra, just like breathing. That new age sloganism at its finest! Get familiar with this aspects and you'll be ace.
+See how the output varies depending on the input. That's programming, an input and output mantra, just like breathing. That new age sloganism at its finest! Get familiar with this aspects and you'll be ace. Do yu want to know about how to fine tune our function further so it can say good evening as well? Stay tuned!
 
-What? You want to know about how to fine tune our function further so it can say good evening as well? Stay tuned!
+:::important Note
+An `if` block should not compulsory be followed by an `else` block:
+
+```js static showConsole
+const daysLearning = 9;
+
+console.log("Today I will study some JavaScript.");
+if (daysLearning > 7) {
+  console.log("It's more than a week that I am studying already!");
+}
+// ** output **
+"Today I will study some JavaScript."
+"It's more than a week that I am studying already!"
+```
+
+We just wanted to append a second log after the first one, without deciding an alternative message to write. The less `if` / `else` we use in our code, the better actually! Less decisions to take, fewer scenarios to check.
+:::
 
 ## The strategy for writing code that works
 

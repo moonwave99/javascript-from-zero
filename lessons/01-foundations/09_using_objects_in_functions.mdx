@@ -1,8 +1,8 @@
 # Using objects in functions
 
-In the [last lesson](./grouping_properties_together) we learnt how to group properties together as objects. Let's reinforce this idea by dealing with them in functions.
+In the last two lessons we learnt how to group properties together as objects. We have also seen how objects can contain nested objects. Let's reinforce these concepts by dealing with them in functions.
 
-Our last example was printing some user information:
+We know how to print some user information:
 
 ```js static showConsole
 const user = {
@@ -28,6 +28,8 @@ console.log('You can visit me at the number', user.address.number, 'of', user.ad
 'Feel free to write me at: jane@doe.com'
 'You can visit me at the number 7 of Sesame Street'
 ```
+
+## Logging information from a function
 
 If we need to print information for multiple users, we'd have to duplicate the number of log statements. That's nobueno, so what about writing a `printUserInfo` function? This time we are not interested in returning anything from the function so it's entirely fine to log from it.
 
@@ -72,7 +74,7 @@ Functions should depend as much as possible on the passed arguments, that makes 
 An example with two users will make things clearer for sure:
 
 ```js static showConsole
-const myUser = {
+const firstUser = {
   firstName: 'Jane',
   lastName: 'Doe',
   email: 'jane@doe.com',
@@ -85,7 +87,7 @@ const myUser = {
   }  
 };
 
-const anotherUser = {
+const secondUser = {
   firstName: 'John',
   lastName: 'Doe',
   email: 'john@doe.com',
@@ -105,8 +107,8 @@ function printUserInfo(user) {
   console.log('You can visit me at the number', user.address.number, 'of', user.address.street);
 }
 
-printUserInfo(myUser);
-printUserInfo(anotherUser);
+printUserInfo(firstUser);
+printUserInfo(secondUser);
 // ** output **
 'My name is Jane Doe'
 'I am 35 years old'
@@ -118,7 +120,7 @@ printUserInfo(anotherUser);
 'You can visit me at the number 9 of Sesame Street'
 ```
 
-The `printUserInfo` function does not care where the passed objecs are stored. It just wants to deal with an argument that has `firstName`, `lastName`, `age`, `email` and `address` properties.
+The `printUserInfo` function does not care where the passed objecs are stored. It just wants to deal with an object that has `firstName`, `lastName`, `age`, `email` and `address` properties.
 
 Let's reinforce it even further:
 
@@ -160,6 +162,97 @@ The `100` and `20` values are not stored in any variable as well! It just works 
 :::important Note
 Passing arguments to functions is for some reason an hard topic to digest, especially when it involves more complex data structures. You are expected to be confused. The best advice is to practice it as much as possible, especially at early stages.
 :::
+
+## Checking if object properties are present
+
+We have also seen [in a previous lesson](./nested_object#missing-keys) the problem that we face if the passed object is missing the `address` property. How can we be sure if such property is there?
+
+```js static showConsole
+const myUser = {
+  firstName: 'John',
+  lastName: 'Doe',
+  email: 'john@doe.com',
+  age: 99,
+};
+
+function printUserInfo(user) {
+  console.log('My name is', user.firstName, user.lastName);
+  console.log('I am', user.age, 'years old');
+  console.log('Feel free to write me at:', user.email);
+  if (user.address) {
+    console.log('You can visit me at the number', user.address.number, 'of', user.address.street);
+  }
+}
+
+printUserInfo(myUser);
+// ** output **
+'My name is John Doe'
+'I am 99 years old'
+'Feel free to write me at: john@doe.com'
+```
+
+No errors, no weird `undefined` mentions in the output. Let's run the updated code with Jane now:
+
+```js static showConsole
+const myUser = {
+  firstName: 'Jane',
+  lastName: 'Doe',
+  email: 'jane@doe.com',
+  age: 35,
+  address: {
+    street: 'Sesame Street',
+    number: 7,
+    zipcode: '00040',
+    city: 'Sin City'
+  }  
+};
+
+function printUserInfo(user) {
+  console.log('My name is', user.firstName, user.lastName);
+  console.log('I am', user.age, 'years old');
+  console.log('Feel free to write me at:', user.email);
+  if (user.address) {
+    console.log('You can visit me at the number', user.address.number, 'of', user.address.street);
+  }
+}
+
+printUserInfo(myUser);
+// ** output **
+'My name is Jane Doe'
+'I am 35 years old'
+'Feel free to write me at: jane@doe.com'
+'You can visit me at the number 7 of Sesame Street'
+```
+
+Thanks to the **if statement** the function can now decide whether to display the address information or not, avoiding error messages entirely.
+
+What if we want to do something if an object property _is not there_? We have seen the **negation operator** with boolean values already. It is useful to check the absence of an object key as well:
+
+```js static showConsole
+const myUser = {
+  firstName: 'John',
+  lastName: 'Doe',
+  age: 99,
+};
+
+function printUserInfo(user) {
+  console.log('My name is', user.firstName, user.lastName);
+  console.log('I am', user.age, 'years old');
+  if (!user.email) {
+    console.log('I am not reachable electronically unfortunately.')
+  } else {
+    console.log('Feel free to write me at:', user.email);
+  }
+}
+
+printUserInfo(myUser);
+// ** output **
+'My name is John Doe'
+'I am 99 years old'
+'I am not reachable electronically unfortunately.'
+```
+
+Why does it work though? It's time to view how logic formally works in JavaScript, and we'll do it in the very next lesson.
 
 ## Conclusion
 

@@ -1,0 +1,116 @@
+# Nested objects
+
+Now it's when the fun starts! Jane wants to list her physical address. You could get away with:
+
+```js
+const user = {
+  firstName: 'Jane',
+  lastName: 'Doe',
+  email: 'jane@doe.com',
+  age: 35,
+  isVerified: false,
+  addresss: 'Sesame Street, 7, 00040, Sin City',
+};
+```
+
+But what if you want to print just the street name and number, and not the rest of the information? We haven't discussed yet what can we use as values. Well, everything we have seen so far! Numbers (`age`) and strings (`firstName`, `lastName`, `email`)...and objects:
+
+```js
+const user = {
+  firstName: 'Jane',
+  lastName: 'Doe',
+  email: 'jane@doe.com',
+  age: 35,
+  isVerified: false,
+  addresss: {
+    street: 'Sesame Street',
+    number: 7,
+    zipcode: '00040',
+    city: 'Sin City'
+  }
+};
+```
+
+Mindblowing! Guess how we would access it?
+
+```js static
+const user = {
+  firstName: 'Jane',
+  lastName: 'Doe',
+  email: 'jane@doe.com',
+  age: 35,
+  isVerified: false,
+  address: {
+    street: 'Sesame Street',
+    number: 7,
+    zipcode: '00040',
+    city: 'Sin City'
+  }  
+};
+
+console.log('My name is', user.firstName, user.lastName);
+console.log('I am', user.age, 'years old');
+console.log('Feel free to write me at:', user.email);
+console.log('You can visit me at the number', user.address.number, 'of', user.address.street);
+// ** output **
+'My name is Jane Doe'
+'I am 35 years old'
+'Feel free to write me at: jane@doe.com'
+'You can visit me at the number 7 of Sesame Street'
+```
+
+Exactly! If the value we are reading is an object itself, we can use the dot notation one level deeper, like `user.address.number` or `user.address.street`.
+
+## Missing keys
+
+We strolled along the happy path so far. We knew the shape of all the objects we dealt with, we always found what we were looking for.
+
+Let's consider the following scenario:
+
+```js static
+const user = {
+  firstName: 'John',
+  lastName: 'Doe',
+};
+
+console.log('My name is', user.firstName, user.lastName);
+console.log('I am', user.age, 'years old');
+// ** output **
+'My name is John Doe'
+'I am undefined years old'
+```
+
+`I am undefined years old`, where have we already encountered this weird word? Of course, it's the return value of a function without a returning statement! `undefined` is the way JavaScript has to tell it did its best but hasn't found anything.
+
+In this case we tried to log `user.age`, but our `user` variable has no `age` key.  
+We say that the expected behaviour for accessing a missing key from an object is to get `undefined` back.
+
+Now this wouldn't be a big deal, until you try to do the following for instance:
+
+```js static
+const user = {
+  firstName: 'John',
+  lastName: 'Doe',
+};
+
+console.log('My name is', user.firstName, user.lastName);
+console.log('You can visit me at the number', user.address.number, 'of', user.address.street);
+// ** output **
+'My name is John Doe'
+"TypeError: Cannot read properties of undefined (reading 'number')"
+```
+
+`"TypeError: Cannot read properties of undefined (reading 'number')"` - what? Let's break it down.
+First and last name have been logged with no problem, so the culprit lies in the second log statement. We are trying to access `user.address.number`.
+
+Let's read it as `(user.address).number`. What do we know about accessing missing keys in objects? Since our `user` has just `firstName` and `lastName`, it definitely has no `address` property, so `user.address` evaluates to `undefined`. And since `undefined` is not an object, we cannot use the dot notation on it, mystery solved!
+
+The solution of the problem is not trivial. In this case we could provide an `address` to the user, or avoid logging the address information altogether. In the next lesson we'll see how to check beforehand if an object has a specific property.
+
+## Conclusion
+
+WIP
+
+:::info Recap Questions and Exercises
+WIP
+:::
