@@ -9,7 +9,7 @@ const user = {
   email: 'jane@doe.com',
   age: 35,
   isVerified: false,
-  addresss: 'Sesame Street, 7, 00040, Sin City',
+  address: 'Sesame Street, 7, 00040, Sin City',
 };
 ```
 
@@ -22,7 +22,7 @@ const user = {
   email: 'jane@doe.com',
   age: 35,
   isVerified: false,
-  addresss: {
+  address: {
     street: 'Sesame Street',
     number: 7,
     zipcode: '00040',
@@ -83,7 +83,7 @@ console.log('I am', user.age, 'years old');
 `I am undefined years old`, where have we already encountered this weird word? Of course, it's the return value of a function without a returning statement! `undefined` is the way JavaScript has to tell it did its best but hasn't found anything.
 
 In this case we tried to log `user.age`, but our `user` variable has no `age` key.  
-We say that the expected behaviour for accessing a missing key from an object is to get `undefined` back.
+We say that the expected behavior for accessing a missing key from an object is to get `undefined` back.
 
 Now this wouldn't be a big deal, until you try to do the following for instance:
 

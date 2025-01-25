@@ -2,41 +2,40 @@
 
 In the [previous lesson](./printing_some_output) we have seen how to generate some output in the console. That's a fundamental tool: without it, we wouldn't be able to see any effect on our screens, and most important we wouldn't be able to make any observations along our path to knowledge.
 
-In this lesson we'll introduce one of **the most important concepts in programming**, if not the most important at all! You won't be able to perceive such importance yet, but since it's also one of the hardest to digest, the sooner you familiarise with it, the better.
+In this lesson we'll introduce one of **the most important concepts in programming**, if not the most important at all! You won't be able to perceive such importance yet, but since it's also one of the hardest to digest, the sooner you familiarize with it, the better.
 
 ## Defining custom features
 
 We already know how to print something out. It's the only thing we know actually.
 Instead of the world, let's greet our friend Sally Brown this time:
 
-```js static
-console.log("Hello Sally Brown");
+```js static showConsole
+console.log('Hello Sally Brown');
 // ** output **
-"Hello Sally Brown"
+'Hello Sally Brown'
 ```
 
 I apologise in advance for introducing some new syntax all at once.
 
-```js static
+```js static showConsole
 function greet() {
-  console.log("Hello Sally Brown");
+  console.log('Hello Sally Brown');
 }
 
 greet();
 // ** output **
-"Hello Sally Brown"
+'Hello Sally Brown'
 ```
 
 What? `greet`? Why twice? What does `function` ever mean? And the `()` without anything in between, and that `{}` weird other set of brackets. Bear with me a second. First let's observe that there is no change in our output, we still read `"Hello Sally Brown"` in the console: it means we haven't introduced nor removed any feature in our original program, and that's a start.
 
 Let's see what happens now:
 
-```js static
+```js static showConsole
 function greet() {
   console.log("Hello Sally Brown");
 }
 // ** output **
-
 ```
 
 Look ma no output! But how come if the `console.log` statement is still there? That's true indeed, but it look like that portion of code hasn't been run by the machine.
@@ -80,7 +79,7 @@ function someVeryFunnyName() {
 }
 ```
 
-Spaces in the name are not allowed though, that's why if a function name contains multiple words, we capitalise those after the first. This convention is called [camel case][mdn:camel-case] be cause of the similarity of the capital letters to the humps of a camel's back 🐪.
+Spaces in the name are not allowed though, that's why if a function name contains multiple words, we capitalize those after the first. This convention is called [camel case][mdn:camel-case] be cause of the similarity of the capital letters to the humps of a camel's back 🐪.
 
 We can define as many functions as we need:
 
@@ -92,7 +91,7 @@ function anotherFunctionWhyNot() { ... }
 
 We can call the same function as many times as we need:
 
-```js static
+```js static showConsole
 function greet() {
   console.log("Hello Sally Brown");
 }

@@ -126,7 +126,7 @@ console.log('2 < 3', 2 < 3);
 
 Wait wait, what are those `true` and `false` things now? They are called **boolean valuse**, we'll cover them in detail soon. For now think that they are **answers to a yes or no question**.
 
-As you can imagine there are also the **equals operator**, the **lesser or equals to operator** and the **greater or equals to operator**. They'll also be covered at a later moment.
+As you can imagine there are also the **equals operator**, the **lesser or equals to operator** and the **greater or equals to operator**. We'll deal with the first one in a moment in a slightly different context.
 :::
 
 We introduced a lot of notation and concepts. Covering all of them in detail would make you lose focus from the main story, that is to enchance our `greet` function. Let's reinforce what we have seen so far by reinspecting the code we have written so far. For instance we named the parameters `person` and `time`. Remember that your can rename them!
@@ -171,14 +171,116 @@ greet('Lucy Van Pelt', 19);
 
 See how the output varies depending on the input. That's programming, an input and output mantra, just like breathing. That new age sloganism at its finest! Get familiar with this aspects and you'll be ace. Do yu want to know about how to fine tune our function further so it can say good evening as well? Stay tuned!
 
+## Comparing strings
+
+We compared numbers to see if the passed time was later than noon. Let's now write a `suggestPlans` function that accepts a `name` and `weather` parameter, and suggest us what to do depending on the outdoor conditions. It should greet the given name - just with a simple hello this time - and tell us to have a walk if it's sunny, and to drink something warm home if it's raining. If the given weather is neither `sunny` nor `rainy`, it should tell us that it cannot be of much help.
+
+```js static showConsole
+function suggestPlans(name, weather) {
+  console.log('Hello', name);
+  if (weather == 'sunny') {
+    console.log("Let's have a walk in a park and chill there!");
+  } else if (weather == 'rainy') {
+    console.log("That's a bummer. Let's fix ourselves a cuppa and spin some good record!");
+  } else {
+    console.log('I am out of ideas sorry!');
+  }
+}
+
+suggestPlans('Charlie', 'sunny');
+suggestPlans('Sally', 'rainy');
+suggestPlans('Snoopy', 'windy');
+// ** output **
+'Hello Charlie'
+"Let's have a walk in a park and chill there!"
+'Hello Sally'
+"That's a bummer. Let's fix ourselves a cuppa and spin some good record!"
+'Hello Snoopy'
+"I am out of ideas sorry!"
+```
+
+What can we say about the `suggestPlans` function?
+
+- it depends on two parameters, `name` and `weather`;
+- it has three possible behaviours: one if the weather is sunny, one if it's rainy, a further one otherwise;
+- it has some shared feature that happens in all cases, i.e. the initial `Hello {name}` log;
+- it has a chain of `if / else if / else` blocks;
+- the condition of the `if` and `else if` blocks is to compare the `weather` parameter first with the `'sunny'` string, then with `'rainy'` one.
+
+### The comparison operator
+
+The comparison is responsibility of the **comparison operator** (`==`), depicted with two (!) equals. Why two equals and not one? Because the single equals is another operator, whose purpose is going to be discussed in two lessons from now.
+
+Let's observe how the operator behaves:
+
+```js static showConsole
+console.log('cat' == 'dog');
+console.log('cat' == 'Cat');
+console.log('cat' == 'cat');
+// ** output **
+false
+false
+true
+```
+
+- comparing two completely different strings evaluates to `false`;
+- comparing two strings that differ just by case evaluates to `false`;
+- comparing two strings that match in content and case evaluates to `true`.
+
+Boolean values again! Comparing two string does certainly not leave room for a third option, either they match or not. _Tertium non datur_.
+
+Coming back to the `suggestPlans` function, the comparison is between the value of the parameter and the fixed strings inside the function body:
+
+```js
+if (weather == 'sunny') {
+  console.log("Let's have a walk in a park and chill there!");
+} else if (weather == 'rainy') {
+  console.log("That's a bummer. Let's fix ourselves a cuppa and spin some good record!");
+} else {
+  console.log('I am out of ideas sorry!');
+}
+```
+
+The operator first checks if `weather` in the current call holds `'sunny'` as value. If it's not the case proceeds to the `else if` block and does the same against `'winter'`. The machine has no idea about what those strings mean, it just checks if they have the same value.
+
+Dealing with logic in programming can be convoluted at first. We'll see a lot of examples so you can familiarise with the syntax. For now focus as much as possible on the idea that **different inputs** lead to **different outputs** depending on how they match the internal function decisions.
+
 :::important Note
+### `if`, `else if`, `else`
+
+In the previous example we have seen just an `if / else` structure, while now we introduced another decision thanks to the `else if`. More generally:
+
+```js
+if ( condition ) {
+  // things that happen if condition is met
+} else if ( anotherCondition ) {
+  // things that happen if the previous condition is not met
+  // and if anotherCondition is met
+} else {
+  // things that happen if none of the above conditions are met
+}
+```
+
+One could have an arbitrary number of `else if ( ... )` blocks:
+
+```js
+if ( condition ) { ... }
+else if ( anotherCondition ) { ... }
+else if ( yetAnotherCondition) { ... }
+...
+else { ... }
+```
+
+But before you get carried away, we'll see how this is not particularly good code. We want our function to be as specialised as possible, without the need of taking too many decisions. We'll discuss the strategies to avoid the common pitfalls.
+
+### Isolated `if` blocks
 An `if` block should not compulsory be followed by an `else` block:
 
 ```js static showConsole
-const daysLearning = 9;
+const daysOfLearning = 9;
 
 console.log("Today I will study some JavaScript.");
-if (daysLearning > 7) {
+if (daysOfLearning > 7) {
   console.log("It's more than a week that I am studying already!");
 }
 // ** output **

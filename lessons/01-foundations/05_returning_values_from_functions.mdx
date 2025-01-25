@@ -10,7 +10,7 @@ Let's imagine to manage a successful business, and that we want to be gentle wit
 
 - has three parameters: the `productName`, the `price` and the `discount`;
 - the `discount` is expressed as a number from 0 to 100;
-- logs `{the product name} now cost: {the discounte price}`.
+- logs `{the product name} now cost: {the discounted price}`.
 
 ```js
 function printDiscountedPrice(productName, price, discount) {
@@ -180,7 +180,7 @@ function getDiscountedPrice(productName, price, discount) {
 }
 ```
 
-Do we actually need to pass the `productName` to the `getDiscount` function anymore? See how we don't refer to the `productName` parameter inside the function body anymore. That makes sence since the calculation just cares about the original price and the discount percentage, so we can get rid of the `productName`:
+Do we actually need to pass the `productName` to the `getDiscount` function anymore? See how we don't refer to the `productName` parameter inside the function body anymore. That makes sense since the calculation just cares about the original price and the discount percentage, so we can get rid of the `productName`:
 
 ```js static
 function getDiscountedPrice(price, discount) {
@@ -220,10 +220,10 @@ console.log(
 What is the machine doing:
 
 - it sees a `console.log` function call;
-- before proceeding to print anything on screen, it sees if there are futher function calls;
+- before proceeding to print anything on screen, it sees if there are further function calls;
 - there are, two to `getDiscountedPrice`;
 - the machine evaluates them and replaces them with what they return;
-- the machine evauates the `+` operator and replaces it withh the result of the sum;
+- the machine evaluates the `+` operator and replaces it with the result of the sum;
 - now it can finally log stuff on screen.
 
 The log statements looks a bit inconvenient to read. That's expected, and the problem will be solved in the next lesson!
@@ -261,7 +261,7 @@ console.log('Sexy Soda now cost', getDiscountedPrice(30, 50));
 
 Nasty Nachos now cost `undefined`? Are you serious? `undefined` is a big can of worms in JavaScript, for now treat it as what it is, i.e. _not what you were expecting_!
 
-The official definition of the phenomenon is that **a function returns `undefined` if it doesn't contain any explicit return statement**. So if you expect your functions to return something but they don't istead, double check if you forgot the `return` keyword somewhere.
+The official definition of the phenomenon is that **a function returns `undefined` if it doesn't contain any explicit return statement**. So if you expect your functions to return something but they don't instead, double check if you forgot the `return` keyword somewhere.
 
 :::important Note
 Let's inspect a second the "experimental" function:

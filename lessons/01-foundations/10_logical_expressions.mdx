@@ -1,12 +1,158 @@
 # Logical expressions
 
-We have come a long way so far: we know about different data types (numbers, strings, booleans), we know about functions, their parameters and how to call them with approriate arguments. We know about group information in objecs and how to access the values stored in their keys.
+We have come a long way so far: we know about different **data types** (numbers, strings, booleans), we know about **functions**, their **parameters** and how to call them with **approriate arguments**. We know about group information in **objects** and how to access the values stored in their keys.
 
-We learnt to take some decisions with **if statements**. It's now time to rigorously see what happens between the round parentheses after the `if`!
+We learnt to take some decisions with **if statements**. We have just seen a couple of use cases without too much rigor: do you remember the `greet` function?
+
+```js static showConsole
+function greet(person, time) {
+  if (time > 12) {
+    console.log("Good afternoon", person);
+  } else {
+    console.log("Good morning", person);
+  }
+}
+
+greet('Charlie Brown', 9);
+greet('Charlie Brown', 15);
+// ** output **
+'Good morning Charlie Brown'
+'Good afternoon Charlie Brown'
+```
+
+We have a different behaviour fepending on what second argument we used to call the function.
+
+Then we checked the presence of an object key in the `printUserInfo` function:
+
+```js static showConsole
+function printUserInfo(user) {
+  console.log('My name is', user.firstName, user.lastName);
+  console.log('I am', user.age, 'years old');
+  console.log('Feel free to write me at:', user.email);
+  if (user.address) {
+    console.log('You can visit me at the number', user.address.number, 'of', user.address.street);
+  }
+}
+
+printUserInfo(myUser);
+// ** output **
+'My name is Jane Doe'
+'I am 35 years old'
+'Feel free to write me at: jane@doe.com'
+'You can visit me at the number 7 of Sesame Street'
+```
+
+We have a grasp of how an if statement behaves. But how does the language decide if the condition is met?
 
 ## Boolean expressions
 
-WIP
+We already encountered the **boolean type**. It's a data type that can hold just two values: `true` and `false`. They are just commodity names: they could have called them _yes_ and _no_, or use the numbers 1 and 0.
+
+We can use boolean values directly in conditions like:
+
+```js static showConsole
+const isRaining = true;
+
+if (isRaining) {
+  console.log("I'd better carry an umbrella with me")
+} else {
+  console.log("It's good to be hands free")
+}
+// ** output **
+"I'd better carry an umbrella with me"
+```
+
+The language checks whether the passed value is `true` or `false` and behaves consequently. But we haven't passed boolean values before, e.g. `if (time > 12) { ... }`, why is that possible.
+
+The fact is that **everything in JavaScript can be associated to a true or false value in a conditional context**. This concept is called to evaluate the **truthiness** (or **falsiness**) of a value, even though it is not strictly of the boolean type. This allows us to write more concise if statements, that otherwise would require very tedious comparisons.
+
+## Concrete use cases
+
+One could compute the truthiness / falsiness of all possible values and expressions, but that wouldn't be much useful out of context. Let's instead discuss some concrete use cases.
+
+### Comparing strings
+
+It's very useful to see if some string value matches some other. For instance let's write a function that checks if we passed the secret word:
+
+```js static showConsole
+function guessSecretWord(guess) {
+  if (guess == 's3cr3t') {
+    console.log('You guessed right!');
+  } else {
+    console.log('Not even close.');
+  }
+}
+
+guessSecretWord('Abracadabra');
+guessSecretWord('Hocus Pocus');
+guessSecretWord('s3cr3t');
+// ** output **
+'Not even close.'
+'Not even close.'
+'You guessed right!'
+```
+
+Please ignore for a second that the secret word is in plain sight. The function is called with an argument called `guess`. The if statement compares it with a string whose value is `s3cr3t` thanks to the **comparison operator** (`==`), written with **two equal signs**.
+
+Let's write some log statements to see what the comparison operator does:
+
+```js static showConsole
+console.log('cat' == 'dog');
+console.log('cat' == 'Cat');
+console.log('cat' == 'cat');
+// ** output **
+false
+false
+true
+```
+
+- comparing two completely different strings evaluates to `false`;
+- comparing two strings that differ just by case evaluates to `false`;
+- comparing two strings that match in content and case evaluates to `true`.
+
+This is what gets evaluated in the if statement of the `guessSecretWord` function.
+
+:::important Note
+If using two equals sign was not enough, we'll soon see that a **triple equals sign** is often used in the same context. Let's definitely not discuss this now.
+:::
+
+### Comparing numbers
+
+We have already seen the **greater than operator** (`>`). Let's see a sample of possible numeric comparisons:
+
+```js static showConsole
+console.log('2 > 3', 2 > 3);
+console.log('2 < 3', 2 < 3);
+console.log('2 >= 3', 2 >= 3);
+console.log('2 >= 2', 2 >= 2);
+console.log('2 <= 3', 2 <= 3);
+console.log('2 <= 2', 2 <= 2);
+console.log('2 == 3', 2 == 3);
+console.log('2 == 2', 2 == 2);
+// ** output **
+'2 > 3', false
+'2 < 3', true
+'2 >= 3', false
+'2 >= 2', true
+'2 <= 3', true
+'2 <= 2', true
+'2 == 3', false
+'2 == 2', true
+```
+
+Looks like a lot of stuff, but it just maps all possible cases:
+
+| Symbol | Name                   |
+| ------ | ---------------------- |
+| `>`    | Greater than           |
+| `>`    | Lesser than            |
+| `>=`   | Greather than or equal |
+| `<=`   | Lesser than or equal   |
+| `==`   | Equals                 |
+
+:::important Note
+The comparison operator is used to compare both strings and numbers. It is actually used to compare a string to a number as well! But we don't want to discuss this here.
+:::
 
 ## Conclusion
 

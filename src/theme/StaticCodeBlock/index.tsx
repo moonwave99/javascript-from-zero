@@ -77,13 +77,17 @@ export default function StaticCodeBlock({
                         className={styles.consoleWrapper}
                         open={showConsole}
                     >
-                        <summary>Show Results</summary>
+                        <summary>Show / Hide Results</summary>
                         <ul className={styles.output}>
-                            {output.map((log, index) => (
-                                <li key={index} className={styles.line}>
-                                    <Log log={log} />
-                                </li>
-                            ))}
+                            {output.length ? (
+                                output.map((log, index) => (
+                                    <li key={index} className={styles.line}>
+                                        <Log log={log} />
+                                    </li>
+                                ))
+                            ) : (
+                                <li className={styles.line}>No output</li>
+                            )}
                         </ul>
                     </details>
                 </div>

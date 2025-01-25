@@ -2,41 +2,64 @@
 
 Let's start with the most minimal example capable of producing some output:
 
-```js static
-console.log("Hello World!");
+```js static showConsole
+console.log('Hello World!');
 // ** output **
-"Hello World!";
+'Hello World!'
 ```
 
-Why are we greeting the planet? Who is even salutating? Alright, let's generate a different output:
+Why are we greeting the planet? Who is even talking? Alright, let's generate a different output:
 
-```js static
-console.log("I expected more from my first program");
+```js static showConsole
+console.log('I expected more from my first program');
 // ** output **
-"I expected more from my first program";
+'I expected more from my first program'
 ```
 
 Let's make some observations:
 
--   both programs generate some output below;
--   both programs are made of a sentence, and some other words and symbols like `console`, `log`, a dot, a matched pair of parentheses and a trailing semicolon;
--   the programs differ just by the sentence that eventually gets printed.
+- both programs generate some output below;
+- both programs are made of a sentence, and some other words and symbols like `console`, `log`, a dot, a matched pair of parentheses and a trailing semicolon;
+- the programs differ just by the sentence that eventually gets printed;
+- the sentence is enclosed in single quotes (e.g. `'Hello World!`).
+
+:::important Why the quotes?
+That's a good question. The problem is that we need to tell the machine when we are using language specific words (like `console.log`), and when we are reporting human speech.
+
+We must enclose the human speech in quotes to differentiate from the former. Such enclosed portion of text enclosed is called **a string** in programming. 
+A string can contain whitespace, so it can represent a single word or a sentence.
+
+Strings are a fundamental structure in JavaScript and all other programming languages as well. We'll discuss their properties and applications widely in this course.
+
+In the examples above we used **single quotes** (`' ... '`). You can use **double quotes** as well. That's useful if you want to include single quotes as part of the text you are representing, for instance:
+
+```js
+console.log("It's time to discuss something more interesting!");
+```
+:::
 
 Still far from being excited? That's expected. Let's raise the stakes:
 
-```js static
+```js static showConsole
 console.log(2 + 3);
 // ** output **
-5;
+5
 ```
 
-Now that's my baby! But now the output doesn't mirror the input: it looks like the machine made some considerations and produced some output according to them. Namely it recognised some mathematical expression made of **two operands** (2 and 3) and **an operator** (the plus symbol) in between, and evaluated the corresponding arithmetical operation. We'll see this syntax in detail soon.
+Now that's my baby! But now the output doesn't mirror the input: it looks like the machine made some considerations and produced some output according to them. Namely it recognized some mathematical expression made of **two operands** (2 and 3) and **an operator** (the plus symbol) in between, and evaluated the corresponding arithmetical operation. Numbers don't need quotes around them because they are not subject to any ambiguity. You can also represent negative and decimal numbers:
 
+```js static showConsole
+console.log(-2 + 3);
+console.log(2 + 1.5);
+// ** output **
+1
+3.5
+```
 Cool you already knew how to compute two plus three. What about the rest then?
 
 Let's omit the `console.log(...)` part:
 
-```js static
+```js static showConsole
 2 + 3;
 // ** output **
 ```
@@ -55,7 +78,7 @@ console.log(2 + 3
 
 We are not getting any output, or better we are not getting the output we expected but instead a nasty message:
 
-> "SyntaxError: /index.js: Unexpected token, expected , (2:0)
+> 'SyntaxError: /index.js: Unexpected token, expected , (2:0)
 
 Let's not open the can of worms but just observe what changes between the two examples:
 
@@ -75,12 +98,12 @@ This is our first syntax observation: putting stuff in parentheses after `consol
 
 Coming back to the semicolon:
 
-```js static
+```js static showConsole
 console.log(2 + 3);
 console.log(2 + 3);
 // ** output **
-5;
-5;
+5
+5
 ```
 
 First observe how we get two lines in the output. It looks like we can use `console.log` multiple times! As many as you want actually. Since we read `5` twice, it looks like having the semicolon or not has no impact on our program. That's mostly right. Programming languages evolved over decades though, and the language JavaScript stemmed from had mandatory semicolons at the end of every line as a grammar rule. This rule is optional is JavaScript but can be enforced by the programmer or team of programmers working on a project.
@@ -92,29 +115,24 @@ Semicolons will be used in this course, get used to that!
 Sometimes we want to log multiple information on one take, like for instance:
 
 ```js live showConsole
-console.log("The sum of 2 and 3 is", 2 + 3);
-console.log("The product of 2 and 3 is", 2 * 3);
+console.log('The sum of 2 and 3 is', 2 + 3);
+console.log('The product of 2 and 3 is', 2 * 3);
 ```
 
 It's observations time!
 
--   we are using `console.log` twice, both like "sentence comma expression";
--   the sentence before the comma is enclosed in single quotes;
--   we made acquaintance with a new symbol (`*`), and it looks like it behaves much like the multiplication sign.
+- we are using `console.log` twice, both like 'sentence comma expression';
+- the sentence before the comma is enclosed in single quotes;
+- we made acquaintance with a new symbol (`*`), and it looks like it behaves much like the multiplication sign.
 
 Those are all sound observations, not just because I was the one to make them.
 
-Soon we'll learn that:
-
--   the sentence is called a **string** and must be enclosed in quotes;
--   the comma separated list constitute the **arguments passed to the `console.log` function**.
-
-That would be too much theoretical information for you to digest now, let's just explore the language behaviour intuitively.
+Soon we'll learn that the comma separated list constitute the **arguments passed to the `console.log` function**. That would be too much theoretical information for you to digest now, let's just explore the language behavior intuitively.
 
 Are we limited to pass a maximum of two things to `console.log`? This you can try yourself by editing the following code: append something else after `'one'`. Remember to put a comma between the entries. You can write words in quotes, numbers, and mathematical expressions with the symbols you know. Have fun!
 
 ```js live showConsole interactive
-console.log("one");
+console.log('one');
 ```
 
 ## Conclusion
@@ -131,7 +149,7 @@ WIP
 With `console.log`, like:
 
 ```js
-console.log("The sum of 2 and 3 is", 2 + 3);
+console.log('The sum of 2 and 3 is', 2 + 3);
 ```
 
 </details>
@@ -142,7 +160,7 @@ console.log("The sum of 2 and 3 is", 2 + 3);
 The machine won't know how to parse your code, and will generate an output of the following kind:
 
 ```
-"SyntaxError: /index.js: Unexpected token, expected , (2:0)
+'SyntaxError: /index.js: Unexpected token, expected , (2:0)
 ```
 
 </details>
