@@ -36,7 +36,7 @@ Since functions wear no watches, it's hard for them the guess the hour. We have 
 
 In order to keep things simple, we'll assume that the time is expressed in integer numbers, no minutes nor seconds. We'll also greet just Charlie for a moment, sorry Sally!
 
-```js static
+```js static showConsole
 function greet(person, time) {
   console.log("Good morning", person);
 }
@@ -54,7 +54,7 @@ See how we adjusted the greeting to be `Good morning` and not `Hello` anymore. W
 
 Let's go straight to business:
 
-```js static
+```js static showConsole
 function greet(person, time) {
   if (time > 12) {
     console.log("Good afternoon", person);
@@ -207,9 +207,9 @@ What can we say about the `suggestPlans` function?
 - it has a chain of `if / else if / else` blocks;
 - the condition of the `if` and `else if` blocks is to compare the `weather` parameter first with the `'sunny'` string, then with `'rainy'` one.
 
-### The comparison operator
+### The equality operator
 
-The comparison is responsibility of the **comparison operator** (`==`), depicted with two (!) equals. Why two equals and not one? Because the single equals is another operator, whose purpose is going to be discussed in two lessons from now.
+The comparison is responsibility of the **equality operator** (`==`), depicted with two (!) equals. Why two equals and not one? Because the single equals is another operator, whose purpose is going to be discussed in two lessons from now.
 
 Let's observe how the operator behaves:
 
@@ -328,4 +328,33 @@ I've met various students and fellow developers that start frantically typing li
 WIP
 
 Write a func that takes three arguments - two strings that represent the plans for the evening, and the time of the day as a number. If it's later than 20 log the second plan, else log the first.
+
+<details>
+  <summary>Possible solution</summary>
+  
+WIP
+</details>
+
+Write a function called `guessSecretWord` that takes a word as a parameter. The function should log "You guessed right!" if the word is `'s3cr3t'`, and "Not even close." otherwise.
+
+<details>
+  <summary>Possible solution</summary>
+```js static showConsole
+function guessSecretWord(guess) {
+  if (guess == 's3cr3t') {
+    console.log('You guessed right!');
+  } else {
+    console.log('Not even close.');
+  }
+}
+
+guessSecretWord('Abracadabra');
+guessSecretWord('Hocus Pocus');
+guessSecretWord('s3cr3t');
+// ** output **
+'Not even close.'
+'Not even close.'
+'You guessed right!'
+```  
+</details>
 :::

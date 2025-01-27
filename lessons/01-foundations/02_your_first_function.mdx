@@ -27,13 +27,13 @@ greet();
 'Hello Sally Brown'
 ```
 
-What? `greet`? Why twice? What does `function` ever mean? And the `()` without anything in between, and that `{}` weird other set of brackets. Bear with me a second. First let's observe that there is no change in our output, we still read `"Hello Sally Brown"` in the console: it means we haven't introduced nor removed any feature in our original program, and that's a start.
+What? `greet`? Why twice? What does `function` ever mean? And the `()` without anything in between, and that `{}` weird other set of brackets. Bear with me a second. First let's observe that there is no change in our output, we still read `'Hello Sally Brown'` in the console: it means we haven't introduced nor removed any feature in our original program, and that's a start.
 
 Let's see what happens now:
 
 ```js static showConsole
 function greet() {
-  console.log("Hello Sally Brown");
+  console.log('Hello Sally Brown');
 }
 // ** output **
 ```
@@ -44,14 +44,14 @@ The difference between the two snippets is the `greet()` line at the end of the 
 
 More rigorously:
 
-- we **declared a new function** (`function greet() { ... }`);
-- we **called** it right away (`greet()`).
+- we **declared a new function**: `function greet() { ... }`;
+- we **called** it right away: `greet()`.
 
 We **call a function** in JavaScript by **writing its name** followed by **round parentheses**:
 
 ```js
 function greet() {
-  console.log("Hello Sally Brown");
+  console.log('Hello Sally Brown');
 }
 
   greet();
@@ -65,7 +65,7 @@ function greet() {
 Actually this is the very first thing we have done in the course:
 
 ```js
-console.log("Hello World!");
+console.log('Hello World!');
 ```
 
 Exactly, `console.log` is a function! More precisely a **global function** that the language makes available to you. We'll come back to that later. Why are we not just writing `console.log()` then, but putting something in the parentheses? Well intuitively, we have to tell the machine _what_ to log. We say that we are **passing an argument to the function**, to better specify what we need. We'll dive into the matter in the very next lesson.
@@ -93,14 +93,14 @@ We can call the same function as many times as we need:
 
 ```js static showConsole
 function greet() {
-  console.log("Hello Sally Brown");
+  console.log('Hello Sally Brown');
 }
 
 greet();
 greet();
 // ** output **
-"Hello Sally Brown"
-"Hello Sally Brown"
+'Hello Sally Brown'
+'Hello Sally Brown'
 ```
 
 Let's stay a moment on this last example: we get twice the same output, even though there is only one `console.log` occurrence in the code. That is because we are calling `greet` twice. Calling a function is more or less like telling the machine _hey sis, can you please execute whatever is inside the function I am mentioning? Much appreciated!_.
@@ -109,17 +109,17 @@ The examples so far haven't been particularly exciting, I know. That's because w
 
 ```js static
 function greetFriends() {
-  console.log("Hello Sally Brown");
-  console.log("Hello Charlie Brown");
+  console.log('Hello Sally Brown');
+  console.log('Hello Charlie Brown');
 }
 
 greetFriends();
 greetFriends();
 // ** output **
-"Hello Sally Brown"
-"Hello Charlie Brown"
-"Hello Sally Brown"
-"Hello Charlie Brown"
+'Hello Sally Brown'
+'Hello Charlie Brown'
+'Hello Sally Brown'
+'Hello Charlie Brown'
 ```
 
 Don't open the results yet! Can you guess the output?
@@ -132,30 +132,30 @@ WIP
 
 ```js static
 function greetSally() {
-  console.log("Hello Sally Brown");
+  console.log('Hello Sally Brown');
 }
 
 function greetCharlie() {
-  console.log("Hello Charlie Brown");
+  console.log('Hello Charlie Brown');
 }
 
 function greetFriends() {
-  console.log("Hello Sally Brown");
-  console.log("Hello Charlie Brown");
+  console.log('Hello Sally Brown');
+  console.log('Hello Charlie Brown');
 }
 
 greetCharlie();
 greetFriends();
 // ** output **
-"Hello Charlie Brown"
-"Hello Sally Brown"
-"Hello Charlie Brown"
+'Hello Charlie Brown'
+'Hello Sally Brown'
+'Hello Charlie Brown'
 ```
 
 <details>
   <summary>Without opening the results, what is the output of the code above?</summary>
 
-- First we call `greetCharlie`, that will print `"Hello Charlie Brown"`;
+- First we call `greetCharlie`, that will print `'Hello Charlie Brown'`;
 - Then we call `greetFriends`, printing the remaining two logs.
 </details>
 
@@ -164,11 +164,11 @@ greetFriends();
 
 ```js
 function greetSally() {
-  console.log("Hello Sally Brown");
+  console.log('Hello Sally Brown');
 }
 
 function greetCharlie() {
-  console.log("Hello Charlie Brown");
+  console.log('Hello Charlie Brown');
 }
 
 function greetFriends() {

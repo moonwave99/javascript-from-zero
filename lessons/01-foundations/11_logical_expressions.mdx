@@ -1,0 +1,273 @@
+# Logical expressions
+
+We have come a long way so far: we encountered different **data types**, we know about **functions**, their **parameters** and how to call them with **appropriate arguments**. We know about group information in **objects** and how to access the values stored in their keys.
+
+We learnt to take some decisions with **if statements**. Do you remember the `greet` function?
+
+```js static showConsole
+function greet(person, time) {
+  if (time > 12) {
+    console.log("Good afternoon", person);
+  } else {
+    console.log("Good morning", person);
+  }
+}
+
+greet('Charlie Brown', 9);
+greet('Charlie Brown', 15);
+// ** output **
+'Good morning Charlie Brown'
+'Good afternoon Charlie Brown'
+```
+
+We have a different behavior depending on what second argument we used to call the function.
+
+Then [we suggested some plans based on the current weather in the `suggestPlans` function](./making_decisions#comparing-strings), and eventually [we checked the presence of an object key in the `printUserInfo` function](./using_objects_in_functions#checking-if-object-properties-are-present). Let's review what we have seen and provide some further use cases.
+
+:::important Note
+Logical expressions and value comparisons are broad topics. Especially in JavaScript it would be overwhelming to discuss them in depth at the very beginning of your journey.
+
+Let's focus on seeing concrete and practical use cases. We'll review the topic with more rigor once we will have covered more data types and structures, and most important after you will have developed some dexterity in autonomously writing functions yourself.
+:::
+
+## Boolean values
+
+We know that the **boolean type** can hold just two values: `true` and `false`. They are just commodity names: they could have called them _yes_ and _no_, or use the numbers 1 and 0.
+
+We can use boolean values directly in conditions like:
+
+```js static showConsole
+const isRaining = true;
+
+if (isRaining) {
+  console.log("I'd better carry an umbrella with me")
+} else {
+  console.log("It's good to be hands free")
+}
+// ** output **
+"I'd better carry an umbrella with me"
+```
+
+The language checks whether the passed value is `true` or `false` and behaves consequently. If statements are common in functions, and they refer to the function parameters:
+
+```js static showConsole
+function sendParcel(content, isFragile) {
+  console.log('Sending', content);
+  if (isFragile) {
+    console.log('Handle with care!');
+  }
+}
+
+sendParcel('a letter', false);
+sendParcel('an ancient vase', true);
+// ** output **
+'Sending a letter'
+'Sending an ancient vase'
+'Handle with care!'
+```
+
+Observe how boolean variables and parameters are named. This allows to read if statements almost like they were questions: "if (it) is raining", "if (the content) is fragile". You are not strictly required to, but it's a good and widespread practice.
+
+### Negating boolean values
+
+Sometimes you want to check the opposite of a condition. We do it by prepending the **negation operator** (`!`) to the variable or parameter:
+
+```js static showConsole
+function checkTaskProgress(task, isDone) {
+  if (!isDone) {
+    console.log('Still working on', task);
+  } else {
+    console.log(task, 'is done!');
+  }
+}
+
+checkTaskProgress('mastering boolean values', false);
+checkTaskProgress('learning the Moonlight Sonata', true);
+// ** output **
+'Still working on mastering boolean values'
+'learning the Moonlight Sonata is done!'
+```
+
+Let's see how it works in isolation:
+
+```js static showConsole
+console.log('The opposite of true is', !true);
+console.log('The opposite of false is', !false);
+// ** output **
+'The opposite of true is', false
+'The opposite of false is', true
+```
+
+## Comparing strings
+
+### String equality
+
+We've already seen how to compare a string with another with the **equality operator**:
+
+```js static showConsole
+function guessSecretWord(guess) {
+  if (guess == 's3cr3t') {
+    console.log('You guessed right!');
+  } else {
+    console.log('Not even close.');
+  }
+}
+
+guessSecretWord('Abracadabra');
+guessSecretWord('Hocus Pocus');
+guessSecretWord('s3cr3t');
+// ** output **
+'Not even close.'
+'Not even close.'
+'You guessed right!'
+```
+
+Let's not forget how string comparison is **case sensitive**:
+
+```js static showConsole
+console.log('cat' == 'dog');
+console.log('cat' == 'Cat');
+console.log('cat' == 'cat');
+// ** output **
+false
+false
+true
+```
+
+### String inequality
+
+Sometimes we are interested in the opposite scenario, seeing if two strings are different. We do it with the **inequality operator** (`!=`). We have an ice cream cart that run out of `'stracciatella'`, while all other flavors are available:
+
+```js static showConsole
+function serveIceCream(flavor) {
+  if (flavor != 'stracciatella') {
+    console.log('There you go! 🍦', flavor);
+  } else {
+    console.log('We run out of that today sorry! Any other wish?');
+  }
+}
+
+serveIceCream('vanilla');
+serveIceCream('chocolate');
+serveIceCream('stracciatella');
+// ** output **
+'There you go! 🍦', 'vanilla'
+'There you go! 🍦', 'chocolate'
+'We run out of that today sorry! Any other wish?'
+```
+
+## Comparing numbers
+
+We have already seen the **greater than operator** (`>`). Let's see a sample of possible numeric comparisons:
+
+```js static showConsole
+console.log('2 > 3', 2 > 3);
+console.log('2 < 3', 2 < 3);
+console.log('2 >= 3', 2 >= 3);
+console.log('2 >= 2', 2 >= 2);
+console.log('2 <= 3', 2 <= 3);
+console.log('2 <= 2', 2 <= 2);
+console.log('2 == 3', 2 == 3);
+console.log('2 == 2', 2 == 2);
+console.log('2 != 2', 2 != 2);
+console.log('2 != 3', 2 != 3);
+// ** output **
+'2 > 3', false
+'2 < 3', true
+'2 >= 3', false
+'2 >= 2', true
+'2 <= 3', true
+'2 <= 2', true
+'2 == 3', false
+'2 == 2', true
+'2 != 2', false
+'2 != 3', true
+```
+
+Looks like a lot of stuff, but it just maps all possible cases:
+
+| Symbol | Name                    |
+| ------ | ----------------------- |
+| `>`    | (strictly) Greater than |
+| `>`    | (strictly) Lesser than  |
+| `>=`   | Greater than or equal   |
+| `<=`   | Lesser than or equal    |
+| `==`   | Equals to               |
+| `!=`   | Different from          |
+
+
+The equality and inequality operators are used to compare both strings and numbers. They can be actually used to compare all possible data types, but this requires further discussion and I cannot find the worm can opener right now.
+
+## Checking the existence of object keys
+
+Sometimes we want to do something just if an object contains a specific key. In this case we want to explicitly greet the user by their name if present, otherwise provide a generic message:
+
+```js static showConsole
+function greetUser(user) {
+  if (user.name) {
+    console.log('Hello', user.name);
+  } else {
+    console.log('Hello Mr. X');
+  }
+}
+
+greetUser({ name: 'Jane Doe', email: 'jane@doe.com' });
+greetUser({ email: 'john@doe.com' });
+// ** output **
+'Hello Jane Doe'
+'Hello Mr. X'
+```
+
+We can flip the logic thanks to the negation operator:
+
+```js static showConsole
+function greetUser(user) {
+  if (!user.name) {
+    console.log('Hello Mr. X');
+  } else {
+    console.log('Hello', user.name);
+  }
+}
+
+greetUser({ name: 'Jane Doe', email: 'jane@doe.com' });
+greetUser({ email: 'john@doe.com' });
+// ** output **
+'Hello Jane Doe'
+'Hello Mr. X'
+```
+
+We read the condition of the second example as "if the user has no name". Which approach should we prefer? In this case **the two approaches are totally equivalent**. We'll discuss cases with more complex logic that beg for specific strategies to keep the code clean and simple.
+
+### Checking other object properties
+
+All the checks that we have seen so far apply to object values as well:
+
+```js static showConsole
+function introduceUser(user) {
+  console.log('My name is', user.name);
+  if (user.isAvailable) {
+    console.log('You can write me at', user.email);
+  }
+}
+
+introduceUser({ name: 'Jane Doe', email: 'jane@doe.com' });
+introduceUser({ name: 'John Doe', email: 'john@doe.com', isAvailable: true });
+// ** output **
+'My name is Jane Doe'
+'My name is John Doe'
+'You can write me at john@doe.com'
+```
+
+:::important Note
+Observe how in the example above, the first time we call `introduceUser` the argument does not have an `isAvailable` key at all. We know that [the value of a missing key is `undefined`](./nested_objects#missing-keys), so what happens in the check?
+
+We'll soon see that all possible values in JavaScript are mapped to `true` or `false` if used as the condition of an if statement. The phenomenon is called **type coercion**. For now we have learned that `undefined` behaves like `false` in conditions, soon we'll expand our knowledge with other cases.
+:::
+
+## Conclusion
+
+There are various ways of checking for logical conditions. Remember how the most important thing is to fulfill the expected scenarios. What goes on inside can always be improved, but as long as it does what you wish you don't have to worry much!
+
+:::info Recap Questions and Exercises
+WIP
+:::

@@ -55,7 +55,7 @@
 }
 
 .output span:not(:last-child)::after {
-  content: ', ';
+  content: ' ';
 }
 
 .string {

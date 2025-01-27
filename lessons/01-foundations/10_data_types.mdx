@@ -1,0 +1,40 @@
+# Data Types
+
+We have written a lot of functions so far, all of them accepting different parameters holding different kind of information. We do the same intuitively in our daily conversations:
+
+- What's your name?
+- How many people are coming over tonight?
+- Have you ever been to Mexico?
+
+For the first question I am expecting a name as an answer, for the second a quantity and for the third yes or no. In programming that would be **a string**, **a number** and **a boolean**.
+
+We have already given the definition of data type:
+
+> In programming a data type is **a collection or grouping of data values**, usually specified by a **set of possible values** and a **set of allowed operations on these values**.
+
+Why are data types important? Mostly because of the operations defined on the set of their possible values. Without knowing that two values are numeric, would the plus operator make sense? Can you add five to yellow? We as humans certainly not, but JavaScript has some idea!
+
+```js static showConsole
+function add(a, b) {
+  return a + b;
+}
+
+console.log('2 + 3 =', add(2, 3));
+console.log('5 + yellow =', add(5, 'yellow'));
+
+// ** output **
+'2 + 3 = ', 5
+'5yellow'
+```
+
+Adding two numbers works fine, but the second example is bizarre! The point is that nowhere in the function signature are we enforcing that `a` and `b` should be numbers. This is a feature of the JavaScript language, and in general of all **dynamic language** where variables and parameters can be of any type. This leads to strange behaviors sometimes.
+
+
+
+## Conclusion
+
+WIP
+
+:::info Recap Questions and Exercises
+WIP
+:::

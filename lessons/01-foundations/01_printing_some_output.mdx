@@ -27,7 +27,7 @@ Let's make some observations:
 That's a good question. The problem is that we need to tell the machine when we are using language specific words (like `console.log`), and when we are reporting human speech.
 
 We must enclose the human speech in quotes to differentiate from the former. Such enclosed portion of text enclosed is called **a string** in programming. 
-A string can contain whitespace, so it can represent a single word or a sentence.
+A string can contain whitespace, so it can represent both single words or full sentences.
 
 Strings are a fundamental structure in JavaScript and all other programming languages as well. We'll discuss their properties and applications widely in this course.
 
@@ -100,7 +100,7 @@ Coming back to the semicolon:
 
 ```js static showConsole
 console.log(2 + 3);
-console.log(2 + 3);
+console.log(2 + 3)
 // ** output **
 5
 5
@@ -114,9 +114,12 @@ Semicolons will be used in this course, get used to that!
 
 Sometimes we want to log multiple information on one take, like for instance:
 
-```js live showConsole
+```js static showConsole
 console.log('The sum of 2 and 3 is', 2 + 3);
 console.log('The product of 2 and 3 is', 2 * 3);
+// ** output **
+'The sum of 2 and 3 is', 5
+'The product of 2 and 3 is', 6
 ```
 
 It's observations time!

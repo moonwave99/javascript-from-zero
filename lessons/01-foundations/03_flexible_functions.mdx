@@ -6,35 +6,35 @@ Can you rewrite the following code by using **just two instances of `console.log
 
 ```js static
 function greetSally() {
-  console.log("Hello Sally Brown");
+  console.log('Hello Sally Brown');
 }
 
 function greetCharlie() {
-  console.log("Hello Charlie Brown");
+  console.log('Hello Charlie Brown');
 }
 
 function greetFriends() {
-  console.log("Hello Sally Brown");
-  console.log("Hello Charlie Brown");
+  console.log('Hello Sally Brown');
+  console.log('Hello Charlie Brown');
 }
 
 greetCharlie();
 greetFriends();
 // ** output **
-"Hello Charlie Brown"
-"Hello Sally Brown"
-"Hello Charlie Brown"
+'Hello Charlie Brown'
+'Hello Sally Brown'
+'Hello Charlie Brown'
 ```
 
 So far we have called our functions at the end of the file, and there's nothing wrong in that. But nothing forbids us from calling them **from within other functions**:
 
 ```js static
 function greetSally() {
-  console.log("Hello Sally Brown");
+  console.log('Hello Sally Brown');
 }
 
 function greetCharlie() {
-  console.log("Hello Charlie Brown");
+  console.log('Hello Charlie Brown');
 }
 
 function greetFriends() {
@@ -45,9 +45,9 @@ function greetFriends() {
 greetCharlie();
 greetFriends();
 // ** output **
-"Hello Charlie Brown"
-"Hello Sally Brown"
-"Hello Charlie Brown"
+'Hello Charlie Brown'
+'Hello Sally Brown'
+'Hello Charlie Brown'
 ```
 
 I know, it's a lot of parentheses. You have chosen to become interested in programming. There are languages that use less symbols by the way, but we won't be covering them here. The spirit of this examples is to be exposed since the very beginning to commonly found structures, even though in a simplified form.
@@ -60,18 +60,18 @@ Let's start from this scenario:
 
 ```js static
 function greetSally() {
-  console.log("Hello Sally Brown");
+  console.log('Hello Sally Brown');
 }
 
 function greetCharlie() {
-  console.log("Hello Charlie Brown");
+  console.log('Hello Charlie Brown');
 }
 
 greetCharlie();
 greetSally();
 // ** output **
-"Hello Charlie Brown"
-"Hello Sally Brown"
+'Hello Charlie Brown'
+'Hello Sally Brown'
 ```
 
 :::important Note
@@ -82,14 +82,14 @@ I really don't want to have Charlie and Sally in the function names. What if we 
 
 ```js static
 function greet(person) {
-  console.log("Hello", person);
+  console.log('Hello', person);
 }
 
 greet('Charlie Brown');
 greet('Sally Brown');
 // ** output **
-"Hello Charlie Brown"
-"Hello Sally Brown"
+'Hello Charlie Brown'
+'Hello Sally Brown'
 ```
 
 Observation time:
@@ -104,7 +104,7 @@ Want to greet the Van Pelt family? No worries!
 
 ```js static
 function greet(person) {
-  console.log("Hello", person);
+  console.log('Hello', person);
 }
 
 greet('Charlie Brown');
@@ -112,10 +112,10 @@ greet('Sally Brown');
 greet('Lucy Van Pelt');
 greet('Linus Van Pelt');
 // ** output **
-"Hello Charlie Brown"
-"Hello Sally Brown"
-"Hello Lucy Van Pelt"
-"Hello Linus Van Pelt"
+'Hello Charlie Brown'
+'Hello Sally Brown'
+'Hello Lucy Van Pelt'
+'Hello Linus Van Pelt'
 ```
 
 Once again: we have a single function that we call multiple times, each time telling it whom to greet.
@@ -126,7 +126,7 @@ We say that the `greet` functions **accepts a parameter called `person`**.
 
 ```js
 function greet(person) {
-  console.log("Hello", person);
+  console.log('Hello', person);
 }
 ```
 
@@ -160,7 +160,7 @@ Given the following code:
 
 ```js
 function greet(person) {
-  console.log("Hello", person);
+  console.log('Hello', person);
 }
 
 greet('Charlie Brown');
@@ -180,7 +180,7 @@ Why did we name the parameter of the function `person`? Actually we could have n
 
 ```js static
 function greet(name) {
-  console.log("Hello", name);
+  console.log('Hello', name);
 }
 
 greet('Charlie Brown');
@@ -188,22 +188,22 @@ greet('Sally Brown');
 greet('Lucy Van Pelt');
 greet('Linus Van Pelt');
 // ** output **
-"Hello Charlie Brown"
-"Hello Sally Brown"
-"Hello Lucy Van Pelt"
-"Hello Linus Van Pelt"
+'Hello Charlie Brown'
+'Hello Sally Brown'
+'Hello Lucy Van Pelt'
+'Hello Linus Van Pelt'
 ```
 
 We could also use a completely irrelevant name:
 
 ```js static
 function greet(fluffyClouds) {
-  console.log("Hello", fluffyClouds);
+  console.log('Hello', fluffyClouds);
 }
 
 greet('Charlie Brown');
 // ** output **
-"Hello Charlie Brown"
+'Hello Charlie Brown'
 ```
 
 Please be relevant instead!
