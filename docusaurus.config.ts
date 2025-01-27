@@ -8,7 +8,7 @@ const config: Config = {
   tagline: 'Become an ace programmer!',
   favicon: 'img/favicon.ico',
   url: 'https://moonwave99.github.com',
-  baseUrl: '/',
+  baseUrl: '/programming-course/',
   organizationName: 'moonwave99',
   projectName: 'programming-course',
   trailingSlash: false,
