@@ -7,8 +7,11 @@ const config: Config = {
   title: 'Programming Course',
   tagline: 'Become an ace programmer!',
   favicon: 'img/favicon.ico',
-  url: 'https://js-programming-course.netlify.app',
+  url: 'https://moonwave99.github.com',
   baseUrl: '/',
+  organizationName: 'moonwave99',
+  projectName: 'programming-course',
+  trailingSlash: false,
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   i18n: {
