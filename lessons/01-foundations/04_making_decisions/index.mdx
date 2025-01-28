@@ -202,7 +202,7 @@ suggestPlans('Snoopy', 'windy');
 What can we say about the `suggestPlans` function?
 
 - it depends on two parameters, `name` and `weather`;
-- it has three possible behaviours: one if the weather is sunny, one if it's rainy, a further one otherwise;
+- it has three possible behaviors: one if the weather is sunny, one if it's rainy, a further one otherwise;
 - it has some shared feature that happens in all cases, i.e. the initial `Hello {name}` log;
 - it has a chain of `if / else if / else` blocks;
 - the condition of the `if` and `else if` blocks is to compare the `weather` parameter first with the `'sunny'` string, then with `'rainy'` one.
@@ -323,38 +323,3 @@ This generates no output, it's an empty function after all. But I already know _
 ## Conclusion
 
 I've met various students and fellow developers that start frantically typing like headless chickens before knowing _what_ they are supposed to do. Well I haven't actually seen headless chickens approach a computer but I guess that's what they would do. You don't have to rush! Programming is about functions, and functions are about their input and their output. If you don't put most of your attention on those two aspects, it's worthless to invest energy in what happens inside them!
-
-:::info Recap Questions and Exercises
-WIP
-
-Write a func that takes three arguments - two strings that represent the plans for the evening, and the time of the day as a number. If it's later than 20 log the second plan, else log the first.
-
-<details>
-  <summary>Possible solution</summary>
-  
-WIP
-</details>
-
-Write a function called `guessSecretWord` that takes a word as a parameter. The function should log "You guessed right!" if the word is `'s3cr3t'`, and "Not even close." otherwise.
-
-<details>
-  <summary>Possible solution</summary>
-```js static showConsole
-function guessSecretWord(guess) {
-  if (guess == 's3cr3t') {
-    console.log('You guessed right!');
-  } else {
-    console.log('Not even close.');
-  }
-}
-
-guessSecretWord('Abracadabra');
-guessSecretWord('Hocus Pocus');
-guessSecretWord('s3cr3t');
-// ** output **
-'Not even close.'
-'Not even close.'
-'You guessed right!'
-```  
-</details>
-:::

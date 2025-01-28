@@ -1,0 +1,255 @@
+# Data Types
+
+We have written a lot of functions so far, all of them accepting different parameters holding different kind of information. We do the same intuitively in our daily conversations:
+
+- What's your name?
+- How many people are coming over tonight?
+- Have you ever been to Mexico?
+
+For the first question I am expecting a name as an answer, for the second a quantity and for the third yes or no. In programming that would be **a string**, **a number** and **a boolean**.
+
+We have already given the definition of data type:
+
+> In programming a data type is **a collection or grouping of data values**, usually specified by a **set of possible values** and a **set of allowed operations on these values**.
+
+Data types are a fundamental trait of any programming language since they help us model our programs on the shape of the information we have to deal with. If we are implementing a mathematical formula it's good to have the number type with its associated operations. If we are dealing with human speech, strings are great. Need to take decisions based on conditions? Booleans come to rescue. Some properties must be grouped together? Use objects!
+
+## The `typeof` operator
+
+In JavaScript you cannot simply tell which data type a variable or function parameter has by just looking at the code. That's by design, since JavaScript is a **weakly typed language**, i.e. variables can hold any value.
+
+This is an ambivalent feature: it makes the learning curve sweeter, but gives you less control on the code. Luckily there is a superset of the language called [TypeScript](https://www.typescriptlang.org/) that brings types to JavaScript making it strongly typed.
+
+We have a useful tool that can help us inspect what kind of data type a variable or parameter has, the `typeof` operator. It is a **unary operator** that associates every possible JavaScript value with the string representation of its type, for instance:
+
+- `typeof 5` will return `'number'`;
+- `typeof true` will return `'boolean'`;
+- `typeof 'Jane Doe'` will return `'string'`.
+
+Why _unary_? Because it accepts just a single operand, as opposed to e.g. the plus or multiply operators that accept two numbers and are therefore called _binary operators_.
+
+
+Let's use it to build an inspector tool:
+
+```js static showConsole
+function inspect(value) {
+  console.log('The type of', value, 'is', typeof value);
+}
+
+inspect(5);
+inspect(true);
+inspect('Jane Doe');
+inspect({ firstName: 'Charlie', lastName: 'Brown' });
+// ** output **
+//The type of, 5, is number
+//The type of, true, is boolean
+//The type of, 'Jane Doe', is string
+//The type of, "{ firstName: 'Charlie', lastName: 'Brown' }", is object
+```
+
+These are the four data types that we have encountered so far. Observe how we passed raw values to the function. If we store them in a variable we would get the same output:
+
+```js static showConsole
+function inspect(value) {
+  console.log('The type of', value, 'is', typeof value);
+}
+
+const friendsCount = 5;
+const isRaining = true;
+const myName = 'Jane Doe';
+const user = { firstName: 'Charlie', lastName: 'Brown' };
+
+inspect(friendsCount);
+inspect(isRaining);
+inspect(myName);
+inspect(user);
+// ** output **
+//The type of, 5, is number
+//The type of, true, is boolean
+//The type of, 'Jane Doe', is string
+//The type of, "{ firstName: 'Charlie', lastName: 'Brown' }", is object
+```
+
+Once again, function don't care where the passed arguments are coming from, if they are stored in variables or directly written as arguments.
+
+## Primitive versus composite data types
+
+We say that numbers, booleans, strings are **primitive data types**, because they cannot be broken down any further. On the other hand objects are a **composite data type**, because they are made up of combining other data types, or even other objects:
+
+```js
+const myUser = {
+  firstName: 'Charlie', // primitive, string
+  lastName: 'Brown',    // primitive, string
+  isVerified: true,     // primitive, boolean
+  age: 99,              // primitive, number
+  address: {
+    streetName: 'Sesame Street',
+    streetNumber: 7
+  } // composite, object (made of streetName: string, streetNumber: number)
+};
+```
+
+## What about `undefined`?
+
+Remember when we stumbled upon `undefined` so far:
+
+- by not passing an argument to a function, its parameters will have `undefined` as value;
+- by not returning anything from a function;
+- by trying to access the value of a missing key of an object.
+
+Let's try the first case by not passing anything to `inspect`. This will lead the `value` parameter to be `undefined`:
+
+```js static showConsole
+function inspect(value) {
+  console.log('The type of', value, 'is', typeof value);
+}
+
+inspect();
+// ** output **
+//The type of, undefined, is undefined
+```
+
+`The type of undefined is undefined`. You read it right, `undefined` is a type in its own, a primitive one to me more precise.
+
+To make things even more interesting, `undefined` is also a _global property_ of JavaScript, i.e. a variable you can always refer to:
+
+```js static showConsole
+function inspect(value) {
+  console.log('The type of', value, 'is', typeof value);
+}
+
+inspect(undefined);
+// ** output **
+//The type of, undefined, is undefined
+```
+
+If I have to be honest, they could have designed this `undefined` thing a little better. Since you are seldom going to use it explicitly, treat it as a complete absence of information for now. Remember that it will mostly pop up in error messages, like when you are accessing missing object properties:
+
+```js static showConsole
+const user = {
+  firstName: 'John',
+  lastName: 'Doe',
+  // the address property is missing
+};
+
+console.log('My name is', user.firstName, user.lastName);
+console.log('You can visit me at the number', user.address.number, 'of', user.address.street);
+// ** output **
+'My name is John Doe'
+"TypeError: Cannot read properties of undefined (reading 'number')"
+```
+
+For now just accept that `undefined` is a data type that can have just one possible value, `undefined` itself.
+
+## Using `typeof` to take decisions
+
+`typeof` is a very useful tool, but we won't encounter it much more often in this course since the provided examples are very concise and the input of the functions is controlled. In the future you might deal with code that takes different decisions based on the data type of the input. For example let's enhance our `greet` function to accept either a string or an object with a `name` property:
+
+```js static showConsole
+function greet(user) {
+  // work in progress
+}
+
+greet('Charlie');
+greet({ name: 'Charlie '});
+// ** output **
+```
+
+We want to read `Hello Charlie` in both cases. What happens if we just run `console.log('Hello', user)`?
+
+```js static showConsole
+function greet(user) {
+  console.log('Hello', user);
+}
+
+greet('Charlie');
+greet({ name: 'Charlie' });
+// ** output **
+//Hello Charlie
+//Hello { name: 'Charlie' }
+```
+
+We need to get rid of the surrounding brackets and `name` key in the object case!
+
+```js static showConsole
+function greet(user) {
+  if (typeof user == 'object') {
+    console.log('Hello', user.name);
+  } else {
+    console.log('Hello', user);
+  }
+}
+
+greet('Charlie');
+greet({ name: 'Charlie' });
+// ** output **
+//Hello Charlie
+//Hello Charlie
+```
+
+Ace! The code is still improvable, because being an object does not guarantee that the `name` property is present. What is the output of the following code?
+
+```js static
+function greet(user) {
+  if (typeof user == 'object') {
+    console.log('Hello', user.name);
+  } else {
+    console.log('Hello', user);
+  }
+}
+
+greet('Charlie');
+greet({ firstName: 'Charlie' });
+// ** output **
+//Hello Charlie
+//Hello undefined
+```
+
+You guessed right (hopefully)! Since the key is not there, accessing `user.name` has the behavior above.
+
+:::important Note
+Our improved `greet` function is very interesting, because it accepts a mixed data type. The theoretical term is the **disjoint union** of `string` and objects that have a `name` property of type `string`. You cannot enforce this in JavaScript, but you can write a comment before the function to describe this:
+
+```js
+/**
+ * Greets the passed user
+ * Accepts either a string, or an object with the name property
+ * @param { string | { name:string } } user
+ */
+function greet(user) {
+  if (typeof user == 'object') {
+    console.log('Hello', user.name);
+  } else {
+    console.log('Hello', user);
+  }
+}
+```
+:::
+
+## Conclusion
+
+So far we have seen the following types:
+
+| Data Type | Possible Values                                                                 |
+| --------- | ------------------------------------------------------------------------------- |
+| undefined | Only `undefined`                                                                |
+| boolean   | `true` and `false`                                                              |
+| number    | Integers (0, 1, -7...) and decimals (0.5, -32.7, ...)                           |
+| string    | All possible character combinations ('Hello World', 'abc', '!', ...)            |
+| object    | All possible compositions of keys and values (`{ name: 'Jane', age: 99 }`, ...) |
+
+There are other primitive data types in JavaScript, but we will discuss them in upcoming lessons. It's interesting to know that functions are a type in their own!
+
+```js static showConsole
+function inspect(value) {
+  console.log('The type of', value, 'is', typeof value);
+}
+
+inspect(inspect);
+// ** output **
+//The type of, function inspect() {}, is function
+```
+
+See how `inspect` is inspecting itself, that's beautiful! If you don't find it at least slightly interesting, this world is not for you.
+
+You don't have to master _data types theory_ now, see the `undefined` quirks above for instance. You have to _use data types theory_ by designing functions that accept parameters of specific type, knowing what to do with them. This is the concept we will exercise the most during this course. After you get some velocity in writing code that works, we will retrospectively expand our theoretical knowledge.

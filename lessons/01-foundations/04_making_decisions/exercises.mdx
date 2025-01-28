@@ -1,0 +1,38 @@
+# Exercises
+
+## Recap Questions
+
+WIP
+
+## Exercises
+
+Write a function that takes three arguments - two strings that represent the plans for the evening, and the time of the day as a number. If it's later than 20 log the second plan, else log the first.
+
+<details>
+  <summary>Possible solution</summary>
+  
+WIP
+</details>
+
+Write a function called `guessSecretWord` that takes a word as a parameter. The function should log "You guessed right!" if the word is `'s3cr3t'`, and "Not even close." otherwise.
+
+<details>
+  <summary>Possible solution</summary>
+```js static showConsole
+function guessSecretWord(guess) {
+  if (guess == 's3cr3t') {
+    console.log('You guessed right!');
+  } else {
+    console.log('Not even close.');
+  }
+}
+
+guessSecretWord('Abracadabra');
+guessSecretWord('Hocus Pocus');
+guessSecretWord('s3cr3t');
+// ** output **
+'Not even close.'
+'Not even close.'
+'You guessed right!'
+```  
+</details>

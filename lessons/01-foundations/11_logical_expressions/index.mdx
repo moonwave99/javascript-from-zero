@@ -156,6 +156,34 @@ serveIceCream('stracciatella');
 'We run out of that today sorry! Any other wish?'
 ```
 
+### What data type do the equality and inequality operators map to?
+
+We know [how to use the `typeof` operator](./data_types#the-typeof-operator), so let's have a look:
+
+```js static showConsole
+console.log('equality (==)', typeof ('cat' == 'dog'));
+console.log('inequality (!=)', typeof ('cat' != 'dog'));
+// ** output **
+//equality (==) boolean
+//inequality (!=) boolean
+```
+
+As you could have guessed, they take two strings as operands and evaluate to `true` or `false`, i.e. to the boolean type.
+
+:::important Note
+The parentheses after `typeof` are very important! If you omit them, `typeof 'cat'` will take precedence over the comparison operators, leading to logging what `'boolean' == 'dog'` and `'boolean' != 'dog'` evaluate to:
+
+```js static showConsole
+console.log('equality (==)', typeof 'cat' == 'dog');
+console.log('inequality (!=)', typeof 'cat' != 'dog');
+// ** output **
+//equality (==) false
+//inequality (!=) true
+```
+
+And that's not what we wanted.
+:::
+
 ## Comparing numbers
 
 We have already seen the **greater than operator** (`>`). Let's see a sample of possible numeric comparisons:
@@ -267,7 +295,3 @@ We'll soon see that all possible values in JavaScript are mapped to `true` or `f
 ## Conclusion
 
 There are various ways of checking for logical conditions. Remember how the most important thing is to fulfill the expected scenarios. What goes on inside can always be improved, but as long as it does what you wish you don't have to worry much!
-
-:::info Recap Questions and Exercises
-WIP
-:::

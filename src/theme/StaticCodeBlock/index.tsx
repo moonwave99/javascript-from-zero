@@ -103,16 +103,30 @@ type LogProps = {
 function Log({ log }: LogProps) {
     return (
         <>
-            {log.split(", ").map((token, index) => (
-                <span
-                    key={index}
-                    className={isNumber(token) ? styles.static : styles.string}
-                >
-                    {token}
-                </span>
-            ))}
+            {log
+                .replace(/^\/\//, "")
+                .split(", ")
+                .map((token, index) => (
+                    <span key={index} className={getTokenClass(token)}>
+                        {token}
+                    </span>
+                ))}
         </>
     );
+}
+
+function getTokenClass(token) {
+    if (isNumber(token)) {
+        return styles.static;
+    }
+    if (isBoolean(token)) {
+        return styles.static;
+    }
+    return styles.string;
+}
+
+function isBoolean(x) {
+    return x === "true" || x === "false";
 }
 
 function isNumber(x) {

@@ -1,0 +1,60 @@
+# Exercises
+
+## Recap questions
+
+WIP
+
+## Exercises
+
+```js static
+function greetSally() {
+  console.log('Hello Sally Brown');
+}
+
+function greetCharlie() {
+  console.log('Hello Charlie Brown');
+}
+
+function greetFriends() {
+  console.log('Hello Sally Brown');
+  console.log('Hello Charlie Brown');
+}
+
+greetCharlie();
+greetFriends();
+// ** output **
+'Hello Charlie Brown'
+'Hello Sally Brown'
+'Hello Charlie Brown'
+```
+
+<details>
+  <summary>Without opening the results, what is the output of the code above?</summary>
+
+- First we call `greetCharlie`, that will print `'Hello Charlie Brown'`;
+- Then we call `greetFriends`, printing the remaining two logs.
+</details>
+
+<details>
+  <summary>**Bonus:** the code above can be written using just two instances of `console.log`, can you guess how?</summary>
+
+```js
+function greetSally() {
+  console.log('Hello Sally Brown');
+}
+
+function greetCharlie() {
+  console.log('Hello Charlie Brown');
+}
+
+function greetFriends() {
+  greetSally();
+  greetCharlie();
+}
+
+greetCharlie();
+greetFriends();
+```
+
+We haven't mentioned it explicitly yet, but you can call functions from inside functions! That will be the rule pretty soon. We'll get there together, don't fret!
+</details>
