@@ -23,7 +23,8 @@ Let's make some observations:
 - the programs differ just by the sentence that eventually gets printed;
 - the sentence is enclosed in single quotes (e.g. `'Hello World!`).
 
-:::important Why the quotes?
+## Why the quotes?
+
 That's a good question. The problem is that we need to tell the machine when we are using language specific words (like `console.log`), and when we are reporting human speech.
 
 We must enclose the human speech in quotes to differentiate from the former. Such enclosed portion of text enclosed is called **a string** in programming. 
@@ -31,12 +32,25 @@ A string can contain whitespace, so it can represent both single words or full s
 
 Strings are a fundamental structure in JavaScript and all other programming languages as well. We'll discuss their properties and applications widely in this course.
 
-In the examples above we used **single quotes** (`' ... '`). You can use **double quotes** as well. That's useful if you want to include single quotes as part of the text you are representing, for instance:
+In the examples above we used **single quotes** (`' ... '`). You can use **double quotes** as well. That's useful if you want to include single quotes as part of the text you are representing, or more commonly if you are typing apostrophes (since they use the same symbol):
 
 ```js
-console.log("It's time to discuss something more interesting!");
+console.log("Hey y'all, it's time to discuss something more interesting!");
 ```
+
+:::important Note
+There is a way to include a apostrophes in a string enclosed in single quotes:
+
+```js static showConsole
+console.log('Ain\'t no sunshine');
+// ** output **
+//Ain't no sunshine
+```
+
+We prepended a backslash to the apostrophe - `'Ain\'t`. JavaScript know it should replace the `\'` sequence with a single quote. I find double quotes just more practical!
 :::
+
+## Dealing with quantities
 
 Still far from being excited? That's expected. Let's raise the stakes:
 
@@ -46,7 +60,19 @@ console.log(2 + 3);
 5
 ```
 
-Now that's my baby! But now the output doesn't mirror the input: it looks like the machine made some considerations and produced some output according to them. Namely it recognized some mathematical expression made of **two operands** (2 and 3) and **an operator** (the plus symbol) in between, and evaluated the corresponding arithmetical operation. Numbers don't need quotes around them because they are not subject to any ambiguity. You can also represent negative and decimal numbers:
+Now that's my baby! But now the output doesn't mirror the input: it looks like the machine made some considerations and produced some output according to them. Namely it recognized some mathematical expression made of **two operands** (2 and 3) and **an operator** (the plus symbol) in between, and evaluated the corresponding arithmetical operation. Numbers don't need quotes around them because they are not subject to any ambiguity.
+
+:::important Note
+### What is an operator?
+
+In programming, **operators** are special symbols that perform operations on one or more **operands**.
+
+The number of operands is called the _arity_ of the operator and is usually expressed with an associated adjective: the arithmetic operators for instance are **binary operators** because they deal with **two numbers** (sum, product, subtraction, division).
+
+We'll encounter various **unary operators** that deal with just one entity, and even one single **ternary operator** that juggles between three things!
+:::
+
+You can also represent negative and decimal numbers:
 
 ```js static showConsole
 console.log(-2 + 3);
@@ -66,11 +92,9 @@ Let's omit the `console.log(...)` part:
 
 It looks like our program has lost its voice, since there is no output. We can conclude that `console.log(...)` is responsible for printing the output. That's our first item in the quest! You can save and continue now. Why is it called `console.log`? Why it's made of two words with a dot in between? Take it as given for now, I am sorry.
 
-:::info
 It's interesting to know that `2 + 3;` is **a perfectly valid** JavaScript program, being a well formatted mathematical expression. Since we are not logging anything, no output is produced making it not particularly useful.
-:::
 
-But let's make another little experiment before moving on:
+Let's make a final experiment before moving on:
 
 ```js live showConsole
 console.log(2 + 3
@@ -141,30 +165,3 @@ console.log('one');
 ## Conclusion
 
 WIP
-
-:::info Recap Questions and Exercises
-
-WIP
-
-<details>
-  <summary>How do we print out information in JavaScript?</summary>
-
-With `console.log`, like:
-
-```js
-console.log('The sum of 2 and 3 is', 2 + 3);
-```
-
-</details>
-
-<details>
-  <summary>What happens if we forget to close the parenthesis after `console.log`?</summary>
-
-The machine won't know how to parse your code, and will generate an output of the following kind:
-
-```
-'SyntaxError: /index.js: Unexpected token, expected , (2:0)
-```
-
-</details>
-:::
