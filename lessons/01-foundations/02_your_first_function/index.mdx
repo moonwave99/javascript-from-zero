@@ -15,7 +15,7 @@ console.log('Hello Sally Brown');
 'Hello Sally Brown'
 ```
 
-I apologise in advance for introducing some new syntax all at once.
+I apologize in advance for introducing some new syntax all at once.
 
 ```js static showConsole
 function greet() {
@@ -61,7 +61,6 @@ function greet() {
 //⌞ name of the function
 ```
 
-:::important Note
 Actually this is the very first thing we have done in the course:
 
 ```js
@@ -69,7 +68,6 @@ console.log('Hello World!');
 ```
 
 Exactly, `console.log` is a function! More precisely a **global function** that the language makes available to you. We'll come back to that later. Why are we not just writing `console.log()` then, but putting something in the parentheses? Well intuitively, we have to tell the machine _what_ to log. We say that we are **passing an argument to the function**, to better specify what we need. We'll dive into the matter in the very next lesson.
-:::
 
 We have quite some freedom in naming a function:
 
@@ -80,6 +78,33 @@ function someVeryFunnyName() {
 ```
 
 Spaces in the name are not allowed though, that's why if a function name contains multiple words, we capitalize those after the first. This convention is called [camel case][mdn:camel-case] be cause of the similarity of the capital letters to the humps of a camel's back 🐪.
+
+:::important Note
+## Commenting the code
+
+By the way we encountered some lines starting with two slashes - `//`. This is how you tell the machine to ignore such line, allowing us to write inline explanations and notes that won't be interpreted. Such lines are called **comments**.
+
+To be more precise, the slashes make the comment start _after_ them, allowing to write a comment at the end of a line:
+
+```js
+console.log(2 + 3); // this line will log 5
+```
+
+Since comments make the machine ignore portions of the program they can be used to temporarily suppress any existing line:
+
+```js static showConsole
+function greet() {
+  console.log('Hello Sally Brown');
+}
+
+// greet();
+// ** output **
+```
+
+This operation is called **to comment out** a line. It is useful to see what happens by removing a part of the program without losing it completely. The change is easy to revert by removing the leading slashes. The operation is unsurprisingly called **to comment (back) in**. In most editors the shortcut for both operations is the same, saving you from typing and deleting the slashes.
+:::
+
+## Further function considerations
 
 We can define as many functions as we need:
 
@@ -126,6 +151,6 @@ Don't open the results yet! Can you guess the output?
 
 ## Conclusion
 
-WIP
+Functions are the building blocks of programming because they allow us to extend any programming language with the features we need. We have seen how to define new functions and how to call them, in the next lesson we'll see how to pass information to them.
 
 [mdn:camel-case]: https://developer.mozilla.org/en-US/docs/Glossary/Camel_case
