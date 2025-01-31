@@ -1,0 +1,320 @@
+# Arrays
+
+We made many friends in our journey so far: Charlie and Sally Brown, Jane and John Doe and the Van Pelts. If we wanted to greet all of them, we would need to write a lot of calls to the `greet` function:
+
+```js static showConsole
+function greet(user) {
+  console.log('Hello', user.name);
+}
+
+greet({ name: 'Charlie Brown' });
+greet({ name: 'Sally Brown' });
+greet({ name: 'Jane Doe' });
+greet({ name: 'John Doe' });
+greet({ name: 'Lucy Van Pelt' });
+greet({ name: 'Linus Van Pelt' });
+// ** output **
+// Hello Charlie Brown
+// Hello Sally Brown
+// Hello Jane Doe
+// Hello John Doe
+// Hello Lucy Van Pelt
+// Hello Linus Van Pelt
+```
+
+We know how to repeat operations thanks to the `for` statements. If only there was a way to collect our friends together in a list and access it sequentially...let's see what we can do.
+
+## Populating the list
+
+We have dealt with rounded parentheses and curly brackets so far. It's time to invite the **square brackets** to the party:
+
+```js live showConsole
+const friends = [
+  { name: 'Charlie Brown' },
+  { name: 'Sally Brown' },
+  { name: 'Jane Doe' },
+  { name: 'John Doe' },
+  { name: 'Lucy Van Pelt' },
+  { name: 'Linus Van Pelt' }
+];
+
+console.log(friends);
+```
+
+We say that `friends` is an **array**. An array in programming is an **ordered set of values**, that means that every entry has a specific position. The order may have semantic value, i.e. the rank of our favorite books or the queue of people waiting for an event, but that's not directly inferrable from the values itself.
+
+An array in JavaScript is initialized as a **comma separated list of values**. You can split the values over multiple lines if you find it more readable. In this case the values are all objects, and all of them have the same keys or better the same single key - `name`, each with a different value. This would make it an _homogenous array_.
+
+An array can contain values of all possible types:
+
+```js
+const myArray = [1, 'hello', { name: 'Jane Doe '}, false];
+```
+
+But besides very specific cases we'll (luckily!) deal with homogenous arrays.
+
+## Accessing array items
+
+What if we want to read what's inside the first position of the array?
+
+```js live showConsole
+const friends = [
+  { name: 'Charlie Brown' },
+  { name: 'Sally Brown' },
+  { name: 'Jane Doe' },
+  { name: 'John Doe' },
+  { name: 'Lucy Van Pelt' },
+  { name: 'Linus Van Pelt' }
+];
+
+console.log(friends[0]);
+```
+
+We just introduced a new notation, the **bracket accessor**. It works as:
+
+```js
+console.log(friends[0]);
+//          ^       ^
+//          |       |
+//          |       position we need in square brackets
+//          |
+//          name of the array
+```
+
+Why start at 0 and not at 1 since it's the first position? Because **arrays are zero-indexed** in JavaScript and most programming languages. Zero is also the first natural number if you think!
+
+What if we want to log Lucy? It's at position five of the original array. To log the first we put zero in the brackets so let's try with 4:
+
+```js live showConsole
+const friends = [
+  { name: 'Charlie Brown' },
+  { name: 'Sally Brown' },
+  { name: 'Jane Doe' },
+  { name: 'John Doe' },
+  { name: 'Lucy Van Pelt' },
+  { name: 'Linus Van Pelt' }
+];
+
+console.log(friends[4]);
+```
+
+Great we have a plan! To access the **n-th element** of an array we need to pass **n-1** in the brackets.
+
+What if we pass a value that exceeds the size of the array?
+
+```js live showConsole
+const friends = [
+  { name: 'Charlie Brown' },
+  { name: 'Sally Brown' },
+  { name: 'Jane Doe' },
+  { name: 'John Doe' },
+  { name: 'Lucy Van Pelt' },
+  { name: 'Linus Van Pelt' }
+];
+
+console.log(friends[10]);
+```
+
+It logs `undefined`! Do you remember a similar case? I do:
+
+```js live showConsole
+const myFriend = { name: 'Lucy Van Pelt' };
+
+console.log(myFriend.age);
+```
+
+Exactly, it behaves like trying to access a missing property in an object.
+
+:::important Note
+### Objects and Arrays
+- Object and arrays are both **collections of related information** in programming;
+- In arrays **the order of the values** is the important feature, that allows the access by numerical index, e.g. `friends[0]`;
+- In objects the focus is on **the accessibility by key**, e.g. `user.name`;
+- Arrays can contain objects like in the examples above;
+- Object values can be arrays:
+
+```js
+const myFriend = {
+  name: 'Jane Doe',
+  age: 35,
+  interests: ['Reading', 'Swimming', 'Hiking']
+};
+```
+:::
+
+## Knowing how many entries an array has
+
+We have compiled the list of friends ourselves and we know it has six entries, great. It won't usually be the case to author arrays entries ourselves so we have to rely on a better plan.
+
+We haven't discussed what **data type** arrays are by the way, let's find it out with the `typeof` operator:
+
+```js static showConsole
+const friends = [
+  { name: 'Charlie Brown' },
+  { name: 'Sally Brown' },
+  { name: 'Jane Doe' },
+  { name: 'John Doe' },
+  { name: 'Lucy Van Pelt' },
+  { name: 'Linus Van Pelt' }
+];
+
+console.log(typeof friends);
+// ** output **
+//object
+```
+
+Is not `array` or anything similar but `object`. That's a JavaScript design decision. This observation matters because it justifies the existence of the `length` property on every array:
+
+```js static showConsole
+const friends = [
+  { name: 'Charlie Brown' },
+  { name: 'Sally Brown' },
+  { name: 'Jane Doe' },
+  { name: 'John Doe' },
+  { name: 'Lucy Van Pelt' },
+  { name: 'Linus Van Pelt' }
+];
+
+console.log(friends.length);
+// ** output **
+6
+```
+
+That makes sense because we know that we can use the **dot notation** on objects to access their properties.
+
+## Accessing the last element of an array
+
+The first entry of an array is always at `[0]`. What about accessing the last one?
+In our case if we want to print Linus, we can do so with `console.log(5)`. Can we do it without explicitly writing the number five? We know:
+
+- that we have six entries in the array;
+- that the information is stored in `friends.length`;
+- how to access the n-th position of an array.
+
+Putting it all together:
+
+```js live showConsole
+const friends = [
+  { name: 'Charlie Brown' },
+  { name: 'Sally Brown' },
+  { name: 'Jane Doe' },
+  { name: 'John Doe' },
+  { name: 'Lucy Van Pelt' },
+  { name: 'Linus Van Pelt' }
+];
+
+console.log(friends[friends.length - 1]);
+```
+
+Exactly, the last entry of an array will always be available at `[{ array name }.length - 1]`.
+
+Let's stop with the language theory for a moment and let's go back to our main goal, i.e. to save ourselves multiple calls to the `greet` function.
+
+## Printing the list of friends
+
+Before reaching the final solution, let's make an intermediate stop as a bridge between the previous lesson and what we have seen so far. Remember how to print a list of numbers?
+
+```js static showConsole
+for (let i = 0; i < 3; i = i+1) {
+  console.log(i);
+}
+// ** output **
+0
+1
+2
+3
+```
+
+We know how to access an array at a given index. Let's log the content of an array step by step:
+
+```js static showConsole
+const friends = [
+  { name: 'Charlie Brown' },
+  { name: 'Sally Brown' },
+  { name: 'Jane Doe' },
+  { name: 'John Doe' },
+  { name: 'Lucy Van Pelt' },
+  { name: 'Linus Van Pelt' }
+];
+
+for (let i = 0; i < friends.length; i = i+1) {
+  console.log('The value of the array at position', i, 'is', friends[i]);
+}
+// ** output **
+//The value of the array at position 0 is { name: 'Charlie Brown' }
+//The value of the array at position 1 is { name: 'Sally Brown' }
+//The value of the array at position 2 is { name: 'Jane Doe' }
+//The value of the array at position 3 is { name: 'John Doe' }
+//The value of the array at position 4 is { name: 'Lucy Van Pelt' }
+//The value of the array at position 5 is { name: 'Linus Van Pelt' }
+```
+
+Let's compare the two for loops:
+
+```js
+// first loop
+for (let i = 0; i < 3; i = i+1) {
+  console.log(i);
+}
+
+// second loop
+for (let i = 0; i < friends.length; i = i+1) {
+  console.log('The value of the array at position', i, 'is', friends[i]);
+}
+```
+
+In the first loop we defined `i < 3` as the condition, while in the second `i < friends.length`. This is making our condition work regardless of how many entries there are in the array:
+
+```js static showConsole
+const friends = [
+  { name: 'Charlie Brown' },
+  { name: 'Sally Brown' },
+  { name: 'Jane Doe' },
+];
+
+for (let i = 0; i < friends.length; i = i+1) {
+  console.log('The value of the array at position', i, 'is', friends[i]);
+}
+// ** output **
+//The value of the array at position 0 is { name: 'Charlie Brown' }
+//The value of the array at position 1 is { name: 'Sally Brown' }
+//The value of the array at position 2 is { name: 'Jane Doe' }
+```
+
+We have three entries in the array and we have just three logs. The rest of the code hasn't been touched. That's why the `length` property is so useful.
+
+## Reaching the goal
+
+Now we know how to do something with all the entries of an array. Let's finally call the `greet` function appropriately:
+
+```js static showConsole
+const friends = [
+  { name: 'Charlie Brown' },
+  { name: 'Sally Brown' },
+  { name: 'Jane Doe' },
+  { name: 'John Doe' },
+  { name: 'Lucy Van Pelt' },
+  { name: 'Linus Van Pelt' }
+];
+
+function greet(user) {
+  console.log('Hello', user.name);
+}
+
+for (let i = 0; i < friends.length; i = i+1) {
+  greet(friends[i]);
+}
+// ** output **
+// Hello Charlie Brown
+// Hello Sally Brown
+// Hello Jane Doe
+// Hello John Doe
+// Hello Lucy Van Pelt
+// Hello Linus Van Pelt
+```
+
+Bingo! It's important to know that the `greet` function doesn't care about the `friends` array. It's vital to understand that function don't care about their surroundings but rely solely on their input. This consideration is not entirely true because there are functions that need to do the opposite, but we'll discuss them at the appropriate time.
+
+## Conclusion
+
+The output of the final example in this lesson is the same as the one at the very beginning, and we should be happy about that! We found a way to approach a task in a more flexible way that will scale up as the size of the input changes. Knowing when to use iteration is an acquired taste, we just started to develop it together.

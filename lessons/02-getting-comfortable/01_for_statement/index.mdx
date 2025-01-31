@@ -1,6 +1,6 @@
 # For statements
 
-In the first module of the course we have dealt mostly with single entities, like greeting a single user or calculating the discounted price of an item. Very often we'll have to deal with homogenous collection of entities, e.g.:
+In the first module of the course we mostly discussed interaction with single entities, like greeting a single user or calculating the discounted price of an item. Very often we'll have to deal with homogenous collection of entities, e.g.:
 
 - the results for a given search term;
 - the users that like a post;
@@ -82,12 +82,15 @@ for ( exp 1; exp 2; exp 3) {
 
 The three expressions are:
 
-- **the initialization**: they allow to declare one or more variables;
-- **the condition**: if evaluates to `true`, the code block is executed - if not, the program evaluation continues with what follows the for statement;
-- **the afterthought**: to be evaluated after the code block.
+- **the initialization**: it allows the declaration of one or more variables;
+- **the condition**: it's evaluated **before** the code block, and:
+  - if evaluates to `true`, the code block is executed;
+  - if not, the program moves on to what comes after the for statement;
+- **the afterthought**: it is evaluated **after** the code block.
+
+It's important to know that the block is not even once executed if the condition is never met, same applies for the afterthought.
 
 Let's see what is happening to the variable `i`:
-
 
 ```js static showConsole
 for (let i = 0; i < 3; i = i+1) {
@@ -120,10 +123,10 @@ Third round:
 
 Fourth round:
 
-- condition evaluated 3 is **not** lesser than three!
+- condition evaluated, 3 is **not lesser than itself**!
 - we move on with the program.
 
-It looks like a lot of considerations, because they are. But you have to appreciate the transparency of the language. It's crucial that you spend time doing exactly these petulant observations now that the code is just logging a variable value, before the code gets entangled.
+It looks like a lot of considerations, because they are a lot. But we have to do them in depth since it's our first encounter with the syntax. Tou have to appreciate the transparency of the language. It's crucial that we spend all the time in the world doing these petulant observations now that the program is just logging a variable, before the code gets entangled.
 
 ### The `let` keyword
 
@@ -155,9 +158,24 @@ console.log('My age is:', myAge);
 // My age is: 25
 ```
 
-Why haven't we discussed both possibilities at the same time? Because that would have been just confusing, since you will never declare a variable and overwrite its value in the very next line.
+Why haven't we discussed both possibilities at the same time? Because that would have been just confusing, since you will never declare a variable and overwrite its value in the very next line!
 
 Now we have a specific use case since the `i` variable must change values as stated in the afterthought, where we update its value by 1 - `i = 1+1`. We don't run the update manually, the machine does it for us.
+
+:::important Note
+The `const` and `let` keywords have been introduced in the [ECMAScript 2015][ecmascript-2015] revision of the language. Before there was just a single way to declare variables that always allowed further changes, and that was with the `var` keyword:
+
+```js static showConsole
+var myAge = 40;
+// I changed my mind
+myAge = 25;
+console.log('My age is:', myAge);
+// ** output **
+// My age is: 25
+```
+
+Since then we don't use `var` anymore, but you may still stumble upon legacy code that uses that.
+:::
 
 ### Changing the variable name
 
@@ -177,7 +195,7 @@ Feel free to name it explicitly `index` if it improves your comprehension.
 
 ### Changing the initial value
 
-You absolutely don't have to start from 0:
+You don't have to start from 0 if you don't need to:
 
 ```js static showConsole
 for (let i = 1; i < 5; i = i+1) {
@@ -224,7 +242,7 @@ for (let i = 0; i < 3; i = i+0.5) {
 2.5
 ```
 
-More commonly you'll see the `i = i+1` written as `i++`. The double plus symbol is called the **increment operator** and updates the operand to its current value plus one:
+Most of the time you'll see the `i = i+1` written as `i++`. The double plus symbol is called the **increment operator** and updates the operand to its current value plus one:
 
 ```js static showConsole
 let age = 39;
@@ -234,7 +252,7 @@ console.log('My age is:', age);
 // My age is: 40
 ```
 
-There also the **decrement operator** - `--` - that reduces the value by one. There is a different behavior in using such operators _before_ or _after_ the operand, but we won't discuss it at the moment. Using the explicit addition notation is perfectly fine if it makes things clearer to you.
+There also the **decrement operator** (`--`) that reduces the value by one. There is a different behavior in using such operators _before_ or _after_ the operand, but we won't discuss it at the moment. Using the explicit addition notation is perfectly fine if it makes things clearer to you.
 
 ## Printing a list of numbers
 
@@ -265,3 +283,5 @@ It works! Important to notice:
 ## Conclusion
 
 We have seen a lot of information. You don't have to digest all at once, especially because we'll see that there are more idiomatic ways to perform the same operations in JavaScript. It's enough to have the idea that operations can be repeated a controlled number of times.
+
+[ecmascript-2015]: https://en.wikipedia.org/wiki/ECMAScript_version_history#6th_Edition_%E2%80%93_ECMAScript_2015
