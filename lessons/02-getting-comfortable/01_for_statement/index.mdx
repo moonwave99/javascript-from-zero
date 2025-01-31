@@ -1,0 +1,267 @@
+# For statements
+
+In the first module of the course we have dealt mostly with single entities, like greeting a single user or calculating the discounted price of an item. Very often we'll have to deal with homogenous collection of entities, e.g.:
+
+- the results for a given search term;
+- the users that like a post;
+- the books a user has read.
+
+We want to perform actions on them regardless of how many items are in the collection.
+
+Imagine having the following scenario:
+
+```js static showConsole
+
+function rateBook(book) {
+  console.log(book.title, 'by', book.author);
+  if (book.rating < 5) {
+    console.log("It really wasn't a good read");
+  } else if (book.rating < 8) {
+    console.log("I found it pretty good");
+  } else {
+    console.log("It was really awesome!");
+  }
+}
+
+const firstBook = { title: 'The da Vinci Code', author: 'Dan Brown', rating: 4 };
+const secondBook = { title: 'Fever Pitch', author: 'Nick Hornby', rating: 6  };
+const thirdBook = { title: 'Ask the Dust', author: 'John Fante', rating: 9 };
+
+rateBook(firstBook);
+rateBook(secondBook);
+rateBook(thirdBook);
+// ** output **
+// The da Vinci Code by Dan Brown
+// It really wasn't a good read
+// Fever Pitch by Nick Hornby
+// I found it pretty good
+// Ask the Dust by John Fante
+// It was really awesome!
+```
+
+That's a lot of repeated calls to `rateBook`, and there is no hint in the code that the three books should belong together. In the next lesson we'll introduce a very useful data structure that will address this specific problem, but first we' have to get good with its companion tool.
+
+## Repeated operations
+
+There two main tools that can translate most of the problems into code. We have already seen the if statement used to make decisions, and now we'll see another whose purpose is to repeat a set of operations:
+
+```js static showConsole
+for (let i = 0; i < 3; i = i+1) {
+  console.log("All work and no play may make Jim a dull boy");
+}
+// ** output **
+//All work and no play may make Jim a dull boy
+//All work and no play may make Jim a dull boy
+//All work and no play may make Jim a dull boy
+```
+
+That quite some new syntax all at once, but let's observe the output. We have three times the same log statement, and there is a number 3 in the code. It may as well be a coincidence, so let's try to change that quantity:
+
+```js static showConsole
+for (let i = 0; i < 4; i = i+1) {
+  console.log("All work and no play may make Jim a dull boy");
+}
+// ** output **
+//All work and no play may make Jim a dull boy
+//All work and no play may make Jim a dull boy
+//All work and no play may make Jim a dull boy
+//All work and no play may make Jim a dull boy
+```
+
+It looks like the two things are connected. But what's actually happening?
+
+## Anatomy of a `for` statement
+
+The structure we have just seen is a `for` statement. It consist of **three expressions** separated by semicolons and enclosed in parentheses, followed by a **code block** in curly brackets:
+
+```js
+for ( exp 1; exp 2; exp 3) {
+  // code block
+}
+```
+
+The three expressions are:
+
+- **the initialization**: they allow to declare one or more variables;
+- **the condition**: if evaluates to `true`, the code block is executed - if not, the program evaluation continues with what follows the for statement;
+- **the afterthought**: to be evaluated after the code block.
+
+Let's see what is happening to the variable `i`:
+
+
+```js static showConsole
+for (let i = 0; i < 3; i = i+1) {
+  console.log(i);
+}
+// ** output **
+0
+1
+2
+```
+
+We read three logs with three different values. The following things are happening:
+
+- the `i` variable is initialized as 0;
+- the condition is evaluated, 0 is lesser than 3;
+- the value of `i` is logged inside the block, we read 0 in the console;
+- the afterthought is evaluated, `i` becomes `0 + 1 = 1`.
+
+Second round:
+
+- condition evaluated again, 1 is lesser than 3;
+- the block gets executed again. This time `i` holds 1 as value;
+- afterthought, `i` is now 2;
+
+Third round:
+
+- condition evaluated yet again, 2 is lesser than 3;
+- `i` is logged, yielding 2 in the console;
+- afterthought, `i` is now 3.
+
+Fourth round:
+
+- condition evaluated 3 is **not** lesser than three!
+- we move on with the program.
+
+It looks like a lot of considerations, because they are. But you have to appreciate the transparency of the language. It's crucial that you spend time doing exactly these petulant observations now that the code is just logging a variable value, before the code gets entangled.
+
+### The `let` keyword
+
+So far we declared variables with `const`:
+
+```js
+const user = { name: 'Jane Doe', age: 35 };
+```
+
+We haven't discussed why the keyword is called `const`. It is short for _constant_ because you are not allow to overwrite it afterwards. Trying to do so will result in an error:
+
+```js live showConsole
+const myAge = 40;
+// I changed my mind
+myAge = 25;
+console.log('My age is:', myAge);
+```
+
+`"SyntaxError: /index.js: "myAge" is read-only`, and rightfully so!
+
+The same doesn't apply if we declare the variable with `let`:
+
+```js static showConsole
+let myAge = 40;
+// I changed my mind
+myAge = 25;
+console.log('My age is:', myAge);
+// ** output **
+// My age is: 25
+```
+
+Why haven't we discussed both possibilities at the same time? Because that would have been just confusing, since you will never declare a variable and overwrite its value in the very next line.
+
+Now we have a specific use case since the `i` variable must change values as stated in the afterthought, where we update its value by 1 - `i = 1+1`. We don't run the update manually, the machine does it for us.
+
+### Changing the variable name
+
+We use `i` as a variable name in a `for` statement because it stands for **index**, but you are free to name it as you see fit - just make sure to be consistent:
+
+```js static showConsole
+for (let figaro = 0; figaro < 3; figaro = figaro+1) {
+  console.log(figaro);
+}
+// ** output **
+0
+1
+2
+```
+
+Feel free to name it explicitly `index` if it improves your comprehension.
+
+### Changing the initial value
+
+You absolutely don't have to start from 0:
+
+```js static showConsole
+for (let i = 1; i < 5; i = i+1) {
+  console.log(i);
+}
+// ** output **
+1
+2
+3
+4
+```
+
+### Changing the condition check
+
+You don't have to check just for strict lesser than:
+
+```js static showConsole
+for (let i = 0; i <= 3; i = i+1) {
+  console.log(i);
+}
+// ** output **
+0
+1
+2
+3
+```
+
+This time we have four logs, because 3 satisfied the condition - `<=` vs `<`.
+
+### Changing the afterthought
+
+You have freedom here as well:
+
+```js static showConsole
+for (let i = 0; i < 3; i = i+0.5) {
+  console.log(i);
+}
+// ** output **
+0
+0.5
+1
+1.5
+2
+2.5
+```
+
+More commonly you'll see the `i = i+1` written as `i++`. The double plus symbol is called the **increment operator** and updates the operand to its current value plus one:
+
+```js static showConsole
+let age = 39;
+age++;
+console.log('My age is:', age);
+// ** output **
+// My age is: 40
+```
+
+There also the **decrement operator** - `--` - that reduces the value by one. There is a different behavior in using such operators _before_ or _after_ the operand, but we won't discuss it at the moment. Using the explicit addition notation is perfectly fine if it makes things clearer to you.
+
+## Printing a list of numbers
+
+Let's write a function now that prints all integer numbers from a given `start` to a given `end`, both included:
+
+```js static showConsole
+function printNumbers(start, end) {
+  for (let i = start; i <= end; i = i+1) {
+    console.log(i);
+  }
+}
+
+printNumbers(1, 5);
+// ** output **
+// 1
+// 2
+// 3
+// 4
+// 5
+```
+
+It works! Important to notice:
+
+- the `i` is initialized to the value of the passed `start` parameter;
+- the check is made against the value of the `end` parameter;
+- the `end` value satisfies the check due to the lesser than or equals - `<=`.
+
+## Conclusion
+
+We have seen a lot of information. You don't have to digest all at once, especially because we'll see that there are more idiomatic ways to perform the same operations in JavaScript. It's enough to have the idea that operations can be repeated a controlled number of times.

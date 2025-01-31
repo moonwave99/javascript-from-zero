@@ -28,7 +28,7 @@ greet('Sally Brown');
 greet('Charlie Brown');
 ```
 
-## Updating the function signature
+## Passing more parameters to a function
 
 Now we want to enhance our `greet` function to adjust the greeting to the time of the day, let's say "Good morning" it it's not noon yet, and "Good afternoon" after that.
 
@@ -48,7 +48,7 @@ greet('Charlie Brown', 15);
 'Good morning Charlie Brown'
 ```
 
-See how we adjusted the greeting to be `Good morning` and not `Hello` anymore. We are calling the function twice, first with a morning hour, then with an afternoon one. We still see no difference in behaviour, because we haven't changed much inside the function!
+See how we adjusted the greeting to be `Good morning` and not `Hello` anymore. We are calling the function twice, first with a morning hour, then with an afternoon one. We still see no difference in behavior, because we haven't changed much inside the function!
 
 ## Our first conditional
 
@@ -72,7 +72,7 @@ greet('Charlie Brown', 15);
 
 Bunch of stranger symbols and keywords we salute you! Don't panic and look at the results: they do what we wanted!
 
-First let's observe how we have two `console.log` statements in the function body, but just one per call gets excecuted. That means that there should be some decision mechanism that chooses which one to run. Such mechanism is called an `if / else statement`:
+First let's observe how we have two `console.log` statements in the function body, but just one per call gets executed. That means that there should be some decision mechanism that chooses which one to run. Such mechanism is called an `if / else statement`:
 
 ```js
 if (time > 12) {
@@ -87,10 +87,10 @@ More generally we have:
 ```js
 if ( some condition ) {
   // if block:
-  // stuff that gets excecuted if the condition is met
+  // stuff that gets executed if the condition is met
 } else {
   // else block:
-  // stuff that gets excecuted if the condition is not met
+  // stuff that gets executed if the condition is not met
 }
 ```
 
@@ -124,12 +124,12 @@ console.log('2 < 3', 2 < 3);
 
 ### True and false
 
-Wait wait, what are those `true` and `false` things now? They are called **boolean valuse**, we'll cover them in detail soon. For now think that they are **answers to a yes or no question**.
+Wait wait, what are those `true` and `false` things now? They are called **boolean values**, we'll cover them in detail soon. For now think that they are **answers to a yes or no question**.
 
 As you can imagine there are also the **equals operator**, the **lesser or equals to operator** and the **greater or equals to operator**. We'll deal with the first one in a moment in a slightly different context.
 :::
 
-We introduced a lot of notation and concepts. Covering all of them in detail would make you lose focus from the main story, that is to enchance our `greet` function. Let's reinforce what we have seen so far by reinspecting the code we have written so far. For instance we named the parameters `person` and `time`. Remember that your can rename them!
+We introduced a lot of notation and concepts. Covering all of them in detail would make you lose focus from the main story, that is to enhance our `greet` function. Let's reinforce what we have seen so far by reinspecting the code we have written so far. For instance we named the parameters `person` and `time`. Remember that your can rename them!
 
 ```js static
 function greet(name, hour) {
@@ -169,7 +169,7 @@ greet('Lucy Van Pelt', 19);
 'Good afternoon Lucy Van Pelt'
 ```
 
-See how the output varies depending on the input. That's programming, an input and output mantra, just like breathing. That new age sloganism at its finest! Get familiar with this aspects and you'll be ace. Do yu want to know about how to fine tune our function further so it can say good evening as well? Stay tuned!
+See how the output varies depending on the input. That's programming, an input and output mantra, just like breathing. That's new age sloganism at its finest! Get familiar with this aspects and you'll be ace. Do yu want to know about how to fine tune our function further so it can say good evening as well? Stay tuned!
 
 ## Comparing strings
 
@@ -243,7 +243,7 @@ if (weather == 'sunny') {
 
 The operator first checks if `weather` in the current call holds `'sunny'` as value. If it's not the case proceeds to the `else if` block and does the same against `'winter'`. The machine has no idea about what those strings mean, it just checks if they have the same value.
 
-Dealing with logic in programming can be convoluted at first. We'll see a lot of examples so you can familiarise with the syntax. For now focus as much as possible on the idea that **different inputs** lead to **different outputs** depending on how they match the internal function decisions.
+Dealing with logic in programming can be convoluted at first. We'll see a lot of examples so you can familiarize with the syntax. For now focus as much as possible on the idea that **different inputs** lead to **different outputs** depending on how they match the internal function decisions.
 
 :::important Note
 ### `if`, `else if`, `else`
@@ -271,7 +271,7 @@ else if ( yetAnotherCondition) { ... }
 else { ... }
 ```
 
-But before you get carried away, we'll see how this is not particularly good code. We want our function to be as specialised as possible, without the need of taking too many decisions. We'll discuss the strategies to avoid the common pitfalls.
+But before you get carried away, we'll see how this is not particularly good code. We want our function to be as specialized as possible, without the need of taking too many decisions. We'll discuss the strategies to avoid the common pitfalls.
 
 ### Isolated `if` blocks
 An `if` block should not compulsory be followed by an `else` block:

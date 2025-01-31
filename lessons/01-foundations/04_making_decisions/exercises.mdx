@@ -6,16 +6,11 @@ WIP
 
 ## Exercises
 
-Write a function that takes three arguments - two strings that represent the plans for the evening, and the time of the day as a number. If it's later than 20 log the second plan, else log the first.
-
-<details>
-  <summary>Possible solution</summary>
-  
-WIP
-</details>
+### Guess the secret word
 
 Write a function called `guessSecretWord` that takes a word as a parameter. The function should log "You guessed right!" if the word is `'s3cr3t'`, and "Not even close." otherwise.
 
+Write two or more function calls with appropriate arguments that test if the code works fine.
 <details>
   <summary>Possible solution</summary>
 ```js static showConsole
@@ -34,5 +29,53 @@ guessSecretWord('s3cr3t');
 'Not even close.'
 'Not even close.'
 'You guessed right!'
+```  
+</details>
+
+### Deciding what to do tonight
+
+Write a function called `showPlans` with three parameters - two strings that represent the plans for the evening, and the time of the day as a number.
+
+- if the passed time is later than 20, log "It's too late, I will \{ the second plan \}";
+- else, log "I have plenty of time, I will \{ the first plan \}".
+
+Write two or more function calls with appropriate arguments that test if the code works fine.
+<details>
+  <summary>Possible solution</summary>
+```js static showConsole
+function showPlans(planA, planB, time) {
+  if (time > 20) {
+    console.log("It's too late, I will", planB);
+  } else {
+    console.log('I have plenty of time, I will', planA);
+  }
+}
+
+showPlans('go to the gym', 'watch a movie', 22);
+showPlans('go to the gym', 'watch a movie', 18);
+// ** output **
+//It's too late, I'll watch a movie
+//I have plenty of time, I'll go to the gym
+```  
+</details>
+
+Bonus: make the function take a fourth parameter that defines when the late time starts, and use it inside the function accordingly.
+
+<details>
+  <summary>Possible solution</summary>
+```js static showConsole
+function showPlans(planA, planB, time, lateAfter) {
+  if (time > lateAfter) {
+    console.log("It's too late, I will", planB);
+  } else {
+    console.log('I have plenty of time, I will', planA);
+  }
+}
+
+showPlans('go to the gym', 'watch a movie', 22, 21);
+showPlans('go to the gym', 'watch a movie', 18, 21);
+// ** output **
+//It's too late, I'll watch a movie
+//I have plenty of time, I'll go to the gym
 ```  
 </details>
