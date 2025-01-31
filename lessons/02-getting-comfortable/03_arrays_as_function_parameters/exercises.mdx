@@ -1,0 +1,66 @@
+# Exercises
+
+## Recap Questions
+
+WIP
+
+## Exercises
+
+Write a function called `getAverage` that takes an array of numbers as parameter, and calculates their average value.
+
+Hint: you already know how to calculate the sum of an array of numbers.
+
+<details>
+  <summary>Possible solution</summary>
+As said, we already know how to sum an array of numbers:
+
+```js
+function sumNumbers(numbers) {
+  let partialSum = 0;
+  for (let i = 0; i < numbers.length; i++) {
+    partialSum = partialSum + numbers[i];
+  }
+  return partialSum;
+}
+```
+
+The formula for the average value of a list of number is their sum times how many numbers we have. We can access this information via the `length` property of the array, so:
+
+```js static showConsole
+function getAverage(numbers) {
+  let partialSum = 0;
+  
+  for (let i = 0; i < numbers.length; i++) {
+    partialSum = partialSum + numbers[i];
+  }
+
+  return partialSum / numbers.length;
+}
+
+console.log('The average value of 2, 3, 4 is', getAverage([2, 3, 4]));
+// ** output **
+// The average value of 2, 3, 4 is 3
+```
+
+Even better it would be to reuse the `sumNumbers` function:
+
+```js static showConsole
+function sumNumbers(numbers) {
+  let partialSum = 0;
+
+  for (let i = 0; i < numbers.length; i++) {
+    partialSum = partialSum + numbers[i];
+  }
+
+  return partialSum;
+}
+
+function getAverage(numbers) {
+  return sumNumbers(numbers) / numbers.length;
+}
+
+console.log('The average value of 2, 3, 4 is', getAverage([2, 3, 4]));
+// ** output **
+// The average value of 2, 3, 4 is 3
+```
+</details>

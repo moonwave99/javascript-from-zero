@@ -1,0 +1,280 @@
+# Arrays as function parameters
+
+In the [previous lesson](./arrays) we have seen how to group information together in a list:
+
+```js static showConsole
+const friends = [
+  { name: 'Charlie Brown' },
+  { name: 'Sally Brown' },
+  { name: 'Jane Doe' },
+];
+
+function greet(user) {
+  console.log('Hello', user.name);
+}
+
+for (let i = 0; i < friends.length; i = i+1) {
+  greet(friends[i]);
+}
+// ** output **
+// Hello Charlie Brown
+// Hello Sally Brown
+// Hello Jane Doe
+```
+
+We looped over the contents of the `friends` array, and we called `greet` with the i-th entry of the array on every iteration.
+
+Let's leave objects apart for this lesson. We'll write two functions that take an array of numbers as parameters.
+
+## Calculating the sum of a list of numbers
+
+We know how to add two numbers in JavaScript. We don't know how to calculate the sum of a variable quantity of them. Let's draft our function signature first, and let's write a test case right after that:
+
+```js static showConsole
+function sumNumbers(numbers) {
+  // work in progress
+}
+
+// it should log The sum of 2 + 3 + 4 is 9
+console.log('The sum of 2 + 3 + 4 is', sumNumbers([2, 3, 4]));
+// ** output **
+// The sum of 2 + 3 + 4 is undefined
+```
+
+No worries, our function is still empty, and calling a function without any return statements is evaluated as `undefined` by the machine.
+
+A possible approach to the problem is to calculate the partial sum of the numbers as we loop over them. Think of a friend that is dictating them over the phone while you sum what you have got so far:
+
+- Hey Jane how much do I owe you?
+- Hey John, it's **five** for the bread...
+- **Five**, then?
+- ...then **seven** for the cake...
+- **Five plus seven**, **twelve**, anything else?
+- ...and **ten** for the drinks, that's it!
+- **Twelve plus ten** makes **twenty-two**, can you confirm please?
+- Make it twenty no worries!
+
+We just don't know yet how to keep track of the partial sum. But we have seen that some variable values can be overwritten thanks to the `let` keyword, like the loop index itself!
+
+```js static showConsole
+function sumNumbers(numbers) {
+  let partialSum = 0;
+
+  for (let i = 0; i < numbers.length; i++) {
+    partialSum = partialSum + numbers[i];
+  }
+
+  return partialSum;
+}
+
+// it should log The sum of 2 + 3 + 4 is 9
+console.log('The sum of 2 + 3 + 4 is', sumNumbers([2, 3, 4]));
+// ** output **
+// The sum of 2 + 3 + 4 is 9
+```
+
+Great! Let's see in detail how we reached this result. In order to concentrate on what's going on inside the loop let's ignore the return statement and the final log. Ah, from now on we'll use `i++` instead of `i = i+1`, I hope you don't mind.
+
+```js static showConsole
+function sumNumbers(numbers) {
+  let partialSum = 0;
+
+  for (let i = 0; i < numbers.length; i++) {
+    console.log('The value of the array at position', i, 'is', numbers[i]);
+    partialSum = partialSum + numbers[i];
+    console.log('Partial sum:', partialSum);
+  }
+
+  return partialSum;
+}
+
+console.log('The sum of 2 + 3 + 4 is', sumNumbers([2, 3, 4]));
+// ** output **
+// The value of the array at position 0 is 2
+// Partial sum: 2
+// The value of the array at position 1 is 3
+// Partial sum: 5
+// The value of the array at position 2 is 4
+// Partial sum: 9
+// The sum of 2 + 3 + 4 is 9
+```
+
+Observe how the second internal log comes **after** updating the `partialSum` variable.
+
+:::important Note
+The `partialSum` variable is called an **internal variable** of the function. It ceases to exist after the function execution, and has no memory of previous calls to the same function. Most important **is not accessible from outside of the function**. It's just a scrap of paper where the function is annotating some internal business!
+
+The theory of internal vs. global variables is outside the scope of this lesson (no pun intended for those who know what are we talking about!).
+:::
+
+Let's arrange the log information in a table:
+
+| Iteration | Index Value | Number at position `i` | Partial Sum |
+| --------- | ----------- | ---------------------- | ----------- |
+| First     | 0           | 2                      | 2           |
+| Second    | 1           | 3                      | 5           |
+| Third     | 2           | 4                      | 9           |
+
+It's exactly what was going on on the phone with Jane and John, only that Jane was looping over `numbers` and John was updating `partialSum`.
+
+See how the function works with every array of numbers:
+
+```js static showConsole
+function sumNumbers(numbers) {
+  let partialSum = 0;
+
+  for (let i = 0; i < numbers.length; i++) {
+    partialSum = partialSum + numbers[i];
+  }
+
+  return partialSum;
+}
+
+console.log(sumNumbers([10, 20, 30, 40]));
+console.log(sumNumbers([2, -3, 1]));
+// ** output **
+// 100
+// 0
+```
+
+Once again: it makes no difference if the array is directly defined inline between the function call parentheses, or stored in a variable. Of course we can store the result of calling `sumNumbers` in another variable, if it our program requires it so:
+
+```js static showConsole
+function sumNumbers(numbers) {
+  let partialSum = 0;
+
+  for (let i = 0; i < numbers.length; i++) {
+    partialSum = partialSum + numbers[i];
+  }
+
+  return partialSum;
+}
+
+const goalsPerSeason = [50, 46, 28, 43, 26];
+const totalGoals = sumNumbers(goalsPerSeason);
+
+console.log('Total scored goals:', totalGoals);
+// ** output **
+// Total scored goals: 193
+```
+
+:::important Note
+Now that our programs are becoming more complex, the concept of **code readability** starts to play an important role. You will go through various phases, from redundancy to extreme conciseness, finally with experience you'll settle for a balanced approach.
+
+If too many parentheses or brackets are piling up, consider storing intermediate values inside variables to split the code over multiple lines. The important thing to keep in mind is that you don't have to introduce variables for the sake of it!
+:::
+
+## Finding the greatest number of an array
+
+This example is going to be memorable for you, because it will be the first featuring both a `for` loop and an `if` statement, the building blocks of programming!
+
+We want to calculate the greatest entry in a given array. It's easy to do it at first sight if the array doesn't contain many numbers: in the provided example the max is 7.
+
+```js static showConsole
+function max(numbers) {
+  // work in progress
+}
+
+// it should log The max of [3, 7, 2] is 7
+console.log('The max of [3, 7, 2] is', max([3, 7, 2]));
+// ** output **
+// The max of [3, 7, 2] is undefined
+```
+
+This is the skeleton of our function: signature + test case right away. Let's approach the problem with the help of the tools we know: `for` and `if` statements and `let` variables.
+
+In order to calculate the sum, we looped over the numbers and updated the partial sum on every iteration. In this case we can keep track of the greatest number we encountered so far, and overwrite it if the new number is greater than that. 
+
+I think it's fair to give the first number of the array a chance to be the greatest, so we'll initialize the `greatestSoFar` variable with the value of the first entry.
+
+Let's translate all this talk into code:
+
+```js static showConsole
+function max(numbers) {
+  // initialize the `greatestSoFar` variable with the value of the first entry
+  let greatestSoFar = numbers[0];
+
+  for (let i = 0; i < numbers.length; i++) {
+    // if the current number is greater than the greatest we encountered so far...
+    if (numbers[i] > greatestSoFar) {
+      // ...it becomes the greatest so far!
+      greatestSoFar = numbers[i];
+    }
+  }
+
+  return greatestSoFar;
+}
+
+// it should log The max of [3, 7, 2] is 7
+console.log('The max of [3, 7, 2] is', max([3, 7, 2]));
+// ** output **
+// The max of [3, 7, 2] is 7
+```
+
+Let's put some intermediate logs to understand better what's going on:
+
+```js static showConsole
+function max(numbers) {
+  let greatestSoFar = numbers[0];
+
+  for (let i = 0; i < numbers.length; i++) {
+    console.log('The value of the array at position', i, 'is', numbers[i]);
+
+    if (numbers[i] > greatestSoFar) {
+      console.log('** NEW GREATEST FOUND **', numbers[i], 'is > than', greatestSoFar)
+      greatestSoFar = numbers[i];
+    }
+
+    console.log('Greatest so far:', greatestSoFar);
+  }
+
+  return greatestSoFar;
+}
+
+// it should log The max of [3, 7, 2] is 7
+console.log('The max of [3, 7, 2] is', max([3, 7, 2]));
+// ** output **
+// The value of the array at position 0 is 3
+// Greatest so far: 3
+// The value of the array at position 1 is 7
+// ** NEW GREATEST FOUND ** 7 is > than 3
+// Greatest so far: 7
+// The value of the array at position 2 is 2
+// Greatest so far: 7
+// The max of [3, 7, 2] is 7
+```
+
+Let's compile the status table:
+
+| Iteration | Index Value | Number at position `i` | Greatest so far |
+| --------- | ----------- | ---------------------- | --------------- |
+| First     | 0           | 3                      | 3               |
+| Second    | 1           | 7                      | 7               |
+| Third     | 2           | 2                      | 7               |
+
+- On the first round we don't update the max candidate since it's already set to the first entry, and it cannot be greater than itself;
+- On the second round the number is 7, that is greater than 3 and we enter the if block, where we update the `greatestSoFar` variable to 7;
+- On the last round the number is 2, that is not greater than 7. We don't enter the if, `greatestSoFar` stays untouched and we return whatever value it has, seven in this case.
+
+Congratulations, you have implemented [your first algorithm][wiki:algorithm], i.e. a finite sequence of instructions used to solve a specific problem or to perform a computation.
+
+## A note on the learning progress
+
+It's entirely normal and expected to feel overwhelmed at this point. The good news it that you don't need to jump to the next lesson yet, as there is no scheduled appointment! You have been exposed to a lot of new syntax: for loops, arrays, we even invited if statements back to the party.
+
+Before moving on, my advice is to rewrite the example of this lesson many times, even ten or twenty if it's needed. I don't mean to blindly copy them from the page of course. Take notes and set a plan, then put it into practice, for example:
+
+- write the function signature;
+- write the sample call;
+- initialize the internal variable for the partial sum;
+- write the for loop (index, condition, increment);
+- inside the loop, add the current number to the partial sum;
+- return the partial sum.
+
+All these steps will raise doubts, whether about syntax or more about the concept itself. Note down your doubts and try to overcome them by reading the relevant part of the lesson again. Then open a blank file and work again from scratch. Type those bracket in, no copy-paste allowed! After some iterations (see what I did here!) you'll be golden.
+
+## Conclusion
+
+That was quite a consistent lesson. We have written two functions with a similar approach. We are getting better at loops and generally at problem setting and problem solving. As agent Cooper says, give yourself a present: take a little break! You don't have to strive for perfection, but you have to insist until you don't feel in control of the desired output of the program at least. Last advice: think it out loud! Even better, explain the process to a friend or to a stranger. If they get it, it means you are doing very good.
+
+[wiki:algorithm]: https://en.wikipedia.org/wiki/Algorithm
