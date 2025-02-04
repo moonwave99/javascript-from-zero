@@ -61,7 +61,7 @@ const config: Config = {
           position: 'left',
           label: 'Lessons',
         },
-        { to: '/code-playground', label: 'Code Playground', position: 'left' },
+        { to: 'https://runjs.co', label: 'Code Playground', position: 'left' },
         { to: '/blog', label: 'Blog', position: 'left' },
         {
           href: 'https://github.com/moonwave99/programming-course',
