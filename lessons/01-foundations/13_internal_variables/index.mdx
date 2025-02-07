@@ -49,24 +49,53 @@ console.log('Count:', count);
 // Count: 1
 ```
 
-The initial value of `count` is 0. The condition of the if statement is satisfied and its block is executed. The only instruction contained overwrites `count` with one plus whatever it has at the moment, `count = count + 1`. The log statement at the end reflects the updated value of the `count` variable, that is now 1.
+The initial value of `count` is 0. The condition of the if statement is satisfied and its block is executed. The only instruction contained overwrites `count` with one plus whatever it has at the moment, `count = count + 1`. The log statement at the end reflects the updated value of the `count` variable, that is now 1. Now we can use this inside our function!
 
-Now we can use this inside our function!
+:::important Note
+### The increment and decrement operators
+
+An expression like `count = count + 1;` is absolutely fine and easy to understand. In programming it's more idiomatic to use the **increment operator** (`++`). It's an unary operator that is written after the variable you want to increment by one (and by one only!):
+
+```js static showConsole
+let count = 0;
+// it's exactly like writing 'count = count + 1'
+count++;
+console.log(count);
+// ** output **
+1
+```
+
+There is the **decrement operator** too:
+
+```js static showConsole
+let count = 1;
+// it's exactly like writing 'count = count - 1'
+count--; 
+console.log(count);
+// ** output **
+0
+```
+
+Both operators actually work even if _prepended_ to the variable, but they have a different behavior that we don't want to discuss now.
+:::
+
+We'll use the increment operator to make things more idiomatic. If you prefer the explicit notation feel free to use it in your personal code for now. 
 
 ```js static showConsole
 function checkProfileProgress(user) {
   let count = 0;
 
   if (user.name) {
-    count = count + 1;
+    // like count = count + 1;
+    count++;
   }
 
   if (user.age) {
-    count = count + 1;
+    count++;
   }
 
   if (user.email) {
-    count = count + 1;
+    count++;
   }
 
   console.log(`${count}/3`);
@@ -143,6 +172,39 @@ If you already know the initial value of your variable you can do both operation
 const user = { name: 'Charlie Brown' };
 let count = 0;
 ```
+
+## `let` vs. `const`
+
+Why haven't we discussed both possibilities at the same time? Because that would have been just confusing, since you will never declare or declare a variable and overwrite its value in the very next line! Let's review the two concepts with some examples.
+
+- a variable can be declared with both the `const` and `let` keywords.
+- an mere declaration with `const` is not possible (e.g. `const name;`), because we cannot assign anything to it later;
+- variables declared by `let` allow later assignations.
+
+```js
+✅ const daysOfTheWeek = 7;
+✅ let visitedCountriesCount = 10;
+
+❌ const monthsOfTheYear;   // no mere declaration with const
+❌ daysOfTheWeek = 5;       // no assignation with const
+```
+
+When to use one or another? Easy: **always use `const`**, unless you plan to update the variable later. `let` is used for counters, building strings incrementally, and more generally when some condition is involved.
+
+:::important Note
+The `const` and `let` keywords have been introduced in the [ECMAScript 2015][ecmascript-2015] revision of the language. Before there was just a single way to declare variables that always allowed further changes, and that was with the `var` keyword:
+
+```js static showConsole
+var myAge = 40;
+// I changed my mind
+myAge = 25;
+console.log('My age is:', myAge);
+// ** output **
+// My age is: 25
+```
+
+Since then we don't use `var` anymore, but you may still stumble upon legacy code that uses that.
+:::
 
 ## Conclusion
 

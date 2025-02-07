@@ -13,7 +13,7 @@ function greet(user) {
   console.log('Hello', user.name);
 }
 
-for (let i = 0; i < friends.length; i = i+1) {
+for (let i = 0; i < friends.length; i++) {
   greet(friends[i]);
 }
 // ** output **
@@ -73,7 +73,7 @@ console.log('The sum of 2 + 3 + 4 is', sumNumbers([2, 3, 4]));
 // The sum of 2 + 3 + 4 is 9
 ```
 
-Great! Let's see in detail how we reached this result. In order to concentrate on what's going on inside the loop let's ignore the return statement and the final log. Ah, from now on we'll use `i++` instead of `i = i+1`, I hope you don't mind.
+Great! Let's see in detail how we reached this result. In order to concentrate on what's going on inside the loop let's ignore the return statement and the final log. Ah, from now on we'll use `i++` instead of `i++`, I hope you don't mind.
 
 ```js static showConsole
 function sumNumbers(numbers) {

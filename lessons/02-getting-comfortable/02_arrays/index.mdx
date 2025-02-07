@@ -215,7 +215,7 @@ Let's stop with the language theory for a moment and let's go back to our main g
 Before reaching the final solution, let's make an intermediate stop as a bridge between the previous lesson and what we have seen so far. Remember how to print a list of numbers?
 
 ```js static showConsole
-for (let i = 0; i < 3; i = i+1) {
+for (let i = 0; i < 3; i++) {
   console.log(i);
 }
 // ** output **
@@ -237,7 +237,7 @@ const friends = [
   { name: 'Linus Van Pelt' }
 ];
 
-for (let i = 0; i < friends.length; i = i+1) {
+for (let i = 0; i < friends.length; i++) {
   console.log('The value of the array at position', i, 'is', friends[i]);
 }
 // ** output **
@@ -253,12 +253,12 @@ Let's compare the two for loops:
 
 ```js
 // first loop
-for (let i = 0; i < 3; i = i+1) {
+for (let i = 0; i < 3; i++) {
   console.log(i);
 }
 
 // second loop
-for (let i = 0; i < friends.length; i = i+1) {
+for (let i = 0; i < friends.length; i++) {
   console.log('The value of the array at position', i, 'is', friends[i]);
 }
 ```
@@ -272,7 +272,7 @@ const friends = [
   { name: 'Jane Doe' },
 ];
 
-for (let i = 0; i < friends.length; i = i+1) {
+for (let i = 0; i < friends.length; i++) {
   console.log('The value of the array at position', i, 'is', friends[i]);
 }
 // ** output **
@@ -301,7 +301,7 @@ function greet(user) {
   console.log('Hello', user.name);
 }
 
-for (let i = 0; i < friends.length; i = i+1) {
+for (let i = 0; i < friends.length; i++) {
   greet(friends[i]);
 }
 // ** output **

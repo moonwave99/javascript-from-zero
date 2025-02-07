@@ -89,7 +89,8 @@ const thingsToBuy = 'bread, milk, salad';
 
 There are a lot of things to discuss about variables, we'll do as the story unfolds. Let's really use them as scrapes of paper where we can scribble on.
 
-:::important Just a little variables theory
+:::important Note
+### A little variables theory
 Let's have a look at the previous statements again.  
 They are similar: `const {variable name} = {something}`:
 
@@ -109,7 +110,19 @@ The `const` keyword and the equals sign are not negotiable. The variable name is
 
 The equal sign is called the **assignment operator**. It takes whatever comes after it and stores in the variable, so that the value can be recalled later.
 
-There is another keyword for introducing variables (`let`) but we don't need it now. There were other ways as well in previous versions of the JavaScript language, but we'll skip the history lesson for now.
+There is another keyword for introducing variables, `let`, but we don't need it now. There was another way as well in previous versions of the JavaScript language, but we'll skip the history lesson today.
+
+Ah, you cannot declare a variable with a name that has already been used:
+
+```js live showConsole
+const price = 100;
+
+// some code in between...
+
+const price = 50;
+```
+
+`"TypeError: /index.js: Duplicate declaration "price"`, see?
 :::
 
 ## Storing values in variables
@@ -191,5 +204,3 @@ We have already seen two use cases for variables:
 - storing **arbitrary values** (the four variables at the top of the file).
 
 The variables of these examples are intentionally long and pompous. We'll soon encounter more idiomatic ways to deal with the presented scenario. We'll also try to avoid variables as much as possible, because naming things properly leads to headaches and ambiguity if done poorly.
-
-Variables are really not a big deal, just a necessary evil.

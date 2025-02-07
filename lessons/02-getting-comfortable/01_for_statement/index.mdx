@@ -46,7 +46,7 @@ That's a lot of repeated calls to `rateBook`, and there is no hint in the code t
 There two main tools that can translate most of the problems into code. We have already seen the if statement used to make decisions, and now we'll see another whose purpose is to repeat a set of operations:
 
 ```js static showConsole
-for (let i = 0; i < 3; i = i+1) {
+for (let i = 0; i < 3; i++) {
   console.log("All work and no play may make Jim a dull boy");
 }
 // ** output **
@@ -58,7 +58,7 @@ for (let i = 0; i < 3; i = i+1) {
 That quite some new syntax all at once, but let's observe the output. We have three times the same log statement, and there is a number 3 in the code. It may as well be a coincidence, so let's try to change that quantity:
 
 ```js static showConsole
-for (let i = 0; i < 4; i = i+1) {
+for (let i = 0; i < 4; i++) {
   console.log("All work and no play may make Jim a dull boy");
 }
 // ** output **
@@ -93,7 +93,7 @@ It's important to know that the block is not even once executed if the condition
 Let's see what is happening to the variable `i`:
 
 ```js static showConsole
-for (let i = 0; i < 3; i = i+1) {
+for (let i = 0; i < 3; i++) {
   console.log(i);
 }
 // ** output **
@@ -126,63 +126,16 @@ Fourth round:
 - condition evaluated, 3 is **not lesser than itself**!
 - we move on with the program.
 
-It looks like a lot of considerations, because they are a lot. But we have to do them in depth since it's our first encounter with the syntax. Tou have to appreciate the transparency of the language. It's crucial that we spend all the time in the world doing these petulant observations now that the program is just logging a variable, before the code gets entangled.
+It looks like a lot of considerations, because they are a lot! But we have to do them in depth since it's our first encounter with the syntax. Tou have to appreciate the transparency of the language. It's crucial that we spend all the time in the world doing these petulant observations now that the program is just logging a variable, before the code gets entangled.
 
-### The `let` keyword
-
-So far we declared variables with `const`:
-
-```js
-const user = { name: 'Jane Doe', age: 35 };
-```
-
-We haven't discussed why the keyword is called `const`. It is short for _constant_ because you are not allow to overwrite it afterwards. Trying to do so will result in an error:
-
-```js live showConsole
-const myAge = 40;
-// I changed my mind
-myAge = 25;
-console.log('My age is:', myAge);
-```
-
-`"SyntaxError: /index.js: "myAge" is read-only`, and rightfully so!
-
-The same doesn't apply if we declare the variable with `let`:
-
-```js static showConsole
-let myAge = 40;
-// I changed my mind
-myAge = 25;
-console.log('My age is:', myAge);
-// ** output **
-// My age is: 25
-```
-
-Why haven't we discussed both possibilities at the same time? Because that would have been just confusing, since you will never declare a variable and overwrite its value in the very next line!
-
-Now we have a specific use case since the `i` variable must change values as stated in the afterthought, where we update its value by 1 - `i = 1+1`. We don't run the update manually, the machine does it for us.
-
-:::important Note
-The `const` and `let` keywords have been introduced in the [ECMAScript 2015][ecmascript-2015] revision of the language. Before there was just a single way to declare variables that always allowed further changes, and that was with the `var` keyword:
-
-```js static showConsole
-var myAge = 40;
-// I changed my mind
-myAge = 25;
-console.log('My age is:', myAge);
-// ** output **
-// My age is: 25
-```
-
-Since then we don't use `var` anymore, but you may still stumble upon legacy code that uses that.
-:::
+The `i` variable is declared with `let` because we need to update it in the afterthought, or better the computer does it for us! It's the power of iteration.
 
 ### Changing the variable name
 
 We use `i` as a variable name in a `for` statement because it stands for **index**, but you are free to name it as you see fit - just make sure to be consistent:
 
 ```js static showConsole
-for (let figaro = 0; figaro < 3; figaro = figaro+1) {
+for (let figaro = 0; figaro < 3; figaro++) {
   console.log(figaro);
 }
 // ** output **
@@ -198,7 +151,7 @@ Feel free to name it explicitly `index` if it improves your comprehension.
 You don't have to start from 0 if you don't need to:
 
 ```js static showConsole
-for (let i = 1; i < 5; i = i+1) {
+for (let i = 1; i < 5; i++) {
   console.log(i);
 }
 // ** output **
@@ -213,7 +166,7 @@ for (let i = 1; i < 5; i = i+1) {
 You don't have to check just for strict lesser than:
 
 ```js static showConsole
-for (let i = 0; i <= 3; i = i+1) {
+for (let i = 0; i <= 3; i++) {
   console.log(i);
 }
 // ** output **
@@ -230,7 +183,7 @@ This time we have four logs, because 3 satisfied the condition - `<=` vs `<`.
 You have freedom here as well:
 
 ```js static showConsole
-for (let i = 0; i < 3; i = i+0.5) {
+for (let i = 0; i < 3; i = i + 0.5) {
   console.log(i);
 }
 // ** output **
@@ -242,17 +195,7 @@ for (let i = 0; i < 3; i = i+0.5) {
 2.5
 ```
 
-Most of the time you'll see the `i = i+1` written as `i++`. The double plus symbol is called the **increment operator** and updates the operand to its current value plus one:
-
-```js static showConsole
-let age = 39;
-age++;
-console.log('My age is:', age);
-// ** output **
-// My age is: 40
-```
-
-There also the **decrement operator** (`--`) that reduces the value by one. There is a different behavior in using such operators _before_ or _after_ the operand, but we won't discuss it at the moment. Using the explicit addition notation is perfectly fine if it makes things clearer to you.
+In this case we wanted a different increment, that's why we used an explicit assignation and not the increment operator.
 
 ## Printing a list of numbers
 
@@ -260,7 +203,7 @@ Let's write a function now that prints all integer numbers from a given `start` 
 
 ```js static showConsole
 function printNumbers(start, end) {
-  for (let i = start; i <= end; i = i+1) {
+  for (let i = start; i <= end; i++) {
     console.log(i);
   }
 }
