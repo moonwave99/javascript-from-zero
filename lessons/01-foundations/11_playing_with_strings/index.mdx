@@ -1,0 +1,192 @@
+# Playing with strings
+
+After a deep theoretical dive about [data types](./data_types), it's time to treat ourselves with something more practical.
+
+## Template literals
+
+We have seen a lot of `console.log` statements that were a mixture of inline strings and variables and/or parameters, like:
+
+```js
+console.log('Hello', name);
+console.log("It's too late, I will", plan);
+console.log('I am', user.age, 'years old');
+```
+
+The idea that we can use dynamic values inside a fixed formula is called **templating**. For example most website you browse make use of it, especially on profile pages or private areas: instead of authoring million of different page, they have a generic template that is filled with the information of the user you are currently looking at. Pretty much like functions, exactly!
+
+What if instead of logging we want to return the combination of variable data with fixed data? We cannot use `console.log` so we need to find another strategy.
+
+We haven't seen it so far, but the **plus operator** accepts strings as operands too:
+
+```js static showConsole
+// two inline strings
+console.log("'one' + 'two' = ", 'one' + 'two');
+
+// an inline string and a variable
+const myName = 'Charlie';
+console.log("'Hello ' + myName = ", 'Hello ' + myName);
+// ** output **
+// 'one' + 'two' = 'onetwo'
+// 'Hello ' + myName = 'Hello Charlie'
+```
+
+The sum operation is defined over the numbers. When dealing with strings we call it **concatenation**. The plus operator in JavaScript takes care of checking the operand data types and to behave accordingly.
+
+Concatenation with the plus operator has its use cases, but it is convoluted to read and prone to error as soon as you accidentally mix numbers and strings:
+
+```js static showConsole
+const bankAccount = 100;
+const deposit = '10'; // oops!
+
+console.log('The new amount is:', bankAccount + deposit);
+// ** output **
+// The new amount is: 10010
+```
+
+The plus operator sees a number (`bankAccount`) and a string (`deposit`). When one of the two operands is a string, JavaScript converts the other to string and concatenates them. If you don't know about data types and operators and still decide to implement a finance app, you'll have some interesting adventures to tell to your fellow inmates!
+
+With [ECMAScript 2015][ecmascript-2015] they made the wise decision to introduce a better mechanism:
+
+```js static showConsole
+console.log(`The sum of 2 and 3 is ${2 + 3}`);
+
+const myName = 'Charlie';
+console.log(`Hello ${myName}!`);
+// ** output **
+// The sum of 2 and 3 is 5
+// Hello Charlie!
+```
+
+What, dollars? Curly brackets? And that weird apostrophe thing? Let's go in order:
+
+- the weird apostrophes are **backticks** (`), be sure to locate them on your keyboard;
+- the `${...}` allows to interleave the main string with values or expressions.
+
+These structures are called **template literals**. They are evaluated as strings.
+
+Let's write a `getFullName` function that takes a user parameter with `firstName` and `lastName` properties and returns them joined with a space in between:
+
+```js static showConsole
+function getFullName(user) {
+  return `${user.firstName} ${user.lastName}`;
+                        // ^
+                        // \ this space above is important!
+}
+
+const myUser = { firstName: 'Jane', lastName: 'Doe' };
+const fullName = getFullName(myUser);
+
+console.log(fullName);
+// ** output **
+// Jane Doe
+```
+
+We could have achieved the same with the plus:
+
+```js static showConsole
+function getFullName(user) {
+  return user.firstName + ' ' + user.lastName;
+}
+
+const myUser = { firstName: 'Jane', lastName: 'Doe' };
+const fullName = getFullName(myUser);
+
+console.log(fullName);
+// ** output **
+// Jane Doe
+```
+
+Template literals are an improvement over concatenation because they remove the operator ambiguity and clearly express the coding intent.
+
+Bonus: they also allow to write strings over multiple lines, even without the need of interpolating them with other values!
+
+```js
+const poemByYeats = `A mermaid found a swimming lad,
+Picked him for her own,
+Pressed her body to his body,
+Laughed; and plunging down
+Forgot in cruel happiness
+That even lovers drown.`;
+```
+
+:::important Note
+The introduction of new features of the language does not make the old ones wrong. They are not deprecated and they still have use cases. You may also stumble upon valid code written before such features were available: this applies also for new features and code you will write now and read again in months or years from now!
+
+Going back to template literals: passing multiple arguments to a `console.log` statement is often more practical since we spare some symbols:
+
+```js
+// multiple arguments
+console.log('The sum of 2 and 3 is', 2 + 3);
+
+// one template literal as single argument
+console.log(`The sum of 2 and 3 is ${2 + 3}`);
+```
+
+In all other cases (variable definition, return statement from a function), use templates!
+:::
+
+## The `length` property
+
+We are familiar with the dot notation for objects, e.g. `user.firstName`. What we don't knot yet is that other data types have similar superpowers. For example we can tell how many characters a string contain by accessing its `length` property:
+
+```js static showConsole
+const myName = 'Charlie';
+console.log(`My name is ${myName.length} letters long.`);
+// ** output **
+// My name is 7 letters long.
+```
+
+Every string has it attached by design in JavaScript. This is not true for every programming language so consider yourself lucky.
+
+The `length` property is unsurprisingly a number:
+
+```js static showConsole
+const myName = 'Charlie';
+console.log(typeof myName);
+console.log(typeof myName.length);
+// ** output **
+// string
+// number
+```
+
+Let's immediately see it action by writing a function called `rateName` that prints a positive statement if the passed name is shorter than 10 letters, and teases it in case it's longer:
+
+```js static showConsole
+function rateName(name) {
+  if (name.length < 10) {
+    console.log(`Hello ${name}, that's easy to remember!`);
+  } else {
+    console.log(`Hey ${name}, let's find a nickname for that.`);
+  }
+}
+
+rateName('Charlie');
+rateName('Bartholomew');
+// ** output **
+// Hello Charlie, that's easy to remember!
+// Hey Bartholomew, let's find a nickname for that.
+```
+
+Checking the length of a string is useful in different situations. Validating input data is one of them.
+
+### The empty string
+
+Do all string have positive length? All except one!
+
+```js static showConsole
+console.log(''.length);
+// ** output **
+0
+```
+
+You can define a string with no content by just opening and closing quotes. That's called **the empty string** and has length 0. Despite of its minimum content it is very important and we'll need it for the next task.
+
+## Building strings conditionally
+
+WIP
+
+## Conclusion
+
+WIP
+
+[ecmascript-2015]: https://en.wikipedia.org/wiki/ECMAScript_version_history#6th_Edition_%E2%80%93_ECMAScript_2015

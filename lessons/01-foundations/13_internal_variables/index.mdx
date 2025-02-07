@@ -1,0 +1,149 @@
+# Internal variables
+
+So far we declared variables just outside of any function. Nobody prevents us from doing so from within of them, and now we'll learn why it's useful.
+
+## Keeping count of things
+
+We want to give our users some feedback about their profile information, and tell them what they can improve. To keep things simple let's take in consideration just three properties: `name`, `age` and `email`, that can all be or not he there.
+
+We have to display a message like `0/3`, `2/3`, `3/3`.
+
+Let's draft the function signature and some test calls:
+
+```js
+function checkProfileProgress(user) {
+  // work in progress
+}
+
+const myUser = {
+  name: 'Jane Doe',
+  email: 'jane@doe.com',
+  age: 35
+};
+
+const mysteriousUser = {
+  name: 'John Doe'
+};
+
+checkProfileProgress(myUser);
+checkProfileProgress(mysteriousUser);
+```
+
+In real life we keep track of quantities with fingers or by ticking lines on paper. Both methods have in common the concept of **updating something**. So far we have declared variables that didn't need to be updated, that why they are introduced by the `const` keyword.
+
+There is another keyword that allows us to overwrite the contents of a variable: it's called `let`:
+
+```js static showConsole
+const user = {
+  name: 'John Doe'
+};
+
+let count = 0;
+
+if (user.name) {
+  count = count + 1;
+}
+
+console.log('Count:', count);
+// ** output **
+// Count: 1
+```
+
+The initial value of `count` is 0. The condition of the if statement is satisfied and its block is executed. The only instruction contained overwrites `count` with one plus whatever it has at the moment, `count = count + 1`. The log statement at the end reflects the updated value of the `count` variable, that is now 1.
+
+Now we can use this inside our function!
+
+```js static showConsole
+function checkProfileProgress(user) {
+  let count = 0;
+
+  if (user.name) {
+    count = count + 1;
+  }
+
+  if (user.age) {
+    count = count + 1;
+  }
+
+  if (user.email) {
+    count = count + 1;
+  }
+
+  console.log(`${count}/3`);
+}
+
+const myUser = {
+  name: 'Jane Doe',
+  email: 'jane@doe.com',
+  age: 35
+};
+
+const mysteriousUser = {
+  name: 'John Doe'
+};
+
+checkProfileProgress(myUser);
+checkProfileProgress(mysteriousUser);
+
+// ** output **
+// 3/3
+// 1/3
+```
+
+Great! We are checking the properties one by one, and if they have found we update the count accordingly.
+
+## Declaration, assignation, initialization
+
+Now that we know about the `let` keyword we can finally give the following rigorous definitions about variables.
+
+### Declaration
+
+**To declare a variable** is to just give it a name:
+
+```js
+let name;
+```
+
+Exactly, with no equals anything after that! We had to wait until getting acquainted to `let`, because doing with `const` would result into an error:
+
+```js live showConsole
+const name;
+```
+
+Since we cannot update values declared with `const`, it makes no sense to declare them with no value.
+You seldom just declare variables with no value at all. There are scenarios but are not so common.
+
+### Assignation
+
+If a variable was declared with `let`, you can update it:
+
+```js
+let count = 0;
+
+if (someCondition) {
+  count = count = 1;
+}
+```
+
+We say that we **assign a new value** to the `count` variable. Again, it doesn't work with `const`:
+
+```js live showConsole
+const count = 0;
+
+if (someCondition) {
+  count = count = 1;
+}
+```
+
+### Initialization
+
+If you already know the initial value of your variable you can do both operations together. This is called **to initialize the variable**:
+
+```js
+const user = { name: 'Charlie Brown' };
+let count = 0;
+```
+
+## Conclusion
+
+WIP

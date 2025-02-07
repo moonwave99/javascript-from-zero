@@ -258,6 +258,25 @@ Let's compile the status table:
 
 Congratulations, you have implemented [your first algorithm][wiki:algorithm], i.e. a finite sequence of instructions used to solve a specific problem or to perform a computation.
 
+:::important Note
+It's important to know that albeit being totally correct, the syntax discussed so far isn't the most idiomatic in contemporary JavaScript.
+
+The focus here is about **understanding iteration**, and this works much better with traditional for loops where the mechanism is explicit. Soon we'll transition to a more concise syntax like:
+
+```js static showConsole
+const numbers = [3, 4, 7];
+numbers.forEach(
+  (number, index) => console.log('The number at position', index, 'is', number);
+);
+// ** output **
+// The number at position 0 is 3
+// The number at position 1 is 4
+// The number at position 2 is 7
+```
+
+Starting right away with the syntax above leaves a huge understanding gap behind.
+:::
+
 ## A note on the learning progress
 
 It's entirely normal and expected to feel overwhelmed at this point. The good news it that you don't need to jump to the next lesson yet, as there is no scheduled appointment! You have been exposed to a lot of new syntax: for loops, arrays, we even invited if statements back to the party.
@@ -272,6 +291,8 @@ Before moving on, my advice is to rewrite the example of this lesson many times,
 - return the partial sum.
 
 All these steps will raise doubts, whether about syntax or more about the concept itself. Note down your doubts and try to overcome them by reading the relevant part of the lesson again. Then open a blank file and work again from scratch. Type those bracket in, no copy-paste allowed! After some iterations (see what I did here!) you'll be golden.
+
+Remember to do the exercises multiple times as well, with the same approach. They have purposefully a lot in common with the programs implemented in the lessons, in order to reinforce concepts by analogy and difference.
 
 ## Conclusion
 

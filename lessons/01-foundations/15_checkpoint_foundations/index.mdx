@@ -1,0 +1,204 @@
+# Foundations: Checkpoint
+
+We have seen several core concepts so far. Let's make some considerations before moving on to the next module.
+
+## Variables and functions: the morphology of code
+
+One of the main sources of doubt while I was at beginning of the journey was when to introduce a new variable or to declare a new function, and I sure we share the same uncertainty. Even worse, the more experienced the developer, the more they would question their expressive choices!
+
+In the following example, the `greetUser` function is called twice: the first time with Charlie Brown and 9 as arguments, the second with the same name but 15 as time.
+
+```js static
+function greet(name, hour) {
+  if (hour > 12) {
+    console.log("Good afternoon", name);
+  } else {
+    console.log("Good morning", name);
+  }
+}
+
+greet('Charlie Brown', 9);
+greet('Charlie Brown', 15);
+// ** output **
+'Good morning Charlie Brown'
+'Good afternoon Charlie Brown'
+```
+
+Without any change in functionality, we can store the name in a variable that we pass to both function calls:
+
+```js static
+function greet(name, hour) {
+  if (hour > 12) {
+    console.log("Good afternoon", name);
+  } else {
+    console.log("Good morning", name);
+  }
+}
+
+const personToGreet = 'Charlie Brown';
+
+greet(personToGreet, 9);
+greet(personToGreet, 15);
+// ** output **
+'Good morning Charlie Brown'
+'Good afternoon Charlie Brown'
+```
+
+This way we are reinforcing the idea that both calls receive the same name as first argument. This avoid making a typo in repeating values in multiple contexts.
+If we change the variable content, we don't have to touch the function calls:
+
+```js static
+function greet(name, hour) {
+  if (hour > 12) {
+    console.log("Good afternoon", name);
+  } else {
+    console.log("Good morning", name);
+  }
+}
+
+const personToGreet = 'Lucy Van Pelt';
+
+greet(personToGreet, 9);
+greet(personToGreet, 15);
+// ** output **
+'Good morning Lucy Van Pelt'
+'Good afternoon Lucy Van Pelt'
+```
+
+## Objects vs. primitive values
+
+We know that we can group properties together in objects, like:
+
+```js
+// three separate variables
+const name = 'Jane Doe';
+const age = 35;
+const email = 'jane@doe.com';
+
+// one single object
+const user = {
+  name: 'Jane Doe',
+  age: 35,
+  email: 'jane@doe.com'
+};
+```
+
+The second approach is cleaner, and far superior as soon as two or more users are involved in the program:
+
+```js static showConsole
+function sendEmail(sender, receiver, message) {
+  console.log('Sending message from', sender.email);
+  console.log('To', receiver.email);
+  console.log('Subject: Hello', receiver.firstName);
+  console.log(message);
+  console.log('Yours,', sender.firstName);
+}
+
+const myself = {
+  firstName: 'Charlie',
+  lastName: 'Brown',
+  email: 'charlie@brown.com'  
+};
+
+const myBestFriend = {
+  firstName: 'Linus',
+  lastName: 'Van Pelt',
+  email: 'linus@vanpelt.com'  
+};
+
+sendEmail(
+  myself,
+  myBestFriend,
+  "Let's hit the pitch this afternoon mate, see you there at 4, cheers!"
+);
+// ** output **
+// Sending message from charlie@brown.com
+// To linus@vanpelt.com
+// Subject: Hello Linus
+// Let's hit the pitch this afternoon mate, see you there at 4, cheers!
+// Yours, Charlie
+```
+
+In this case storing the users in variables is semantically helpful because we know who is `myself` and who is the other person.
+
+## Objects as arguments
+
+One downside of using objects as arguments is that they inherently make the function more complex because we need to know how the object is shaped. Our `greet` function takes a string as the first parameter. Let's update to take an object that has a `firstName` property instead:
+
+```js static showConsole
+function greet(user, hour) {
+  if (hour > 12) {
+    console.log("Good afternoon", user.firstName);
+  } else {
+    console.log("Good morning", user.firstName);
+  }
+}
+
+const myself = {
+  firstName: 'Charlie',
+  lastName: 'Brown',
+};
+
+greet(myself, 8);
+
+// ** output **
+// Good morning, Charlie
+```
+
+Looking at the function signature or at the function call alone, you cannot tell that the `firstName` property is involved. How can you know then? Well if you have written the function yourself, you are in control of the situation. If you are using code from another developer, they have to document their code, like for instance:
+
+```js
+/**
+ * Greets the passed user
+ * @param { { name:string } } user
+ * @param { number } house
+ */
+function greet(user, hour) { ... }
+```
+
+Remember that we are still working in very controlled scenarios, with simple data structures authored by ourselves. As soon as data is coming from external providers like other functions, databases or web services, it's important that we learn how to extract the data we need from the objects we receive.
+
+Being honest in this case one could have kept the function as it was, and pass the `firstName` of the user as argument:
+
+```js static showConsole
+function greet(name, hour) {
+  if (hour > 12) {
+    console.log("Good afternoon", name);
+  } else {
+    console.log("Good morning", name);
+  }
+}
+
+const myself = {
+  firstName: 'Charlie',
+  lastName: 'Brown',
+};
+
+greet(myself.firstName, 8);
+// ** output **
+// Good morning, Charlie
+```
+
+But as soon as we need to access more properties from the same object we need to make different considerations. Remember the `printUserInfo` function? In case you don't:
+
+```js
+function printUserInfo(user) {
+  console.log('My name is', user.firstName, user.lastName);
+  console.log('I am', user.age, 'years old');
+  console.log('Feel free to write me at:', user.email);
+  console.log('You can visit me at the number', user.address.number, 'of', user.address.street);
+}
+```
+
+Imagine defining it as:
+
+```js
+function printUserInfo(firstName, lastName, age, email, address) {
+  console.log('My name is', firstName, lastName);
+  console.log('I am', age, 'years old');
+  console.log('Feel free to write me at:', email);
+  console.log('You can visit me at the number', address.number, 'of', address.street);
+}
+```
+
+Now the function takes five parameters! And the order matters too. Luckily enough this scenario has been addressed and solved in the ECMAScript 2015 revision, we'll see how in detail soon.

@@ -1,0 +1,323 @@
+# Scope of variables
+
+In the [previous lesson](./internal_variables) we updated the value of a variable for the first time, and we did it from within a function:
+
+```js static showConsole
+function checkProfileProgress(user) {
+  let count = 0;
+
+  if (user.name) {
+    count = count + 1;
+  }
+
+  if (user.age) {
+    count = count + 1;
+  }
+
+  if (user.email) {
+    count = count + 1;
+  }
+
+  console.log(`${count}/3`);
+}
+
+const myUser = {
+  name: 'Jane Doe',
+  email: 'jane@doe.com',
+  age: 35
+};
+
+const mysteriousUser = {
+  name: 'John Doe'
+};
+
+checkProfileProgress(myUser);
+checkProfileProgress(mysteriousUser);
+
+// ** output **
+// 3/3
+// 1/3
+```
+
+## Internal variables
+
+We say that `count` is an **internal variable** of the `checkProfileProgress` function. This is because it is declared _inside_ the function. Internal variables:
+
+- have no memory of previous calls to the same function;
+- are not defined outside of the function they have been declared in.
+
+That is, if you try to log `count` anywhere outside of `checkProfileProgress`:
+
+```js live showConsole
+function checkProfileProgress(user) {
+  let count = 0;
+
+  if (user.name) {
+    count = count + 1;
+  }
+
+  if (user.age) {
+    count = count + 1;
+  }
+
+  if (user.email) {
+    count = count + 1;
+  }
+
+  console.log(`${count}/3`);
+}
+
+const mysteriousUser = {
+  name: 'John Doe'
+};
+
+console.log(count);
+```
+
+We get a `"ReferenceError: count is not defined` error. This means that we can use the same variable name in different functions:
+
+```js
+function a() {
+  let inner = '...';
+}
+
+function b() {
+  let inner = '...';
+}
+```
+
+## External variables
+
+I am very divided about making this experiment. After mentioning internal variables, one can rightfully expect the existence of external ones. So far I carefully crafted all function examples in a way that they never rely on external variables, in order to reinforce the idea that **functions should rely as much as possible on their parameters**. `Promise` me that you would stick to this principle before proceeding!
+
+Alright, but don't try this at home:
+
+```js static showConsole
+function checkProfileProgress() {
+  let count = 0;
+
+  if (user.name) {
+    count = count + 1;
+  }
+
+  if (user.age) {
+    count = count + 1;
+  }
+
+  if (user.email) {
+    count = count + 1;
+  }
+
+  console.log(`${count}/3`);
+}
+
+const user = {
+  name: 'John Doe'
+};
+
+checkProfileProgress();
+// ** output **
+// 1/3
+```
+
+The function prints `1/3` as expected. But don't you notice anything strange? The function signature has now no parameters, and it has been called without arguments. Why do we still get a meaningful output?
+
+That is because the function can read the value of the `user` variable. We say that the `user` variable is **external** to the function. The problem with this approach is that our function would work just with that very specific variable, that is exactly against the spirit of making functions accept different inputs! If we don't plan to reuse the logic for multiple inputs, there is no point in having a function at all:
+
+```js static showConsole
+// look ma, no functions!
+
+const user = {
+  name: 'John Doe'
+};
+
+let count = 0;
+
+if (user.name) {
+  count = count + 1;
+}
+
+if (user.age) {
+  count = count + 1;
+}
+
+if (user.email) {
+  count = count + 1;
+}
+
+console.log(`${count}/3`);
+// ** output **
+// 1/3
+```
+
+Let's have a look at the original code again:
+
+```js static showConsole
+function checkProfileProgress(user) {
+  let count = 0;
+
+  if (user.name) {
+    count = count + 1;
+  }
+
+  if (user.age) {
+    count = count + 1;
+  }
+
+  if (user.email) {
+    count = count + 1;
+  }
+
+  console.log(`${count}/3`);
+}
+
+const myUser = {
+  name: 'Jane Doe',
+  email: 'jane@doe.com',
+  age: 35
+};
+
+const mysteriousUser = {
+  name: 'John Doe'
+};
+
+checkProfileProgress(myUser);
+checkProfileProgress(mysteriousUser);
+
+// ** output **
+// 3/3
+// 1/3
+```
+
+See how we called we stored the users **in two different variables** (`myUser` and `mysteriousUser`). Inside the function we rely just on the `user` parameter, that has a different and independent value in every different call. You will code most of the time inside functions, so take all the time you need to absorb this concept, as it is the angular stone of programming.
+
+## Definition of scope
+
+We said that the `count` variable is internal to the `checkProfileProgress` function. We also say that the scope of `count` is the `checkProfileProgress` function, i.e. we can refer to `count` just inside the function. In the dangerous example above we removed the parameter from the function and renamed the `myUser` variable holding the objet to `user`. We say that the `user` variable is in the **global scope** because it is accessible from everywhere: from the top level or from inside a function. More concisely we say that `user` is a **global variable**.
+
+
+
+Let's make an example:
+
+```js static showConsole
+const a = 1;
+const b = 2;
+
+function f(n, m) {
+  const c = 3;
+  console.log(a, b, c, n, m);
+}
+
+f(4, 5);
+// ** output **
+// 1, 2, 3, 4, 5
+```
+
+Observations:
+
+- `a` and `b` are global variables;
+- `c` is an internal variable of the `f` function;
+- `n` and `m` are parameters of the `f` function.
+
+Function parameters and internal variables **have the same scope**, i.e. they are not accessible outside of the function.
+
+## Making sense of global variables
+
+Let's write a program that keeps track of how many time we called the functions we defined. We already know how to keep track of things! This time we don't want to use variables internal to any function, because we have to store a global information that can be updated from everywhere.
+
+Let's draft the program without the count feature:
+
+```js static
+function a() {
+  console.log('a');
+  b();
+  b(true);
+}
+
+function b(withTurbo) {
+  console.log('b');
+  c();
+  if (withTurbo) {
+    c();
+  }
+}
+
+function c() {
+  console.log('c');
+}
+
+a();
+// ** output **
+// a
+// b
+// c
+// b
+// c
+// c
+```
+
+<details>
+  <summary>
+  Before peeking at the console, can you guess already the output of the program? Be like Ariadne and follow the call thread!
+  </summary>
+- first we call `a` at the end of the file;
+- the first instruction of `a` is to log `a`;
+- then we call `b`;
+- first thing of `b` is to log `b`;
+- call to `c` now, it just logs `c`;
+- back to our `b` call: we haven't called it with any parameter so we don't enter the if. Back to `a`;
+- there was still stuff to be done inside `a`, namely another call to `b`, this time with `true` as argument;
+- second round of `b`, another `b` log;
+- call to `c` now, it logs `c` again;
+- again in `b`, this time `withTurbo` is true, another call to `c`, another `c` log.  
+
+Putting everything together, we get: `a`, `b`, `c`, `b`, `c`, `c`.
+</details>
+
+I am sure you made your autonomous research and discovered that we have six logs, meaning six function calls. This is our expectation for the count functionality.
+
+We'll declare a `count` variable at the top of the program. Since the variable should be updated, we have to declare it with `let`. Let's then increment the `count` as the first thing inside every function:
+
+```js static showConsole
+let count = 0;
+
+function a() {
+  count = count + 1;
+  console.log('a');
+  b();
+  b(true);
+}
+
+function b(withTurbo) {
+  count = count + 1;
+  console.log('b');
+  c();
+  if (withTurbo) {
+    c();
+  }
+}
+
+function c() {
+  count = count + 1;
+  console.log('c');
+}
+
+a();
+
+console.log(count);
+// ** output **
+// a
+// b
+// c
+// b
+// c
+// c
+// 6
+```
+
+Bingo!
+
+## Conclusion
+
+WIP
+

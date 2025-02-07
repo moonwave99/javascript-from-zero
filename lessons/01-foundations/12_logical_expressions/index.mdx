@@ -24,15 +24,13 @@ We have a different behavior depending on what second argument we used to call t
 
 Then [we suggested some plans based on the current weather in the `suggestPlans` function](./making_decisions#comparing-strings), and eventually [we checked the presence of an object key in the `printUserInfo` function](./using_objects_in_functions#checking-if-object-properties-are-present). Let's review what we have seen and provide some further use cases.
 
-:::important Note
 Logical expressions and value comparisons are broad topics. Especially in JavaScript it would be overwhelming to discuss them in depth at the very beginning of your journey.
 
 Let's focus on seeing concrete and practical use cases. We'll review the topic with more rigor once we will have covered more data types and structures, and most important after you will have developed some dexterity in autonomously writing functions yourself.
-:::
 
 ## Boolean values
 
-We know that the **boolean type** can hold just two values: `true` and `false`. They are just commodity names: they could have called them _yes_ and _no_, or use the numbers 1 and 0.
+We know that the **boolean type** can hold just two values: `true` and `false`. They are just commodity names: they could have called them _yes_ and _no_, or Tom and Jerry, or use the numbers 1 and 0.
 
 We can use boolean values directly in conditions like:
 
@@ -40,9 +38,9 @@ We can use boolean values directly in conditions like:
 const isRaining = true;
 
 if (isRaining) {
-  console.log("I'd better carry an umbrella with me")
+  console.log("I'd better carry an umbrella with me");
 } else {
-  console.log("It's good to be hands free")
+  console.log("It's good to be hands free");
 }
 // ** output **
 "I'd better carry an umbrella with me"
@@ -122,7 +120,7 @@ guessSecretWord('s3cr3t');
 'You guessed right!'
 ```
 
-Let's not forget how string comparison is **case sensitive**:
+Let's not forget that string comparison is **case sensitive**:
 
 ```js static showConsole
 console.log('cat' == 'dog');

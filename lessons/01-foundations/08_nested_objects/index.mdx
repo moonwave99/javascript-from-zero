@@ -107,6 +107,22 @@ Let's read it as `(user.address).number`. What do we know about accessing missin
 
 The solution of the problem is not trivial. In this case we could provide an `address` to the user, or avoid logging the address information altogether. In the next lesson we'll see how to check beforehand if an object has a specific property.
 
+## Excuse me, what do you mean by Error?
+
+You'd better ask that to the JavaScript language! In programming there are various types of error. The one we encountered above is called a **runtime error** because it happened during the execution of the program.
+
+A runtime error is a scenario where the machine is unable to fulfill the written operation and does not know how to proceed. In order not to make the situation any worse, any code that is supposed to be run after the problematic point is ignored. We say that the program **exits with an error code**.
+
+As opposed to runtime error you have **compile errors**, that are detected by the machine _before_ running the code. Among theme you have syntax errors for instance:
+
+```js live showConsole
+console.log(2 + 3
+```
+
+Here the machine spots the unbalanced parentheses and doesn't even bother running the code.
+
+You have to pay attention to error messages, because they are contain useful information about where in the code the problem happened. Most aspiring developers ignore this information altogether and complain they don't know how to fix their code. Don't be like the average aspiring developer and read the error messages carefully, since nobody else will do that for you!
+
 ## Conclusion
 
 WIP
