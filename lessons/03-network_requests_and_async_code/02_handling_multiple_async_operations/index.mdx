@@ -1,0 +1,199 @@
+# Handling multiple async operations
+
+In the previous lesson we have made acquaintance with the `setTimeout` function, that delays the call of the passed function by the passed amount of milliseconds:
+
+```js live showConsole
+function countdown(time, callback) {
+  console.log(time);
+  if (time <= 0) {
+    callback();
+    return;
+  }
+  setTimeout(() => {
+    countdown(time - 1, callback);
+  }, 1000);
+}
+
+countdown(3, () => {
+  console.log('done!');
+});
+```
+
+We solved the problem of executing code after the time is over by passing a callback to the `countdown` function, much like what the `setTimeout` function does if you think.
+
+## Returning from an async function
+
+The `countdown` function does not need to return anything, so we didn't face the problem. Let's consider the following sync function:
+
+```js static showConsole
+function roll() {
+  return Math.floor(Math.random() * 5);
+}
+
+console.log(`You just rolled a ${roll()}`);
+console.log(`You just rolled a ${roll()}`);
+console.log(`You just rolled a ${roll()}`);
+// ** output **
+// You just rolled a 4
+// You just rolled a 0
+// You just rolled a 3
+```
+
+It simulates the roll of a zero-based, six faced die. Let's spice things up by delaying the generation by half a second. One might be tempted to do just the following:
+
+```js live
+function roll() {
+  setTimeout(() => {
+    return Math.floor(Math.random() * 5);
+  }, 500);
+}
+
+console.log(`You just rolled a ${roll()}`);
+```
+
+What do you expect to see in the console? Interesting! We don't get any number, but a rather mysterious `You just rolled a undefined`. The problem is that the return statement does not refer to the `roll` function, but to the anonymous arrow function passed to `setTimeout`. Yes that's a lot of function mental gymnastic, I told you already what is the most important programming concept.
+
+If we move the return statement outside of the `setTimeout`, we go back the original version of the function and we lose the delay feature. No matter what you try to do, `return` is not the right tool for this job.
+
+How did we solve the wait problem in the `countdown` function? With a callback function.  Does anything prevent us from passing arguments to the callback function? Not at all!
+
+```js live showConsole
+function roll(callback) {
+  setTimeout(() => {
+    const result = Math.floor(Math.random() * 5);
+    callback(result);
+  }, 500);
+}
+
+roll((number) => {
+  console.log(`You just rolled a ${number}`);
+});
+```
+
+Great! Remember that you can use both a named function and an anonymous one. You can also get rid of the intermediate `result` variable inside the timeout:
+
+```js live showConsole
+function roll(callback) {
+  setTimeout(() => {
+    callback(Math.floor(Math.random() * 5));
+  }, 500);
+}
+
+function printResult(number) {
+  console.log(`You just rolled a ${number}`);
+}
+
+roll(printResult);
+
+roll((number) => {
+  console.log(`You just rolled a ${number}`);
+});
+```
+
+This style of coding has been prominent in JavaScript until the introduction of the constructs we are going to see in the next lessons. It is called **continuation-passing style**, where functions are never allowed to return to their called but instead accept callbacks where the execution of the program continues. One can loosely say that the function _returns the number in the callback_, because that's the spirit of the function.
+
+The **Node.js** standard library is written in this style for example:
+
+```js
+fs.readFile('/path/to/file.txt', (error, contents) => {
+  if (error) {
+    console.log('Error opening file', error);
+    return;
+    console.log('File contents', contents);
+  }
+});
+
+db.query('SELECT * FROM users', (rows) => {
+  console.log(rows);
+});
+
+app.get('/', (request, response) => {
+  response.send('OK');
+});
+```
+
+Observe how the two results appear in the console at once, and not one half a second one after the other. This should reinforce the non-blocking nature of the JavaScript language: deferred operations are not awaited, but the event loop moves on instead and evaluates the scheduled callbacks when they are due. Among the impersonations in possible future lives, being the event loop is the one I desire the least!
+
+## Summing two dice rolls
+
+The problem looks less trivial than what one can think. First, how can we access the values of two rolls? Since the value is available as the callback function parameter, it cannot be accessed outside of it. The following abomination should not be even considered:
+
+```js live showConsole
+function roll(callback) {
+  setTimeout(() => {
+    callback(Math.floor(Math.random() * 5));
+  }, 500);
+}
+
+let firstNumber;
+let secondNumber;
+
+roll((number) => {
+  console.log(`firstNumber: ${number}`);
+  firstNumber = number;
+});
+
+roll((number) => {
+  console.log(`secondNumber: ${number}`);
+  secondNumber = number;
+});
+
+console.log(`The sum of the rolls is: ${firstNumber + secondNumber}`);
+```
+
+Once again, the log statement is evaluated _before_ the timeouts. Another questionable approach is to abuse the knowledge of the timeout duration: we know that both rolls are available after 500 milliseconds, so if we wait more than that, maybe the `firstNumber` and `secondNumber` variables are correctly populated:
+
+```js live showConsole
+function roll(callback) {
+  setTimeout(() => {
+    callback(Math.floor(Math.random() * 5));
+  }, 500);
+}
+
+let firstNumber;
+let secondNumber;
+
+roll((number) => {
+  console.log(`firstNumber: ${number}`);
+  firstNumber = number;
+});
+
+roll((number) => {
+  console.log(`secondNumber: ${number}`);
+  secondNumber = number;
+});
+
+setTimeout(() => {
+  console.log(`The sum of the rolls is: ${firstNumber + secondNumber}`);
+}, 501);
+```
+
+That's a waste of resources, and more important settles a bad habit: what if the duration of the operation is unpredictable? That ain't working.
+
+Let's rely on our **closure** knowledge. What if we nest the two rolls?
+
+```js live showConsole
+function roll(callback) {
+  setTimeout(() => {
+    callback(Math.floor(Math.random() * 5));
+  }, 500);
+}
+
+roll((firstNumber) => {
+  console.log(`firstNumber: ${firstNumber}`);
+  roll((secondNumber) => {
+    console.log(`secondNumber: ${secondNumber}`);
+    console.log(`The sum of the rolls is: ${firstNumber + secondNumber}`);
+  });
+});
+```
+
+That's the way you do it! No external variables, no additional timeouts. Observe the half second delay between the two rolls this time. We say that the operations are executed **in series** and not **in parallel**. We are modelling the scenario when we have just one die available and we roll it twice, if you think. From a performance point of view, we are wasting half a second of time since no operation depends on the other. In the next lesson we'll see how to properly handle parallel operations.
+
+## Conclusion
+
+In this lesson we have seen how to return values in continuation-passing style. What are the downsides of this approach? As soon as we nest multiple operations, our code will start looking like this:
+
+![Hadoken](https://www.twilio.com/content/dam/twilio-com/global/en/blog/legacy/2017/promises-in-swift-writing-cleaner-asynchronous-code-using-promisekit-html/Screen-Shot-2017-03-06-at-5.11.06-PM.png)
+
+And it's easy to get lost in the [callback hell](http://callbackhell.com/). Despite the good practices that allow to keep clean code with callbacks as well, the linearity of the synchronous, `return` based model led to introduction of the `async` / `await` keywords in the language.

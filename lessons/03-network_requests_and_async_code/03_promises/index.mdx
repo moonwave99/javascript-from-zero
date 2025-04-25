@@ -1,0 +1,364 @@
+# Promises
+
+We know how to access return values (in the callback sense) in continuation-passing style:
+
+```js
+function roll(callback) {
+  setTimeout(() => {
+    callback(Math.floor(Math.random() * 5));
+  }, 500);
+}
+
+roll((number) => {
+  console.log(`You just rolled a ${number}`);
+});
+```
+
+Concurrent programming predates JavaScript by many years: getting the response of various database queries or network requests, reading multiple files. Nesting callbacks became tedious and very cumbersome when iterating over a list, so concepts like _thunks_, _futures_ and _deferred objects_ helped to better organize those operations.
+
+In the ES2015 revision the `Promise` object was introduced in JavaScript.
+
+```js live showConsole showLines
+const result = new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(Math.floor(Math.random() * 5));
+    }, 500);
+});
+
+console.log('before');
+result.then((number) => {
+  console.log(`You just rolled a ${number}`);
+});
+console.log('after');
+```
+
+First, the log sandwich works like all the examples of this chapter - `before`, `after` and after the interval the roll.
+
+Let's break things down:
+
+- in line 1 a new `Promise` object is instantiated and assigned to the `roll` variable;
+- the `Promise` constructor accepts one function as parameter;
+- this function accepts a `resolve` parameter on its own;
+- `resolve` is a function, that is called in line 3 (inside the `setTimeout` callback).
+
+That's already a lot to digest. Let's finish before reviewing:
+
+- the `roll` instance has a `.then()` method, called in line 8;
+- `.then()` accepts a function as a parameter, in this case an arrow function;
+- the arrow function gets what was passed to `resolve` as argument.
+
+We define a Promise as follows:
+
+> A Promise is a proxy for a value not necessarily known when the promise is created.
+
+When the value will be available, it will be accessible inside the `.then()` callback. Until now the code is not that much different from our `roll()` function. We'll see other features that Promises offer in a moment.
+
+Before moving on, let's use the Promise object inside a function, to make it reusable:
+
+```js live showConsole showLines
+function roll() {
+  return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(Math.floor(Math.random() * 5));
+      }, 500);
+  });
+}
+
+
+roll().then((number) => {
+  console.log(`You just rolled a ${number}`);
+});
+roll().then((number) => {
+  console.log(`You just rolled a ${number}`);
+});
+```
+
+See how:
+
+- the `roll` function now accepts no parameters (no callback);
+- the `roll` function has a `return` statement;
+- `roll` is called twice, each time followed by a `.then()`;
+- each `.then()` receives the result of each roll.
+
+One can also write a single `logResult` function and pass it to both `.then()`s:
+
+```js live showConsole showLines
+function roll() {
+  return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(Math.floor(Math.random() * 5));
+      }, 500);
+  });
+}
+
+function logRoll(number) {
+  console.log(`You just rolled a ${number}`);
+}
+
+
+roll().then(logRoll);
+roll().then(logRoll);
+```
+
+The `.then()` name wasn't chosen on a whim, it makes you read the code as a sentence!
+
+By now you should be on the verge of breaking. That's a lot of bracket and arrow soup, but you are doing some great syntax workout. Callbacks are the core feature of JavaScript, and even though we'll reach soon the syntax that hides a lot of them, you won't go far without knowing what's going on under the hood.
+
+## Throwing and handling errors in continuation-passing style
+
+Let's leave the dice apart for a moment and let's write an async division function in continuation-passing style. First let's review the sync version:
+
+```js static showConsole
+function divide(a, b) {
+  return a / b;
+}
+
+console.log(divide(1, 2));
+// ** output **
+0.5
+```
+
+We want to be sure the second parameter is different from 0 in order to keep the image of the function in the real numbers. Let's throw an error in such case:
+
+```js static showConsole
+function divide(a, b) {
+  if (b === 0) {
+    throw new Error('Cannot divide by zero!');
+  }
+  return a / b;
+}
+
+try {
+  console.log(divide(1, 2));
+  console.log(divide(1, 0));
+} catch(error) {
+  console.log(error);
+}
+// ** output **
+0.5
+Cannot divide by zero!
+```
+
+We haven't discussed how to throw errors in CPS. We cannot use a `throw` statement, because it wouldn't be caught at the right time by a `try...catch` block. An agreed method is to pass the possible error as an actual parameter to the callback, like in the Node.js standard library:
+
+```js
+fs.readFile('/path/to/file.txt', (error, contents) => {
+  if (error) {
+    console.log('Error opening file', error);
+    return;
+    console.log('File contents', contents);
+  }
+});
+```
+
+Important: the error and the further callback parameters cannot both hold any value at once, it's either / or! In functional programming this structure is actually called `Either`.
+
+Let's do the same in our CPS implementation:
+
+```js live showConsole
+function divide(a, b, callback) {
+  if (b === 0) {
+    callback(new Error('Cannot divide by zero!'));
+    return;
+  }  
+  setTimeout(() => {
+    callback(null, a / b);
+  }, 500);
+}
+
+function handleResult(error, result) {
+  if (error) {
+    console.log(error);
+    return;
+  }
+  console.log(result);
+}
+
+divide(1, 2, handleResult);
+divide(1, 0, handleResult);
+```
+
+Let's review what we have just done:
+
+- the `divide` signature accepts a third parameter, the `callback` function;
+- the callback accepts two parameters - a possible `error`, and the `result` is there is no error to be thrown;
+- we handle the error before the timeout, since it can be checked right away;
+- in the timeout, we call `callback(null, a / b)`.
+
+It's important to pass `null` as the first argument. In this way we can decide if we are in the successful case in the callback body.
+
+## Throwing and handling errors in promises
+
+Let's rewrite the `divide` function with a Promise, without error handling first:
+
+```js live showConsole
+function divide(a, b) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(a / b);
+    }, 500);
+  });
+}
+
+function handleResult(result) {
+  console.log(result);
+}
+
+divide(1, 2).then(handleResult);
+divide(1, 0).then(handleResult);
+```
+
+See what happens if we don't handle the error? `Infinity`! We don't want to deal with Infinity. As in the previous translation:
+
+- no callback as third parameter to `divide`;
+- a `Promise` is returned from the function;
+- `resolve` gets called (without any error reference).
+
+What about the error now? The function we pass to the `Promise` constructor accepts **a second parameter**, namely called `reject`:
+
+```js live showConsole showLines
+function divide(a, b) {
+  return new Promise((resolve, reject) => {
+    if (b === 0) {
+      reject(new Error('Cannot divide by zero!'));
+      return;
+    }      
+    setTimeout(() => {
+      resolve(a / b);
+    }, 500);
+  });
+}
+
+function handleResult(result) {
+  console.log(`Handling result: ${result}`);
+}
+
+function handleError(error) {
+  console.log(`Handling error: ${error}`);
+}
+
+divide(1, 2)
+  .then(handleResult)
+  .catch(handleError);
+
+divide(1, 0)
+  .then(handleResult)
+  .catch(handleError);
+```
+
+- We call `reject` with our `Error` inside the if statement in lines 3/5;
+- At the end of the program we call `divide` twice;
+- In both cases we follow the `.then()` with a `.catch()`;
+- In the 1/2 case, just `handleResult` is called;
+- In the 1/0 case, just `handleError` is called.
+
+Since the Promise callback constructor accepts two parameters (`resolve` and `reject`), it exposes two different handlers for the success and failure case: `.then()` and `.catch()`. But why can we call `.catch()` after `.then()`?
+
+The verbose version would actually be:
+
+```js live showConsole showLines
+function divide(a, b) {
+  return new Promise((resolve, reject) => {
+    if (b === 0) {
+      reject(new Error('Cannot divide by zero!'));
+      return;
+    }      
+    setTimeout(() => {
+      resolve(a / b);
+    }, 500);
+  });
+}
+
+function handleResult(result) {
+  console.log(`Handling result: ${result}`);
+}
+
+function handleError(error) {
+  console.log(`Handling error: ${error}`);
+}
+
+const firstResult = divide(1, 2);
+firstResult.then(handleResult)
+firstResult.catch(handleError);
+
+const secondResult = divide(1, 0);
+secondResult.then(handleResult)
+secondResult.catch(handleError);
+```
+
+That's a lot of repetition! The trick is that `.then()` actually returns a Promise again, so you can call `.catch()` on that.
+
+:::important Note
+The `Promise` object exposes more methods than just the constructor, `then` and `catch`. It's not relevant to expose then now. It's way more important to focus on the transition from CPS to Promise-based functions, and for that the aforementioned methods are enough.
+:::
+
+We can now expand the definition of Promise with the following fact:
+
+> A Promise is in one of these states:
+>
+> - **pending**: initial state, neither fulfilled nor rejected.
+> - **fulfilled**: meaning that the operation was completed successfully.
+> - **rejected**: meaning that the operation failed.
+
+## Comparing the two versions
+
+Let's have a look:
+
+```js
+// Continuation-passing style
+function divide(a, b, callback) {
+  if (b === 0) {
+    callback(new Error('Cannot divide by zero!'));
+    return;
+  }  
+  setTimeout(() => {
+    callback(null, a / b);
+  }, 500);
+}
+
+function handleResult(error, result) {
+  if (error) {
+    console.log(error);
+    return;
+  }
+  console.log(result);
+}
+
+divide(1, 2, handleResult);
+divide(1, 0, handleResult);
+
+// Promise style
+function divide(a, b) {
+  return new Promise((resolve, reject) => {
+    if (b === 0) {
+      reject(new Error('Cannot divide by zero!'));
+      return;
+    }      
+    setTimeout(() => {
+      resolve(a / b);
+    }, 500);
+  });
+}
+
+function handleResult(result) {
+  console.log(`Handling result: ${result}`);
+}
+
+function handleError(error) {
+  console.log(`Handling error: ${error}`);
+}
+
+divide(1, 2)
+  .then(handleResult)
+  .catch(handleError);
+
+divide(1, 0)
+  .then(handleResult)
+  .catch(handleError);
+```
+
+We got back to a syntax that is similar to `try...catch`. No possible null errors, no explicit callbacks passed to the original `divide` function.
+
+## Conclusion
+
+Are Promise-based function better than CPS then? I don't find it a well posed question, since they serve different purposes. It's undeniable that Promises reduce syntax complexity when calling the original function since no explicit callback is needed; we have to provide some continuation in the `.then()` anyhow, so you'll appreciate a lot the introduction to `async`/`await` in a couple of lessons from now.

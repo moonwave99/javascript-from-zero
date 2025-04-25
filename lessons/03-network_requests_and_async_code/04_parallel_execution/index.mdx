@@ -1,0 +1,328 @@
+# Parallel execution
+
+Remember our lovely dice roll function? In the unlikely case you don't, here it is:
+
+```js live showConsole showLines
+function roll() {
+  return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(Math.floor(Math.random() * 5));
+      }, 500);
+  });
+}
+
+roll().then((number) => {
+  console.log(`You just rolled a ${number}`);
+});
+```
+
+Once again, that's a lot of bracket soup for just getting a number! But all the ingredients are needed:
+
+- the outer `roll` function allows us to deal with independent promise objects;
+- the callback passed to the `Promise` constructor is needed to access `reject` and `resolve`;
+- the callback passed to `setTimeout` tells JavaScript what to do after 500 milliseconds;
+- finally, the `Math` operations that are directly passed to `resolve` as argument.
+
+This is for what concerns the contents of the `roll` function. We call it then without arguments (`roll()`), and since such call returns a Promise object we call `.then()` on it. We pass an arrow function to `then()`, so we an access the value we resolved the Promise with, and eventually we log it to the console.
+
+What a journey! Explaining code this way will make you a great developer because it shows you are in full control of the code and can explain every single symbol you have written. Dominance comes with a lot of practice so you'd better start right now.
+
+## The two dice problem
+
+In order to get the result of two rolls, we had to nest two nested calls. We made it in CPS, let's do it with Promises:
+
+```js live showConsole showLines
+function roll() {
+  return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(Math.floor(Math.random() * 5));
+      }, 500);
+  });
+}
+
+roll().then(first => {
+  roll().then(second => {
+    console.log(`You rolled a  ${first} + ${second} = ${first + second}`);
+  });
+});
+```
+
+It's not the end of the world. But what about rolling three or more times? First, you have to come up with different parameter names for each `.then()` because they'll shadow each other if you call them all `number`. Second, you'll recreate the indention typical of callback hell.
+
+Luckily, the Promise object exposes the static [`Promise.all`][mdn:promise-all] method, that accepts **an array of Promises** and return **a single Promise** resolved when all the promises are fulfilled. It's easier done that said:
+
+```js live showConsole showLines
+function roll() {
+  return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(Math.floor(Math.random() * 5));
+      }, 500);
+  });
+}
+
+Promise.all([
+  roll(),
+  roll(),
+  roll(),
+]).then(results => {
+  console.log(results);
+});
+```
+
+Awesome! Let's put some logs to understand better what's going on:
+
+```js live showConsole showLines
+function roll() {
+  console.log('rolling...')
+  return new Promise((resolve) => {
+      setTimeout(() => {
+        const result = Math.floor(Math.random() * 5);
+        console.log(`rolled a ${result}`);
+        resolve(result);
+      }, 500);
+  });
+}
+
+console.log('before');
+
+Promise.all([
+  roll(),
+  roll(),
+  roll(),
+]).then(results => {
+  console.log(results);
+});
+
+console.log('after');
+```
+
+- first of all we get the `before` log;
+- then three `rolling...`, because it's at the beginning of the `roll` function body;
+- then the `after` because JavaScript moves and does not wait for the timeout;
+- then the three `rolled a` with the roll result;
+- eventually the array with the results inside the `.then()` returned from `Promise.all`.
+
+The naming of promise things is quite fortunate:
+
+> When `all` the promises are ready, `then` do something with the results.
+
+Observe how the rolls are run in parallel, so the whole operation takes half a second, and not one second and a half. The rolls don't depend on each other, so nesting them would be suboptimal. With `Promise.all` we can both run things at the same time _and_ know when all of them are done.
+
+## Dealing with errors
+
+Let's now go back with our `divide` function, that throws an error in case it receives 0 as second argument. Let's run a batch of unproblematic divisions first:
+
+```js live showConsole showLines
+function divide(a, b) {
+  return new Promise((resolve, reject) => {
+    if (b === 0) {
+      reject(new Error('Cannot divide by zero!'));
+      return;
+    }      
+    setTimeout(() => {
+      resolve(a / b);
+    }, 500);
+  });
+}
+
+Promise.all([
+  divide(1, 2),
+  divide(6, 3),
+  divide(0, 1),
+]).then(results => {
+  console.log(results);
+});
+```
+
+Cool. What about dividing by zero somewhere? Let's put some logs around:
+
+```js live showConsole showLines
+function divide(a, b) {
+  console.log(`calculating ${a} / ${b}`);
+  return new Promise((resolve, reject) => {
+    if (b === 0) {
+      reject(new Error('Cannot divide by zero!'));
+      return;
+    }      
+    setTimeout(() => {
+      const result = a / b;
+      console.log(`${a} / ${b} = ${result}`);
+      resolve(result);
+    }, 500);
+  });
+}
+
+Promise.all([
+  divide(1, 2),
+  divide(6, 0),
+  divide(0, 1),
+]).then(results => {
+  console.log(results);
+}).catch(error => {
+  console.log(error);
+});
+```
+
+First we get the three `calculating...` logs. Then immediately the log inside the `.catch()`, because the error is thrown _before_ the timeout. The other two timeout resolve successfully (hence the two additional calculation logs), but the `Promise.all(...).then()` is not called.
+
+This is because the global Promise resolves when and if **all** the passed Promises are fulfilled. If any of them is rejected, the `catch()` path is taken.
+
+How picky from `Promise.all`! Couldn't it close an eye if just a Promise fails? Well imagine that you have to upload an important document of ten pages, and the one with your signature is missing. You'd really want to be notified and to have the chance to upload it again.
+
+Promise offers more relaxed options like:
+
+- [`Promise.alSettled`][mdn:promise-allSettled]: resolves when all the passed Promises are settled (i.e. fulfilled or rejected);
+- [`Promise.race`][mdn:promise-race]: resolves as soon as one of the passed Promises resolves;
+- [`Promise.any`][mdn:promise-any]: resolves if any of the passed Promises resolves;
+
+But `Promise.all` is the strictest, and rightfully so!
+
+## An homemade implementation of `Promise.all`
+
+It's a great exercise to reverse engineer standard features. Let's write a function that takes an array of Promises as parameter, and returns a Promise that resolves when all the passed Promises resolve, exactly like `Promise.all`.
+
+Let's sketch the function first. We'll go back to rolls this time:
+
+```js live showConsole showLines
+function roll() {
+  return new Promise((resolve) => {
+      setTimeout(() => {
+        const result = Math.floor(Math.random() * 5);
+        console.log(`Rolled a: ${result}`);
+        resolve(result);
+      }, 500);
+  });
+}
+
+function all(promises) {
+  return new Promise((resolve) => {
+
+  });
+}
+
+all([
+  roll(),
+  roll(),
+]).then(results => {
+  console.log(results);
+});
+```
+
+We get the two `rolled a:` logs, but no `.then()`. This is because the Promise we return from `all()` never resolves! The `resolve` parameter is declared but never called.
+
+The problem is to know when all the Promises are resolved. We know how many of them do we have, and we know how to populate an empty array. Let's try something:
+
+```js live showConsole showLines
+function roll() {
+  return new Promise((resolve) => {
+      setTimeout(() => {
+        const result = Math.floor(Math.random() * 5);
+        console.log(`Rolled a: ${result}`);
+        resolve(result);
+      }, 500);
+  });
+}
+
+function all(promises) {
+  return new Promise((resolve) => {
+    const results = [];
+    promises.forEach(p => {
+      p.then(number => {
+        results.push(number);
+        console.log(`inside all: [${results}]`);
+      });
+    });
+  });
+}
+
+all([
+  roll(),
+  roll(),
+]).then(results => {
+  console.log(results);
+});
+```
+
+Never mind what the actual rolls are, you'll see the `results` array contents growing, first with one entry, then with two. We can compare the length of the array with the one of the `promises` parameter to decide when it's time to call `resolve`:
+
+```js live showConsole showLines
+function roll() {
+  return new Promise((resolve) => {
+      setTimeout(() => {
+        const result = Math.floor(Math.random() * 5);
+        console.log(`Rolled a: ${result}`);
+        resolve(result);
+      }, 500);
+  });
+}
+
+function all(promises) {
+  return new Promise((resolve) => {
+    const results = [];
+    promises.forEach(p => {
+      p.then(number => {
+        results.push(number);
+        console.log(`inside all: [${results}]`);
+        if (results.length === promises.length) {
+          resolve(results);
+        }
+      });
+    });
+  });
+}
+
+all([
+  roll(),
+  roll(),
+]).then(results => {
+  console.log(results);
+});
+```
+
+Ta daaan! Let's clean up the logs:
+
+```js live showConsole showLines
+function roll() {
+  return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(Math.floor(Math.random() * 5));
+      }, 500);
+  });
+}
+
+function all(promises) {
+  return new Promise((resolve) => {
+    const results = [];
+    promises.forEach(p => {
+      p.then(number => {
+        results.push(number);
+        if (results.length === promises.length) {
+          resolve(results);
+        }
+      });
+    });
+  });
+}
+
+all([
+  roll(),
+  roll(),
+]).then(results => {
+  console.log(results);
+});
+```
+
+That's awesome, it works exactly like `Promise.all`! Now don't stop at the top and implement yourself the `catch` case with the help of the `divide` function. You'll be ace of spades!
+
+## Conclusion
+
+We now know how to wait for parallel async function execution before proceeding. This reduces the code complexity to one single `then()` level, and it's already a great achievement. In the next chapter we'll improve this even further by making finally acquaintance with the `async` / `await` keywords.
+
+I cannot stress this enough: you don't master this topic if you don't rewrite these examples from scratch numerous times, even better if explaining them to somebody in the process. Merely following the lesson will bring you just that far. It's also unreasonable that you master it after a single session, never mind how thorough it can be. You'll need to go back to previous concepts various times in order to congregate your knowledge.
+
+So code a lot, be in control of your explaining / typing rhythm and most important: have a lot of fun!
+
+[mdn:promise-all]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all
+[mdn:promise-allSettled]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/allSettled
+[mdn:promise-race]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/race
+[mdn:promise-any]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/any

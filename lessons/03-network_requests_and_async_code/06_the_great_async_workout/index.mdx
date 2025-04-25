@@ -1,0 +1,119 @@
+# The great async workout
+
+The best way to fix the concepts seen so far in this chapter is to rewrite the `roll` function from its sync version to its `await`able one. Let's roll!
+
+## The sync version
+
+Where it all started:
+
+```js live showConsole showLines
+function roll() {
+  return Math.floor(Math.random() * 5);
+}
+
+console.log('before');
+console.log(roll());
+console.log('after');
+```
+
+It goes like `before`, result, `after`. Remember that the timeout we introduced later is artificial and not actually needed for the calculation. But if you needed to add some suspense to a program it would make perfectly sense, so let's move on.
+
+## The continuation-passing style (CPS) version
+
+```js live showConsole showLines
+function roll(callback) {
+  setTimeout(() => {
+    callback(Math.floor(Math.random() * 5));
+  }, 500);
+}
+
+console.log('before');
+roll((result) => {
+  console.log(result);
+});
+console.log('after');
+```
+
+`before`, `after` then the number. This reveal the non-blocking nature of JavaScript.
+
+By the way we haven't seen it in the first lesson of the chapter, but callbacks are by no mean asynchronous by nature - it's `setTimeout` that defers the code execution, see the logs without the timeout:
+
+```js live showConsole showLines
+function roll(callback) {
+  callback(Math.floor(Math.random() * 5));
+}
+
+console.log('before');
+roll((result) => {
+  console.log(result);
+});
+console.log('after');
+```
+
+The point is that CPS for non async functions is...a bit weird don't you think? `return` works and works good, and you want to use it!
+
+## The `Promise` based version
+
+CPS needs an explicit callback function parameter. Promises save us some work:
+
+```js live showConsole showLines
+function roll(callback) {
+  return new Promise(resolve => {
+    setTimeout(() => {
+        resolve(Math.floor(Math.random() * 5));
+    }, 500);
+  })
+}
+
+console.log('before');
+roll().then((result) => {
+  console.log(result);
+});
+console.log('after');
+```
+
+Great. This allows us to use `roll()` in `Promise.all` for instance:
+
+```js live showConsole showLines
+function roll(callback) {
+  return new Promise(resolve => {
+    setTimeout(() => {
+        resolve(Math.floor(Math.random() * 5));
+    }, 500);
+  })
+}
+
+Promise.all([
+  roll(),
+  roll(),
+  roll(),
+]).then(results => console.log(results));
+```
+
+## Using `async` / `await`
+
+Since `roll` returns a Promise now, we can `await` for it:
+
+```js live showConsole showLines
+function roll(callback) {
+  return new Promise(resolve => {
+    setTimeout(() => {
+        resolve(Math.floor(Math.random() * 5));
+    }, 500);
+  })
+}
+
+async function rollTwice() {
+  const first = await roll();
+  const second = await roll();
+  console.log(`You rolled a ${first} and a ${second}`);
+}
+
+rollTwice();
+```
+
+Wonderful. Practice telling the evolution of the `roll` function as a story by putting strategically placed log statements, then do the same with the `divide` function taking error handling into account.
+
+## Conclusion
+
+In this series of lesson we've been exposed to asynchronous code in various flavours. They are the evolution of each other and every is relevant to some extent so you have to master all of them. We are now ready to learn something more exciting than timeouts.

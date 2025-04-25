@@ -1,0 +1,281 @@
+# The notion of time
+
+Exception made for the negligible processing time, the output of our programs appears immediately in the console. Most production programs on the other hand rely on data that is not directly written in the source code: they need to access the disk, connect to databases or retrieve information from external websites. Those operations may require a sensible amount of time: the network may be slow, or the file to be downloaded very big, or the database query particularly complex.
+
+One could naively queue up the operations and wait diligently until they are completed. This is what computers have done in their early stages. JavaScript runtimes cannot afford this luxury! As a client side language, JavaScript is responsible of listening to the **user generated events** like keyboard input or clicking, or to **download information in the background** as the user scrolls down for instance. Waiting for such time consuming operations would compromise the user experience.
+
+On the server it would be even worse: the Node.js runtime was born principally to spawn up **web services** that could handle a **great number of concurrent request**: if each of them blocked the whole system until fulfilled, you wouldn't be reading this document but one about Go or Rust probably (which you should be reading anyhow, but I am not qualified enough to write one!).
+
+:::important Note
+Concurrency is a non trivial topic in programming. Intuition can help just that much. You can choose to take the shortcut and patch your code with some `async`/`await` here and there, and leave a lot of gaps in your knowledge. Or you can study this chapter thoroughly until you can explain everything to a random stranger on the street, and you'll nail interviews and feel like a generally better person.
+:::
+
+## Asynchronous Code
+
+The code we have seen so far is at its core written like a linear story that goes from top to bottom. Function definitions and calls generate some jumps of course, but one can predict the outcome of a given program by looking at it. Reality on the other hand seldom works this way: events happen concurrently, things happen between request something from somebody and the actual delivery - your mum knows a thing or two about this. Before diving right away into the perilous sea of network requests, we need to introduce some preliminary concepts.
+
+## The event loop
+
+Computing can have different goals, that should meet different efficiency expectations. If we need to render a complex video scene, one can leave the computer working while having a walk, and come back later to see the results. But if we are writing a web server that should respond to many network requests per second, we cannot devote all the machine resources to a single request while the others are left attending.
+
+There are various approaches to this problem, and JavaScript (or better the JavaScript runtimes) opted for the [event loop][mdn:event-loop]. The event loop acts like the owner of a nice diner who takes care of everything: taking the orders, preparing them and notifying the clientele once their food is ready. And keeping things clean and tidy meanwhile.
+
+A family comes in and orders four portions of fries. Imagine that instead of throwing the fries into the oil and paying attention to next customer in the line, the owner just stares at the agonizing wedges until they are done. That would be extremely bizarre other than inefficient! Much better to accept the next order and come back to the fries in a couple of minutes.
+
+That's you need to know for now about the event loop. But why wasn't JavaScript designed as an high scale restaurant with hundreds of staff members? Because to coordinate such team would make things more complex.
+
+The story is more complex than this, see for instance [Web Workers][mdn:web-workers]. Enough talk, let's see some code finally.
+
+## Timeout coach!
+
+JavaScript has a built-in tool called [`setTimeout`][mdn:setTimeout] that accepts a function and a number as parameters, and calls such function after the passed amount of milliseconds.
+
+```js live showConsole showLines interactive
+function sayHello(name) {
+  console.log(`Hello ${name}!`);
+}
+
+setTimeout(() => {
+  sayHello('Charlie Brown');
+}, 1000);
+```
+
+Try to play with the second argument. Setting it to a much lower value (e.g. 100) makes the log appear almost immediately, while rising it to 5000 for instance makes the waiting time much longer unsurprisingly.
+
+**Important**: the passed function is _not_ `sayHello`, but the anonymous arrow function written in place as the first argument.
+
+Let's put some log statements _before_ and _after_ the `setTimeout`:
+
+```js live showLines
+function sayHello(name) {
+  console.log(`Hello ${name}!`);
+}
+
+console.log('before');
+
+setTimeout(() => {
+  sayHello('Charlie Brown');
+}, 1000);
+
+console.log('after');
+```
+
+What do you think it's going to happen? Unfold the console and see if your expectation is met.
+
+It may look counterintuitive for now, but remember our efficient diner: instead of waiting for the timeout, the JavaScript runtime moves to the next instruction, in this case the `after` log statement, and eventually calls the anonymous function once the time interval is passed. Asynchronous code (from now on _async code_) is also called **non-blocking** code, because time consuming operations do not block the further execution of the program.
+
+One can also pass a named function to `setTimeout`. Mind that without further configuration such function receives no arguments, so we should pass a function without parameters:
+
+```js live showLines showConsole
+function sayHelloToCharlie() {
+  console.log('Hello Charlie Brown!');
+}
+
+console.log('before');
+
+setTimeout(sayHelloToCharlie, 1000);
+
+console.log('after');
+```
+
+Writing an inline arrow function like in the first example works as a playground to define what to do after the interval is passed. One can write more instructions there, for instance:
+
+```js live showLines
+function sayHello(name) {
+  console.log(`Hello ${name}!`);
+}
+
+console.log('before');
+
+setTimeout(() => {
+  // can you rewrite this with forEach? :))
+  sayHello('Charlie Brown');
+  sayHello('Sally Brown');
+  sayHello('Lucy Van Pelt');
+  sayHello('Linus Van Pelt');
+}, 1000);
+
+console.log('after');
+```
+
+What if we set the interval to zero (or omit it entirely)?
+
+```js live showLines showConsole
+function sayHello(name) {
+  console.log(`Hello ${name}!`);
+}
+
+console.log('before');
+
+setTimeout(() => {
+  sayHello('Charlie Brown');
+});
+
+console.log('after');
+```
+
+The three logs appear (almost) at once, but Charlie gets still greeted at theend. Why using `setTimeout` at all then? We are just making experiments now, but there are some scenarios when this technique is actually needed and called _postponing the operation to the next tick_.
+
+## Countdown to victory
+
+We already know how to pick a random entry from an array:
+
+```js live showConsole
+const friends = [
+  'Charlie Brown',
+  'Sally Brown',
+  'Lucy Van Pelt',
+  'Linus Van Pelt',
+  'John Doe',
+  'Jane Doe',
+];
+
+function pickRandomEntry(array) {
+  const index = Math.floor(Math.random() * (array.length - 1));
+  return array[index];
+}
+
+console.log(`Hello ${pickRandomEntry(friends)}!`);
+```
+
+Lovely. Let's write a program that counts down from 10 to 0, then assigns a prize of `undefined ounces of gold` to the lucky one. Let's first write the `countdown` recursive function without `setTimeout`:
+
+```js live showConsole
+function countdown(time) {
+  console.log(time);
+  if (time <= 0) {
+    return;
+  }
+  countdown(time - 1);
+}
+
+console.log('before');
+countdown(10);
+console.log('after');
+```
+
+Remember the three rules of recursion:
+
+1. definition: the function should call itself;
+2. exit: there should be a condition that stops calling the function;
+3. start: you should actually call the function somewhere.
+
+To make things safe, we are checking the _lesser than_ case as well in order to prevent an infinite recursion when called with a negative number.
+
+Let's add the timeout. If you don't mind we'll start from 3 to keep things short:
+
+```js live showConsole
+function countdown(time) {
+  console.log(time);
+  if (time <= 0) {
+    return;
+  }
+  setTimeout(() => {
+    countdown(time - 1);
+  }, 1000);
+}
+
+console.log('before');
+countdown(3);
+console.log('after');
+```
+
+The logs look weird? Gotcha! It's like in the previous example: delaying some operations via `setTimeout` doesn't block the execution of the program. We want to giveaway our prize after the countdown, how can we do it? You can be tempted to simply patch the early return branch:
+
+```js live showConsole
+const friends = [
+  'Charlie Brown',
+  'Sally Brown',
+  'Lucy Van Pelt',
+  'Linus Van Pelt',
+  'John Doe',
+  'Jane Doe',
+];
+
+function pickRandomEntry(array) {
+  const index = Math.floor(Math.random() * (array.length - 1));
+  return array[index];
+}
+
+function countdown(time) {
+  console.log(time);
+  if (time <= 0) {
+    console.log(`The winner of undefined ounces of gold is: ${pickRandomEntry(friends)}!`);
+    return;
+  }
+  setTimeout(() => {
+    countdown(time - 1);
+  }, 1000);
+}
+
+console.log('before');
+countdown(3);
+console.log('after');
+```
+
+Not bad! The problem with this code is that is tightly coupled with our problem and is not reusable for other cases. What can we do to execute whatever code we want after the time is out? The solution is **to pass a function as second parameter to the function**, and to call it at the end of the countdown:
+
+```js live showConsole
+function countdown(time, callback) {
+  console.log(time);
+  if (time <= 0) {
+    callback();
+    return;
+  }
+  setTimeout(() => {
+    countdown(time - 1, callback);
+  }, 1000);
+}
+
+function afterTimeout() {
+  console.log('done!')
+}
+
+console.log('before');
+countdown(3, afterTimeout);
+console.log('after');
+```
+
+See how the `done!` log appears as the last one finally. We named the parameter `callback` because it's the function that _gets called back_ after the operations are done, in this case when the `time` variable reaches zero.
+
+Wrapping things up, with an arrow function if you don't mind:
+
+```js live showConsole
+const friends = [
+  'Charlie Brown',
+  'Sally Brown',
+  'Lucy Van Pelt',
+  'Linus Van Pelt',
+  'John Doe',
+  'Jane Doe',
+];
+
+function pickRandomEntry(array) {
+  const index = Math.floor(Math.random() * (array.length - 1));
+  return array[index];
+}
+
+function countdown(time, callback) {
+  console.log(time);
+  if (time <= 0) {
+    callback();
+    return;
+  }
+  setTimeout(() => {
+    countdown(time - 1, callback);
+  }, 1000);
+}
+
+console.log('Welcome to the GGG (Great Gold Giveaway)!')
+countdown(3, () => {
+  console.log(`The winner of undefined ounces of gold is: ${pickRandomEntry(friends)}!`);
+});
+```
+
+## Conclusion
+
+WIP
+
+[mdn:setTimeout]: https://developer.mozilla.org/en-US/docs/Web/API/Window/setTimeout
+[mdn:event-loop]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Execution_model#job_queue_and_event_loop
+[mdn:web-workers]: https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers

@@ -1,0 +1,207 @@
+# `async` / `await`
+
+After continuation-passing style and Promises, we are finally about to see the most recent incarnation of async code management in JavaScript, the `async` / `await` keyword pair! Since they are not much useful in isolation, we'd better have a look of a concrete example that involves both:
+
+```js live showConsole showLines
+function roll() {
+  return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(Math.floor(Math.random() * 5));
+      }, 500);
+  });
+}
+
+async function run() {
+  const first = await roll();
+  console.log(`You just rolled a ${first}`);
+  const second = await roll();
+  console.log(`You just rolled a ${second}`);
+}
+
+console.log('before');
+run();
+console.log('after');
+```
+
+The `before` / `after` log behaves like in all the examples so far. Let's consider the `run` function:
+
+- it is introduced by the `async` keyword;
+- inside it there are two `roll()` calls, each preceded by the `await` operator.
+
+Observe how the `You just rolled a` logs don't happen at once but are half a second spaced. Since we haven't touched our `roll` function, let's see what `await` / `async` are doing:
+
+- the `await` operator applies to a Promise and tells JavaScript to wait for its resolution before proceeding;
+- the `await` operator can only be used inside a an `async` function (or at the top level of a file, but let's ignore this case for now).
+
+Super important: the program execution is still non blocking, see the `before`/`after` logs! But we didn't need to nest `.then()` calls, or to use `Promise.all`. Way more important: we used `roll` like if it were a good old sync function because we assigned its return value to variables (`const first` and `const second` respectively).
+
+:::important Note
+There is nothing important about how the `run` function is named. It's just needed to provide an `async` context for the `await` operator.
+:::
+
+The equivalent version without `async` / `await` would be:
+
+```js live showConsole showLines
+function roll() {
+  return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(Math.floor(Math.random() * 5));
+      }, 500);
+  });
+}
+
+async function run() {
+  roll().then(first => {
+    console.log(`You just rolled a ${first}`);
+    roll().then(second => {
+      console.log(`You just rolled a ${second}`);
+    });
+  });
+}
+
+console.log('before');
+run();
+console.log('after');
+```
+
+Judge for yourself which version is more readable. Super important: `async` / `await` doesn't change anything in the behavior of the code, we say that it's just **syntactic sugar** around Promises, that avoids complex `.then()` chain.
+
+Further important observations:
+
+### `await` can be used just inside an async function
+
+If you do otherwise, you'll get a complaint from JavaScript:
+
+```js live showConsole showLines
+function roll() {
+  return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(Math.floor(Math.random() * 5));
+      }, 500);
+  });
+}
+
+function run() {
+  const first = await roll();
+  console.log(`You just rolled a ${first}`);
+}
+
+run();
+```
+
+### What does `async` do to the function
+
+Let's see it in isolation:
+
+```js live showConsole
+async function getNumber() {
+  return 4;
+}
+
+const number = getNumber();
+console.log(number);
+```
+
+You don't see `4` in the console but some arcane mentioning of the `Promise` constructor. That's because marking a function as `async` wraps whatever it returns in a Promise, in case a Promise isn't already returned.
+
+You can call `.then()` to be sure:
+
+```js live showConsole
+async function getNumber() {
+  return 4;
+}
+
+console.log('before');
+getNumber().then(number => console.log(number));
+console.log('after');
+```
+
+Super interesting! Even if the function doesn't involve any timeout, marking it as `async` makes it non blocking by default (see `before` / `after`). This is a very extreme case since you'll never return a simple scalar with no calculations from an async function, but it's important to know in case you'll stumble in a pedantic interviewer in love with puzzles.
+
+Last: you don't have to mark a function as `async` if it does return a `Promise`, but it doesn't disturb either, especially if the body of the function is long and the Promise doesn't appear until later.
+
+### Returning after having `await`ed
+
+You are not limited to a single `async` function per program of course. In the following example we roll the dice twice in the `rollTwice` function, awaiting twice, and we return a tuple with the two results. We await for `rollTwice` inside `run`, then log the results:
+
+```js live showConsole showLines
+function roll() {
+  return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(Math.floor(Math.random() * 5));
+      }, 500);
+  });
+}
+
+async function rollTwice() {
+  const first = await roll();
+  const second = await roll();
+  return [first, second];
+}
+
+async function run() {
+  const [first, second] = await rollTwice();
+  console.log(`The first roll was a ${first}`);
+  console.log(`The second roll was a ${first}`);
+}
+
+run();
+```
+
+If you don't need to do anything after calling `rollTwice`, you can still use `.then` on the returned Promise. This saves you from writing the `run` function:
+
+```js live showConsole showLines
+function roll() {
+  return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(Math.floor(Math.random() * 5));
+      }, 500);
+  });
+}
+
+async function rollTwice() {
+  const first = await roll();
+  const second = await roll();
+  return [first, second];
+}
+
+rollTwice().then(([first, second]) => {
+  console.log(`The first roll was a ${first}`);
+  console.log(`The second roll was a ${first}`);
+});
+```
+
+## Handling errors
+
+It's time to divide some numbers:
+
+```js live showConsole showLines
+function divide(a, b) {
+  return new Promise((resolve, reject) => {
+    if (b === 0) {
+      reject(new Error('Cannot divide by zero!'));
+      return;
+    }      
+    setTimeout(() => resolve(a / b), 500);
+  });
+}
+
+async function run() {
+  try {
+    const result = await divide(1, 0);
+    console.log(result);
+  } catch(error) {
+    console.log(error);
+  }
+}
+
+run();
+```
+
+Aces! We don't need `.catch()` anymore, the `try...catch` block works as in sync functions.
+
+## Conclusion
+
+If your thought is that `async` / `await` hides the whole Promise / callback thing under the carpet at the cost of strategically placing a couple of (very similar) keywords around...I'll answer that you nailed it!
+
+You might be asking yourself why there are so many flavours of the same thing. The language simply evolved. First continuations were enough, then Promises reduced some complexity but not completely, and that led to the keywords we have seen in this lesson. You cannot experience past history first hand, but you can study it! Ah, if only people had this approach to human history as well, what a better world would it be.
