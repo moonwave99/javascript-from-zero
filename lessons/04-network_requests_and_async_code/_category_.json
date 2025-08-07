@@ -1,0 +1,8 @@
+{
+    "label": "Network Requests and Async Code",
+    "position": 4,
+    "link": {
+        "type": "generated-index",
+        "description": "Asynchronous code, HTTP protocol, APIs"
+    }
+}

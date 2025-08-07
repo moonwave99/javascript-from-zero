@@ -1,0 +1,373 @@
+# Introduction to asynchronous code
+
+Few concepts puzzle developers who are getting their feet wet with JavaScript like **asynchronous** code. Even though I personally know many who paid off mortgages by nesting `$.ajax` calls to death, it's much better to get a deeper understanding of how the language works.
+
+## What is asynchrony?
+
+The code we have seen so far is at its core written like a linear story that goes from top to bottom. Function definitions and calls generate some jumps of course, but one can predict the outcome of a given program by looking at it.
+
+Reality on the other hand seldom works this way: events happen concurrently, things happen between request something from somebody and the actual delivery - your mum knows a thing or two about this.
+
+JavaScript was born as a connective language between the user and the browser first, and the computer resources (disk, database) and the network requests then. This kind of interactions resemble reality much more than our beloved linear and pure functions.
+
+## The event loop
+
+Computing can have different goals, that should meet different efficiency expectations. If we need to render a complex video scene, one can leave the computer working while having a walk, and come back later to see the results. But if we are writing a web server that should respond to many network requests per second, we cannot devote all the machine resources to a single request while the others are left attending.
+
+There are various approaches to this problem, and JavaScript (or better the JavaScript runtimes) opted for the **event loop**. The event loop is the owner of a nice diner who takes care of everything: taking the orders, preparing them and notifying the clientele once their food is ready. And keeping things clean and tidy meanwhile.
+
+A family comes in and orders four portions of fries. Imagine that instead of throwing the fries into the oil and paying attention to next customer in the line, the owner just stares at the frying potatoes until they are done. That would be extremely bizarre other than inefficient! Much better to accept the next order and come back to the fries in a couple of minutes.
+
+That's you need to know for now about the event loop. But why wasn't JavaScript designed as an high scale restaurant with hundreds of staff members? Because to coordinate such team would make things more complex.
+
+## Timeout!
+
+Exception made for the negligible processing time, the output of our programs appears immediately in the console. JavaScript has a built-in tool called [`setTimeout`][mdn:setTimeout] that accepts a function and a number as parameters, and calls such function after the passed amount of milliseconds.
+
+```js live showConsole showLines interactive
+function sayHello(name) {
+  console.log(`Hello ${name}!`);
+}
+
+setTimeout(() => {
+  sayHello('Charlie Brown');
+}, 1000);
+```
+
+Try to play with the second argument. Setting it to a much lower value (e.g. 100) makes the log appear almost immediately, while rising it to 5000 for instance makes the waiting time much longer unsurprisingly.
+
+**Important**: the passed function is _not_ `sayHello`, but the anonymous arrow function written in place as the first argument.
+
+Let's put some log statements _before_ and _after_ the `setTimeout`:
+
+```js live showLines
+function sayHello(name) {
+  console.log(`Hello ${name}!`);
+}
+
+console.log('before');
+
+setTimeout(() => {
+  sayHello('Charlie Brown');
+}, 1000);
+
+console.log('after');
+```
+
+What do you think it's going to happen? Unfold the console and see if your expectation is met.
+
+It may look counterintuitive for now, but remember our efficient diner: instead of waiting for the timeout, the JavaScript runtime moves to the next instruction, in this case the `after` log statement, and eventually calls the anonymous function once the time interval is passed. Asynchronous code (from now on _async code_) is also called **non-blocking** code, because time consuming operations do not blow the further execution of the program.
+
+One can also pass a named function to `setTimeout`. Mind that without further configuration such function receives no arguments, so we should pass a function without parameters:
+
+```js live showLines showConsole
+function sayHelloToCharlie() {
+  console.log('Hello Charlie Brown!');
+}
+
+console.log('before');
+
+setTimeout(sayHelloToCharlie, 1000);
+
+console.log('after');
+```
+
+Writing an inline arrow function like in the first example works as a playground to define what to do after the interval is passed. One can write more instructions there, for instance:
+
+```js live showLines
+function sayHello(name) {
+  console.log(`Hello ${name}!`);
+}
+
+console.log('before');
+
+setTimeout(() => {
+  // can you rewrite this with forEach? :))
+  sayHello('Charlie Brown');
+  sayHello('Sally Brown');
+  sayHello('Lucy Van Pelt');
+  sayHello('Linus Van Pelt');
+}, 1000);
+
+console.log('after');
+```
+
+What if we set the interval to zero (or omit it entirely)?
+
+```js live showLines showConsole
+function sayHello(name) {
+  console.log(`Hello ${name}!`);
+}
+
+console.log('before');
+
+setTimeout(() => {
+  sayHello('Charlie Brown');
+});
+
+console.log('after');
+```
+
+The three logs appear (almost) at once, but Charlie gets greeted as last. Why using `setTimeout` at all then? We are just making experiments now, but there are some scenarios when this technique is actually needed and called _postponing the operation to the next tick_.
+
+This was our first encounter with async code. Once again, why async(hronous)? Because of the discrepancy between the code flow (order of function calls) and the actual outcome.
+
+## Our first async function
+
+Before using actual I/O functions, we'll use `setTimeout` to simulate async code behavior. This introduce artificial complexity, but less than the one needed to understand other JavaScript async function.
+
+We already know how to select a random entry from an array. Today we have a prize to give away to one person among our friends:
+
+```js
+const friends = [
+  'Charlie Brown',
+  'Sally Brown',
+  'Lucy Van Pelt',
+  'Linus Van Pelt',
+  'John Doe',
+  'Jane Doe',
+];
+```
+
+but we have to use the following function. There is one rule: the function can be modified, but can no under circumstance refer to the `friends` array, either directly or by reference / variable renaming:
+
+```js live showConsole
+function roll() {
+  setTimeout(() => {
+    const number = Math.floor(Math.random() * 5);
+    console.log('die roll', number);
+  }, 500);
+}
+
+roll();
+```
+
+Lovely, we see a random number between 0 and 5 in the console! I hope you don't mind using a zero-based die since we have to deal with arrays.
+But how can we use to target a specific friend?
+
+One can be tempted to `return` from inside the arrow function. What do you think it will happen?
+
+```js live showLines
+function roll() {
+  setTimeout(() => {
+    const number = Math.floor(Math.random() * 5);
+    console.log('die roll', number);
+    return number;
+  }, 500);
+}
+
+const result = roll();
+console.log(result);
+```
+
+We observe two things:
+
+- the log at line 10 happens _before_ the one line 4;
+- the log at line 10 logs `undefined`.
+
+This is because the `return` at line 5 relates to the arrow function and **not** to the outer `roll` function! Any other kind of shenanigans involving declaring inner variables and assigning the roll outcome afterwards won't work either.
+
+Let's instead write an intermediate function called `giveAwayPrize(index)`:
+
+```js static showConsole
+const friends = [
+  'Charlie Brown',
+  'Sally Brown',
+  'Lucy Van Pelt',
+  'Linus Van Pelt',
+  'John Doe',
+  'Jane Doe',
+];
+
+function giveAwayPrize(index) {
+  const winner = friends[index];
+  if (!winner) {
+    console.log(`Ooops, we could not find anybody at index: ${index}`);
+    return;
+  }
+  console.log(`Congratulations ${winner}, you have just won undefined pounds of gold!`);
+}
+
+giveAwayPrize(1);
+giveAwayPrize(10);
+// ** output **
+// Congratulations Sally Brown, you have just won undefined pounds of gold!
+// Ooops, we could not find anybody at index: 10
+```
+
+Now we can call the function inside `roll`:
+
+```js live showConsole
+const friends = [
+  'Charlie Brown',
+  'Sally Brown',
+  'Lucy Van Pelt',
+  'Linus Van Pelt',
+  'John Doe',
+  'Jane Doe',
+];
+
+function giveAwayPrize(index) {
+  const winner = friends[index];
+  if (!winner) {
+    console.log(`Ooops, we could not find anybody at index: ${index}`);
+    return;
+  }
+  console.log(`Congratulations ${winner}, you have just won undefined pounds of gold!`);
+}
+
+function roll() {
+  setTimeout(() => {
+    const number = Math.floor(Math.random() * 6);
+    console.log('die roll', number);
+    giveAwayPrize(number);
+  }, 500);
+}
+
+roll();
+```
+
+Outstanding! Let's take it a step further. We want our `roll` function to call an arbitrary function and not `giveAwayPrize` only. As you can imagine, defining a new parameter will do:
+
+```js live showConsole
+function roll(callback) {
+  setTimeout(() => {
+    const number = Math.floor(Math.random() * 6);
+    console.log('die roll', number);
+    callback(number);
+  }, 500);
+}
+
+roll((number) => {
+  console.log('I am an anonymous arrow function, and we just rolled a', number)
+});
+```
+
+This is exactly what we have done with `Array.prototype.forEach` or `Array.prototype.filter`, i.e. passing a function to interact with what `roll` is doing in this case.
+
+Now that we made it flexible, let's feed it our `giveAwayPrize` function. Let's remove the inner log statement by the way:
+
+```js live showConsole
+const friends = [
+  'Charlie Brown',
+  'Sally Brown',
+  'Lucy Van Pelt',
+  'Linus Van Pelt',
+  'John Doe',
+  'Jane Doe',
+];
+
+function giveAwayPrize(index) {
+  const winner = friends[index];
+  if (!winner) {
+    console.log(`Ooops, we could not find anybody at index: ${index}`);
+    return;
+  }
+  console.log(`Congratulations ${winner}, you have just won undefined pounds of gold!`);
+}
+
+function roll(callback) {
+  setTimeout(() => {
+    const number = Math.floor(Math.random() * 6);
+    callback(number);
+  }, 500);
+}
+
+roll(giveAwayPrize);
+```
+
+We made it! `roll` is totally unaware that are we doing with the generated number, it just passes it to the callback. It would be nice to make sure `callback` is an actual function, but we wanted to keep the code concise. See how the intermediate arrow function would be redundant:
+
+```js
+function roll(callback) {
+  setTimeout(() => {
+    const number = Math.floor(Math.random() * 6);
+    callback(number);
+  }, 500);
+}
+
+roll((number) => {
+  giveAwayPrize(number);
+});
+```
+
+That's not wrong by any means. But `roll` accepts a callback function, that on its own accepts a `number` parameter. Do we have any function in our code that accepts a number as a parameter? `giveAwayPrize`, exactly! Then thank you so much arrow function, you've been greatly useful while prototyping! Implicit function calls should always be preferred, because they save us the intermediate parameter naming problem - observe how we could have called the arrow function parameter in any other way:
+
+```js
+function roll(callback) {
+  setTimeout(() => {
+    const number = Math.floor(Math.random() * 6);
+    callback(number);
+  }, 500);
+}
+
+roll((tomAndJerry) => {
+  giveAwayPrize(tomAndJerry);
+});
+```
+
+We have much more interesting things to do in our lives, so `roll(giveAwayPrize)` is the way to go.
+
+## Polishing things a little
+
+The current implementation satisfies the given constraints, but it is a bit brittle: we are lucky that we had an array with as many entries as the die's faces. But what if they mismatch?
+
+We know how to remove _magic numbers_ from functions: pass them as parameters!
+
+```js
+function roll(callback, max) {
+  setTimeout(() => {
+    const number = Math.floor(Math.random() * max);
+    callback(number);
+  }, 500);
+}
+
+roll(giveAwayPrize, 5);
+
+// or better
+
+roll(giveAwayPrize, friends.length - 1);
+```
+
+(theoretically even 500 is a magic number, but we can live with it in this context).
+
+Now the `roll` function can work with any possible size of the `friends` array, much better. Now if we were to use this code in a practical scenario, the die roll analogy would be superfluous. We would probably design it as follows:
+
+```js live showConsole
+function pickRandomEntry(array, callback) {
+    setTimeout(() => {
+      const index = Math.floor(Math.random() * (array.length - 1));
+      callback(array[index]);
+  }, 500);
+}
+
+const friends = [
+  'Charlie Brown',
+  'Sally Brown',
+  'Lucy Van Pelt',
+  'Linus Van Pelt',
+  'John Doe',
+  'Jane Doe',
+];
+
+pickRandomEntry(friends, (winner) => {
+  console.log(`Congratulations ${winner}, you have just won undefined pounds of gold!`);
+});
+```
+
+Improvements over our previous code:
+
+- the congratulations function does not rely on the external `friends` variable anymore;
+- we don't have to check for potential missing entries, since the random index generator is function of the passed array.
+
+## Conclusion
+
+This style of coding has been prominent in JavaScript until the introduction of the constructs we are going to see in the next lessons. It is called _continuation-passing style_, where functions are never allowed to return to their called but instead accept callbacks where the execution of the program continues.
+
+There is nothing wrong with this style of coding. As soon as you need to nest various async functions, your code will resemble the following:
+
+![Hadoken](https://www.twilio.com/content/dam/twilio-com/global/en/blog/legacy/2017/promises-in-swift-writing-cleaner-asynchronous-code-using-promisekit-html/Screen-Shot-2017-03-06-at-5.11.06-PM.png)
+
+and that's not particularly comfortable to work with, I Promise!
+
+[mdn:setTimeout]: https://developer.mozilla.org/en-US/docs/Web/API/Window/setTimeout

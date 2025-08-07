@@ -54,6 +54,7 @@ export default function CodeBlock({
                 showConsole={props.metastring.includes("showConsole")}
                 showLineNumbers={props.metastring.includes("showLines")}
                 interactive={props.metastring.includes("interactive")}
+                defer={props.metastring.includes("defer")}
                 language={props.className.split("-").at(-1)}
             />
         );

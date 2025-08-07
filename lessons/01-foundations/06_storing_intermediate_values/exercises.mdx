@@ -2,8 +2,50 @@
 
 ## Recap Questions
 
-WIP
+<details>
+  <summary>How do you initialize a variable in JavaScript?</summary>
+
+By writing `const` followed by the desired variable name, then the equals sign, then the value we want to assign to the variable, e.g.:
+
+```js
+const myAge = 99;
+const myName = 'Jane';
+```
+
+**Note:** this is not the only way, because JavaScript has also the `let` keyword. We'll get to that at the right time.
+</details>
+
+<details>
+  <summary>What is the purpose of variables in programming?</summary>
+
+They allow to store information in memory, and to retrieve it later. The information can be an explicit value, or the returned value from a function call, e.g.:
+
+```js
+const price = 50;
+const discountedPrice = getDiscountedPrice(30, 50);
+```
+</details>
 
 ## Exercises
 
-WIP
+Given the following functions:
+
+```js
+function sum(a, b) {
+  return a + b;
+}
+
+function square(n) {
+  return n * n;
+}
+
+function squareRoot(n) {
+  return Math.sqrt(n);
+}
+```
+
+Use them to calculate the hypotenuse given the two other sides of the
+
+Remember the **pythagorean theorem** to calculate the hypotenuse `c` given legs `a` and `b`: $c = \sqrt{a^2 + b^2}$.
+
+**Note**: the spirit of the exercise is to store the intermediate calculations in variables

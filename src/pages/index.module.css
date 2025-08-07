@@ -3,21 +3,50 @@
  * and scoped locally.
  */
 
-.heroBanner {
-  padding: 4rem 0;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-}
+.hero {
+  padding: 4rem 1rem;
+  height: 90vh;
+  background-image: url('../../static/img/planet.svg');
 
-@media screen and (max-width: 996px) {
-  .heroBanner {
-    padding: 2rem;
+  background-size: contain;
+  background-position: 45vw 11vh;
+  background-repeat: no-repeat;
+
+  .content {
+    width: 996px;
+    margin: 0 auto;
+  }
+
+  .title {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    span {
+      letter-spacing: -.1rem;
+      font-size: 4rem;
+      line-height: 6rem;
+      padding: 0 2rem;
+      border-radius: .5rem;
+      width: min-content;
+      white-space: nowrap;
+      background-color: #567CB5;
+    }
   }
 }
 
-.buttons {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+@media screen and (max-width: 996px) {
+  .hero {
+    background-position: 55vw 48vh;
+
+    .content {
+      width: 100%;
+    }
+
+    .title {
+      span {
+        width: 100%;
+      }
+    }
+  }
 }

@@ -3,7 +3,12 @@ import {
     SandpackConsole,
     SandpackProvider,
     SandpackCodeEditor,
+    useSandpackConsole,
+    SandpackPreview,
+    useSandpack,
 } from "@codesandbox/sandpack-react";
+
+import { Console } from "console-feed";
 
 import styles from "./styles.module.css";
 
@@ -48,6 +53,7 @@ type LiveCodeBlockProps = {
     showConsole?: boolean;
     showLineNumbers?: boolean;
     interactive?: boolean;
+    defer?: boolean;
 };
 
 export default function LiveCodeBlock({
@@ -55,32 +61,86 @@ export default function LiveCodeBlock({
     showConsole = false,
     showLineNumbers = false,
     interactive = false,
+    defer = false,
 }: LiveCodeBlockProps) {
     return (
         <SandpackProvider
+            options={{
+                autorun: !defer,
+                bundlerURL:
+                    "https://codesandbox-client-sandbox-hooks-sigma.vercel.app/",
+            }}
             files={{ "index.js": source.replace(/\n$/, "") }}
             theme={theme}
         >
             <SandpackLayout className={styles.outer}>
                 <div className={styles.wrapper}>
-                    <SandpackCodeEditor
-                        readOnly={!interactive}
-                        showLineNumbers={showLineNumbers}
-                    />
+                    <div className={styles.editorWrapper}>
+                        <RefreshButton className={styles.refreshButton} />
+                        <SandpackCodeEditor
+                            readOnly={!interactive}
+                            showLineNumbers={showLineNumbers}
+                            showRunButton
+                            initMode="user-visible"
+                        />
+                    </div>
+                    <SandpackPreview style={{ display: "none" }} />
                     <details
                         className={styles.consoleWrapper}
                         open={showConsole}
                     >
                         <summary>Show Results</summary>
-                        <SandpackConsole
-                            resetOnPreviewRestart
-                            standalone
-                            className={styles.console}
-                            showSyntaxError
-                        />
+                        <ConsoleWrapper className={styles.console} />
                     </details>
                 </div>
             </SandpackLayout>
         </SandpackProvider>
     );
 }
+
+type ConsoleWrapperProps = {
+    className?: string;
+};
+
+function ConsoleWrapper({ className }: ConsoleWrapperProps) {
+    const { logs } = useSandpackConsole({
+        resetOnPreviewRestart: true,
+    });
+    return (
+        <div className={className}>
+            <Console
+                logs={logs}
+                variant="dark"
+                styles={{
+                    BASE_FONT_SIZE: 14,
+                    BASE_FONT_FAMILY:
+                        '"Fira Mono", "DejaVu Sans Mono", Menlo, Consolas, "Liberation Mono", Monaco, "Lucida Console", monospace',
+                    LOG_COLOR: "#bf5af2",
+                }}
+            />
+        </div>
+    );
+}
+
+type RefreshButtonProps = {
+    className?: string;
+};
+
+const RefreshButton = ({ className }: RefreshButtonProps) => {
+    const { dispatch } = useSandpack();
+
+    function handleRefresh() {
+        dispatch({ type: "refresh" });
+    }
+
+    return (
+        <button
+            type="button"
+            onClick={handleRefresh}
+            className={className}
+            aria-label="Refresh example"
+        >
+            Run Again
+        </button>
+    );
+};

@@ -8,6 +8,18 @@
   flex-direction: column;
   gap: 3px;
   font-size: 15px;
+  overflow-x: auto;
+}
+
+.editorWrapper {
+  position: relative;
+}
+
+.refreshButton {
+  position: absolute;
+  bottom: .75rem;
+  right: 5rem;
+  z-index: 1;
 }
 
 .consoleWrapper summary {
@@ -29,5 +41,9 @@
 }
 
 .console {
-  min-height: 3rem;
+  /* min-height: 9rem; */
+  /* max-height: 9rem; */
+  overflow-y: auto;
+  line-height: 20px;
+  padding-block: .5rem;
 }

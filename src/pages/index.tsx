@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
-import clsx from "clsx";
+import { useEffect } from "react";
+import Head from "@docusaurus/Head";
 import Link from "@docusaurus/Link";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import Layout from "@theme/Layout";
@@ -7,15 +8,20 @@ import Heading from "@theme/Heading";
 
 import styles from "./index.module.css";
 
-function HomepageHeader() {
+function Hero() {
     const { siteConfig } = useDocusaurusContext();
     return (
-        <header className={clsx("hero hero--primary", styles.heroBanner)}>
-            <div className="container">
-                <Heading as="h1" className="hero__title">
-                    {siteConfig.title}
+        <header className={styles.hero}>
+            <div className={styles.content}>
+                <Heading as="h1" className={styles.title}>
+                    <span>JavaScript</span>
+                    <span>From Zero</span>
                 </Heading>
-                <p className="hero__subtitle">{siteConfig.tagline}</p>
+                <p className="hero__subtitle">
+                    From your first function
+                    <br />
+                    to concurrent programming
+                </p>
                 <div className={styles.buttons}>
                     <Link
                         className="button button--secondary button--lg"
@@ -31,13 +37,25 @@ function HomepageHeader() {
 
 export default function Home(): ReactNode {
     const { siteConfig } = useDocusaurusContext();
+    useEffect(() => {
+        function onScroll() {
+            document.body.classList.toggle("scrolled", window.scrollY > 0);
+        }
+        window.addEventListener("scroll", onScroll);
+        return () => window.removeEventListener("scroll", onScroll);
+    }, []);
     return (
-        <Layout
-            title={`Hello from ${siteConfig.title}`}
-            description="Description will go into a meta tag in <head />"
-        >
-            <HomepageHeader />
-            <main></main>
-        </Layout>
+        <>
+            <Head>
+                <body className="homepage" />
+            </Head>
+            <Layout
+                title={`Hello from ${siteConfig.title}`}
+                description="Description will go into a meta tag in <head />"
+            >
+                <Hero />
+                <main></main>
+            </Layout>
+        </>
     );
 }

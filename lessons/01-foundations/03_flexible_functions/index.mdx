@@ -167,7 +167,7 @@ greet('Charlie Brown');
 greet('Sally Brown');
 ```
 
-We can say that:
+We say that:
 
 - `greet` is a function expecting a `person` parameter;
 - `greet` has been called with `'Charlie Brown'` as an argument;
@@ -210,6 +210,53 @@ Please be relevant instead!
 
 You have freedom. Use it wisely!
 :::
+
+## Calling a function with the wrong amount of arguments
+
+JavaScript has no way of preventing (or warning) the developer from calling a function in an unexpected way, e.g. given the `greet` function:
+
+```js static showConsole
+function greet(name) {
+  console.log('Hello', name);
+}
+
+greet('Charlie', 'Brown');
+greet('Lucy', 'Van', 'Pelt');
+// ** output **
+'Hello Charlie'
+'Hello Lucy'
+```
+
+See how we passed respectively 2 and 3 arguments to `greet`. The exceeding arguments have been simply ignored by the function.
+
+What about _not passing any argument at all_?
+
+```js static showConsole
+function greet(name) {
+  console.log('Hello', name);
+}
+
+greet();
+// ** output **
+// Hello undefined
+```
+
+Intuitively if we provide a function less information than what it expects, the language marks the empty slots as `undefined`. More generally, calling a function with less arguments than expected will result in all missing ones being `undefined`:
+
+```js static showConsole
+function greet(salutation, firstName, lastName) {
+  console.log('Hello', salutation, firstName, lastName);
+}
+
+greet('Mr.', 'Charlie', 'Brown');
+greet('Charlie', 'Brown');
+// ** output **
+// Hello Mr. Charlie Brown
+// Hello Charlie Brown undefined
+```
+
+Observe also how the function is not aware that we forgot to pass the `salutation` first! It just expects three things in order. We'll see techniques that will mitigate this possibility.
+For now keep in mind that if our code does not do what we expect, we have to check that there are no mismatches between the function signatures and actual calls.
 
 ## Real world examples
 

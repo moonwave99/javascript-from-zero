@@ -15,6 +15,7 @@
   --ifm-color-primary-lightest: #3cad6e;
   --ifm-code-font-size: 95%;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+  --hero-background-color: white;
 }
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
@@ -27,4 +28,28 @@
   --ifm-color-primary-lighter: #32d8b4;
   --ifm-color-primary-lightest: #4fddbf;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+  --hero-background-color: rgb(31, 31, 31);
+}
+
+.homepage {
+  background-image: linear-gradient(0deg, rgba(2, 0, 36, 1) 0%, rgba(9, 9, 121, 1) 21%, rgba(0, 212, 255, 1) 62%);
+
+  &.scrolled .navbar {
+    background-color: var(--hero-background-color);
+
+    .navbar__link,
+    .navbar__brand {
+      color: var(--ifm-navbar-link-color);
+    }
+  }
+}
+
+.homepage .navbar {
+  background-color: transparent;
+  transition: background-color .2s ease-in-out;
+
+  .navbar__link,
+  .navbar__brand {
+    color: black;
+  }
 }

@@ -1,0 +1,246 @@
+# Destructuring
+
+The ES6 JavaScript revision in 2015 was a breath of fresh air that allowed the language to be way more expressive. Let's start with one construct whose usefulness emerges in various contexts.
+
+## Object destructuring
+
+Let's consider the following snippet:
+
+```js static showConsole
+const user = {
+  firstName: 'Jane',
+  lastName: 'Doe',
+  email: 'jane@doe.com',
+  age: 35
+};
+
+console.log(`${user.firstName} ${user.lastName} is ${user.age} years old`);
+// ** output **
+//Jane Doe is 35 years old
+```
+
+The code references multiple time the `user` variable in the log statement. We haven't seen it yet, but we can do as well:
+
+```js static showConsole
+const user = {
+  firstName: 'Jane',
+  lastName: 'Doe',
+  email: 'jane@doe.com',
+  age: 35
+};
+
+const { firstName, lastName, age } = user;
+
+console.log(`${firstName} ${lastName} is ${age} years old`);
+// ** output **
+//Jane Doe is 35 years old
+```
+
+We are extracting some values from the `user` object and assigning them to variables named like the corresponding keys. That's exactly like doing:
+
+```js
+const user = {
+  firstName: 'Jane',
+  lastName: 'Doe',
+  email: 'jane@doe.com',
+  age: 35
+};
+
+const firstName = user.firstName;
+const lastName = user.lastName;
+const age = user.age;
+
+console.log(`${firstName} ${lastName} is ${age} years old`);
+```
+
+What's the gain then? More than just the one liner vs. the three statements, the intent of reducing the use of the dot operator is clearer. Also if the object variable name is long, it improves readability in case of multiple references.
+
+:::important Note
+If a variable named like a key we want to destructure is in scope, JavaScript will throw an Error:
+
+```js live showConsole
+const age = 99;
+
+const user = {
+  firstName: 'Jane',
+  lastName: 'Doe',
+  email: 'jane@doe.com',
+  age: 35
+};
+
+const { firstName, lastName, age } = user;
+
+console.log(`${firstName} ${lastName} is ${age} years old`);
+```
+:::
+
+If you destructure a non-existing property, it will have the `undefined` value:
+
+```js static showConsole
+const user = {
+  firstName: 'Jane',
+  lastName: 'Doe',
+  email: 'jane@doe.com',
+  age: 35
+};
+
+const { address } = user;
+
+console.log(address);
+// ** output **
+// undefined
+```
+
+## Function parameters destructuring
+
+That's where object destructuring really shines! Let's consider the following scenario:
+
+```js static showConsole
+function sayHello(user) {
+  console.log(`Hello ${user.firstName} ${user.lastName}!`);
+}
+
+const user = {
+  firstName: 'Jane',
+  lastName: 'Doe',
+  email: 'jane@doe.com',
+  age: 35
+};
+
+sayHello(user);
+// ** output **
+// Hello Jane Doe!
+```
+
+The `sayHello` function accepts one parameter of type object. We reference its `firstName` and `lastName` properties inside the log statement. We cannot infer neither from the function signature alone, since it just name a vague `user` variable.
+
+What we can do is **to destructure the object directly in the function signature** like:
+
+```js static showConsole
+function sayHello({ firstName, lastName }) {
+  console.log(`Hello ${firstName} ${lastName}!`);
+}
+
+const user = {
+  firstName: 'Jane',
+  lastName: 'Doe',
+  email: 'jane@doe.com',
+  age: 35
+};
+
+sayHello(user);
+// ** output **
+// Hello Jane Doe!
+```
+
+Awesome! Now we know that `sayHello` accepts an object (see the curly brackets), and from such object we need the `firstName` and the `lastName`. As a bonus we get the destructure benefits in the log statement as well.
+
+:::important Note
+The `sayHello` function still accepts **a single parameter** and not two. There is a huge different in fact between the current implementation and the following one:
+
+```js static
+function sayHello(firstName, lastName) {
+  console.log(`Hello ${firstName} ${lastName}!`);
+}
+
+const user = {
+  firstName: 'Jane',
+  lastName: 'Doe',
+  email: 'jane@doe.com',
+  age: 35
+};
+
+sayHello(user);
+// ** output **
+// Hello [object Object] undefined!
+```
+
+Can you guess the output before toggling the results? You can surely smell a problem already, since the updated signature expects two parameters now (`firstName` and `lastName`), and we are still calling it with one single `user` object.
+
+The output looks weird, but not so much after analyzing it: `[object Object]` is the string representation of the first argument, that is the `user` object even if the parameter is named `lastName` in the signature. Since we are not passing any second argument, the `lastName` parameter is `undefined`, hence `Hello [object Object] undefined!`. What a weird person name would that be.
+:::
+
+Object parameter destructuring has other benefits, for instance the order in which the destructured keys are mentioned does not matter:
+
+```js static showConsole
+function sayHello({ lastName, firstName }) {
+  console.log(`Hello ${firstName} ${lastName}!`);
+}
+
+const user = {
+  firstName: 'Jane',
+  lastName: 'Doe',
+  email: 'jane@doe.com',
+  age: 35
+};
+
+sayHello(user);
+// ** output **
+// Hello Jane Doe!
+```
+
+If we had a function with four parameters like:
+
+```js static showConsole
+function printUserInfo(firstName, lastName, email, age) {
+  console.log(`My name is ${firstName} ${lastName}`);
+  if (email) {
+    console.log(`You can write me at ${email}`);
+  }
+  console.log(`Ah, I am ${age} years old`);
+}
+
+printUserInfo('Jane', 'Doe', 'jane@doe.com', 35);
+printUserInfo('John', 'Doe', undefined, 30);
+// ** output **
+// My name is Jane Doe
+// You can write me at jane@doe.com
+// Ah, I am  35 years old
+// My name is John Doe
+// Ah, I am  30 years old
+```
+
+In the second call, we have to explicitly pass `undefined` as third argument in order to skip it. With object parameter destructuring we get all the following props:
+
+- knowing all the values we need by looking at the function signature;
+- the order of the values doesn't matter;
+- there is no need for sparse calls with `undefined` values around;
+- we don't need to use the dot notation to access the object properties.
+
+So let's fix it:
+
+```js static showConsole
+function printUserInfo({ firstName, lastName, email, age }) {
+  console.log(`My name is ${firstName} ${lastName}`);
+  if (email) {
+    console.log(`You can write me at ${email}`);
+  }
+  console.log(`Ah, I am ${age} years old`);
+}
+
+const jane = {
+  firstName: 'Jane',
+  lastName: 'Doe',
+  email: 'jane@doe.com',
+  age: 35  
+};
+
+const john = {
+  firstName: 'John',
+  lastName: 'Doe',
+  age: 30
+};
+
+printUserInfo(jane);
+printUserInfo(john);
+// ** output **
+// My name is Jane Doe
+// You can write me at jane@doe.com
+// Ah, I am  35 years old
+// My name is John Doe
+// Ah, I am  30 years old
+```
+
+## Conclusion
+
+WIP

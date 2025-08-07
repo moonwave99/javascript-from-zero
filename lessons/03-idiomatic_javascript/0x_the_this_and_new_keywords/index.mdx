@@ -1,0 +1,287 @@
+# The `this` and `new` keywords
+
+If you had to work with JavaScript in the first two decades of the century, `new` and especially `this` would have been very frequent encounters. Truth is that nowadays one can write a modern **full stack web application** with node.js and a framework like React without mentioning them even once!
+
+We need to reach some level of understanding though, because they are still very relevant.
+
+## Object Oriented Programming
+
+Or **OOP** for friends, is a programming paradigm. Like all of them, they can become either useful principles or strict dogmas depending on who sits in front of the keyboard!
+
+JavaScript is a _multi-paradigm language_. We have seen traits of **functional programming** so far, like **pure functions** or **higher order functions**. This does not make the coding style we adopted so far strictly functional, and nobody forces us to do so. In the next couple of lessons we'll learn some OOP traits.
+
+If you ask ten developers, you'll get at least ten different definitions of OOP. I find the [Wikipedia definition][wiki:oop] pretty reasonable:
+
+> Object-oriented programming (OOP) is a programming paradigm based on the concept of _objects_. Objects can contain **data** (called _fields, attributes or properties_) and have **actions** they can perform (called _procedures or methods_ and implemented in code). In OOP, computer programs are designed by making them out of objects that interact with one another.
+
+Wait, we have already seen object in JavaScript, those wrapped in curly brackets! Are we talking about the same thing? To some extend yes, since they contain information stored in key/value pairs. We haven't seen any method attached to them yet, but we have seen other structures with both properties and methods:
+
+```js
+const numbers = [3, 2, 1];
+
+console.log(numbers.length); // 3
+console.log(numbers.toSorted()); // [1, 2, 3]
+
+const name = 'Jane Doe';
+console.log(name.length); // 8
+console.log(name.split(' ')); // ['Jane', 'Doe']
+```
+
+Both arrays and strings have the `length` **property**, and they each carry useful **methods** that allow us to perform operations with their information. These features come with every array or string: we have dealt with OOP so far without knowing, great!
+
+So are arrays and strings objects? Well, `typeof []` returns `object` for one! And strings behave definitely like objects in the OOP definition. In the appendix of the course we'll discuss this topic more thoroughly. But from now on and generally in JavaScript **for objects we intend just key/value pairs**, unless a more specific context is involved.
+
+## A concrete example: Dates in JavaScript
+
+What if we want to define some custom structure with both properties and methods that is not achievable with the data types we already know? A common example is the representation / manipulation of dates:
+
+```js live showConsole
+const today = new Date();
+console.log(today.toString());
+```
+
+Depending on when you are browsing this page you'll get a different value. My current log is for instance `Wed May 28 2025 22:24:28 GMT+0200 (Central European Summer Time)`. That's already non trivial, the browser knows the current date and time! More specifically, your computer does.
+
+Now let's have a look at the following:
+
+```js live showConsole
+const today = new Date();
+const tomorrow = new Date(today);
+tomorrow.setDate(today.getDate() + 1);
+
+console.log(today.toString());
+console.log(tomorrow.toString());
+```
+
+This other example logs:
+
+```
+Wed May 28 2025 22:24:28 GMT+0200 (Central European Summer Time) 
+Thu May 29 2025 22:24:28 GMT+0200 (Central European Summer Time) 
+```
+
+Going back to the code, there is a lot going on. Let's focus on the general idea:
+
+```js
+// we store a representation of the current moment
+const today = new Date();
+
+// we create a copy of the current moment...
+const tomorrow = new Date(today);
+
+// ...and we add a day to the copy
+tomorrow.setDate(today.getDate() + 1);
+
+// we log both moments
+console.log(today.toString());
+console.log(tomorrow.toString());
+```
+
+We used the `getDate` and `toString` methods of the `Date` structure, and most important the `Date` function with the `new` keyword before it. If we omit it, bad things will happen:
+
+```js live showConsole
+const today = Date();
+const tomorrow = Date(today);
+tomorrow.setDate(today.getDate() + 1);
+
+console.log(today.toString());
+console.log(tomorrow.toString());
+```
+
+`TypeError: today.getDate is not a function`, what? We'll dive into it in a moment. For now we learnt that `new` is needed in front of `Date`.
+
+You could ask yourself: why do we need `Date` while we could do the following with plain objects and pure functions?
+
+```js live showConsole
+function dateToString({ day, month, year }) {
+  return `${year}-${month}-${day}`;
+}
+
+function addDayToDate({ day, month, year }) {
+  return {
+    day: day + 1,
+    month,
+    year
+  };
+}
+
+const today = {
+  day: 28,
+  month: 5,
+  year: 2025
+};
+
+const tomorrow = addDayToDate(today);
+
+console.log(dateToString(today));
+console.log(dateToString(tomorrow));
+```
+
+That would be clever. But observe how we lost the ability of getting the current moment for free, and how we don't have the time and timezone information. Plus we are not checking if the passed parameter is an object with the `day`, `month` and `year` keys, etc...there is a reason why we wrapped all these considerations into the native `Date` structure.
+
+One of the goals of OOP is **to enrich JavaScript with structures that need more complex interactions than those achievable with existing data types**.
+
+## A custom implementation
+
+Let's write some original code: we want to store a quantity and its label. We also want to be able to increase or decrease it, and to log the corresponding information, pretty much like in a booking form where one can specify the quantity of adults and children.
+
+The first part could be achieved with a regular object:
+
+```js
+const counter = {
+  label: 'Adults',
+  count: 2
+};
+```
+
+And the increment / decrement part by directly manipulating `counter.count`. But we want to use the same paradigm of the `Date` example. In order to provide our information with additional methods (like `Date`, or arrays or strings), we need to pass such information to a function:
+
+```js live showConsole
+function Counter(label, initialValue) {
+  this.label = label;
+  this.count = initialValue;
+  this.toString = function() {
+    return `${this.label}: ${this.count}`;
+  }
+}
+
+const adultsCounter = new Counter('adults', 2);
+const childrenCounter = new Counter('children', 0);
+
+console.log(adultsCounter.toString());
+console.log(childrenCounter.toString());
+```
+
+That's a lot of code, but I cannot make it less meaningful than that. Super important: we created **two counters**, because in a moment we'll see how incrementing one of them does not affect the other. Many learners approach this topic by dealing with a single entity and then wonder why all the `new`/`this` ceremony. It's all about making structures independent.
+
+## You can touch `this`
+
+We have seen that if we omit the `new` keyword with a structure that is supposed to be instantiated with it, we get an error:
+
+```js live showConsole
+function Counter(label, initialValue) {
+  this.label = label;
+  this.count = initialValue;
+  this.toString = function() {
+    return `${this.label}: ${this.count}`;
+  }
+}
+
+const adultsCounter = Counter('adults', 2);
+console.log(adultsCounter.toString());
+```
+
+What about `this`? Let's log it with the `new` invocation and without:
+
+```js live showConsole
+function Counter(label, initialValue) {
+  this.label = label;
+  this.count = initialValue;
+  this.toString = function() {
+    return `${this.label}: ${this.count}`;
+  }
+}
+
+const rightCounter = new Counter('right', 2);
+console.log(rightCounter.toString());
+const notSoRightCounter = Counter('wrong', 2);
+console.log(notSoRightCounter.toString());
+```
+
+The `rightCounter` code works, but the `notSoRightCounter` does not! Let's see who is `this` in either case:
+
+```js live showConsole
+function Counter(label, initialValue) {
+  console.log('Who is this?', this);
+
+  this.label = label;
+  this.count = initialValue;
+
+  this.toString = function() {
+    return `${this.label}: ${this.count}`;
+  }
+}
+
+const rightCounter = new Counter('right', 2);
+console.log(rightCounter.toString());
+const notSoRightCounter = Counter('wrong', 2);
+console.log(notSoRightCounter.toString());
+```
+
+Very interesting! In the right case, `this` is a reference to the function itself, see how the passed `label` and `initialValue` arguments appear, as well as the `Counter` name. In the second case you'll see some weird `[[undefined]]` reference. If you would run the code in an actual browser you'll get a reference to the global `Window` object. The important thing is that you won't get any `Counter` reference.
+
+One could elaborate a lot about the theory behind `this` in JavaScript, but we don't have enough time unfortunately. For now we know that `this` is **a reference present in any function**, that can refer to different things. Among the various cases, we have just seen how calling the function with the `new` keyword sets `this` to be the function itself.
+
+Please read `this` for now as "`this` and `this` only". Let's add the `increment` method to `Counter` and let's use it:
+
+```js live showConsole
+function Counter(label, initialValue) {
+  this.label = label;
+  this.count = initialValue;
+
+  this.increment = function() {
+    this.count++;
+  }
+
+  this.toString = function() {
+    return `${this.label}: ${this.count}`;
+  }
+}
+
+const adultsCounter = new Counter('adults', 2);
+const childrenCounter = new Counter('children', 0);
+
+console.log('** Before **');
+console.log(adultsCounter.toString());
+console.log(childrenCounter.toString());
+
+childrenCounter.increment();
+
+console.log('** After **');
+console.log(adultsCounter.toString());
+console.log(childrenCounter.toString());
+```
+
+- first we log both counters information;
+- then we increment just the children one;
+- see how the adults counters remained unchanged.
+
+Thanks to the `new`/`this` synergy we could:
+
+- pass some initial information to the `Counter`;
+- call the custom `increment` method to update its quantity.
+
+Notice how we wrote `Counter` and not `counter`. This is a convention in JavaScript for functions that are supposed to be called with `new`. They are called **constructors**. We say that such functions return **an instance of the constructor**, that is an object with properties and methods:
+
+```js live showConsole
+function Counter(label, initialValue) {
+  this.label = label;
+  this.count = initialValue;
+
+  this.increment = function() {
+    this.count++;
+  }
+
+  this.toString = function() {
+    return `${this.label}: ${this.count}`;
+  }
+}
+
+const adultsCounter = new Counter('adults', 2);
+console.log(adultsCounter);
+console.log(typeof adultsCounter);
+```
+
+See how `adultsCounter` contains the `label` and `count` properties, and the `increment` and `toString` methods. The type of `adultsCounter` is indeed `object`, like in the case of `Date`.
+
+See how we never directly access the `count` property from outside, but just call `increment` and `toString`. Before diving into strict OOP considerations like method and variable visibility, let's finish this introduction with a pragmatic observation: `new` / `this` provide functions **with some awareness and memory**. This allows us to return something from a function and to perform subsequent operations on the returned object. That wouldn't be possible with a plain key/value object.
+
+Actually one could achieve the same behavior without `new` in simple cases, but the purpose of this lesson is to know what `new` does so there you go.
+
+## The questions you shouldn't be asking yourself
+
+And that is: _is then OOP better or worse than dealing primitives and pure functions_. The answer is the one you don't want to hear, i.e. _it depends_. Some contexts get benefits from the former while others from the latter. Experience will shape your preference. Many developers started working with JavaScript coming from different backgrounds and this would reflect in their code output.
+
+This course does not focus on OOP but since some JavaScript structures explicitly rely on such paradigm, you'll benefit from a little exposure to it.
+
+[wiki:oop]: https://en.wikipedia.org/wiki/Object-oriented_programming

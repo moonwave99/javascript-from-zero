@@ -2,15 +2,17 @@ import { themes as prismThemes } from 'prism-react-renderer';
 import type { Config } from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 import { remarkSandpack } from 'remark-sandpack';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
 
 const config: Config = {
-  title: 'Programming Course',
+  title: 'JavaScript from zero',
   tagline: 'Become an ace programmer!',
-  favicon: 'img/favicon.ico',
+  favicon: 'img/planet.svg',
   url: 'https://moonwave99.github.com',
-  baseUrl: '/programming-course/',
+  baseUrl: '/javascript-from-zero/',
   organizationName: 'moonwave99',
-  projectName: 'programming-course',
+  projectName: 'javascript-from-zero',
   trailingSlash: false,
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
@@ -27,6 +29,8 @@ const config: Config = {
           routeBasePath: 'lessons',
           sidebarPath: './sidebars.ts',
           beforeDefaultRemarkPlugins: [remarkSandpack],
+          remarkPlugins: [remarkMath],
+          rehypePlugins: [rehypeKatex],
         },
         blog: {
           showReadingTime: true,
@@ -44,16 +48,21 @@ const config: Config = {
       } satisfies Preset.Options,
     ],
   ],
-
+  stylesheets: [
+    {
+      href: 'https://cdn.jsdelivr.net/npm/katex@0.13.24/dist/katex.min.css',
+      type: 'text/css',
+      integrity:
+        'sha384-odtC+0UGzzFL/6PNoE8rX/SPcQDXBJ+uRepguP4QkPCm2LBxH3FA3y+fKSiJ+AmM',
+      crossorigin: 'anonymous',
+    },
+  ],
   themeConfig: {
     // Replace with your project's social card
     image: 'img/docusaurus-social-card.jpg',
     navbar: {
-      title: 'Prog',
-      logo: {
-        alt: 'Prog',
-        src: 'img/logo.svg',
-      },
+      title: 'Home',
+
       items: [
         {
           type: 'docSidebar',
@@ -61,10 +70,14 @@ const config: Config = {
           position: 'left',
           label: 'Lessons',
         },
-        { to: 'https://runjs.co', label: 'Code Playground', position: 'left' },
-        { to: '/blog', label: 'Blog', position: 'left' },
         {
-          href: 'https://github.com/moonwave99/programming-course',
+          to: '/about',
+          position: 'left',
+          label: 'About',
+        },
+        { to: 'https://runjs.co', label: 'Code Playground', position: 'left' },
+        {
+          href: 'https://github.com/moonwave99/javascript-from-zero',
           label: 'GitHub',
           position: 'right',
         },

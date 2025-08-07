@@ -2,8 +2,83 @@
 
 ## Recap Questions
 
-WIP
+<details>
+  <summary>Do all functions need to return something?</summary>
+
+Not at all, for instance they can just `console.log` something.
+</details>
+
+<details>
+  <summary>How can we check what a function returns?</summary>
+
+With the aid of `console.log`, like:
+
+```js static showConsole
+function sum(a, b) {
+  return a + b;
+}
+
+console.log('The sum of 2 and 3 is', sum(2, 3));
+// ** output **
+// The sum of 2 and 3 is 5
+```
+</details>
 
 ## Exercises
 
-WIP
+### Average of two numbers
+
+Write a function called `getAverage` that takes two numbers as parameters, and returns their average value (i.e. the half of their sum).
+
+Call the function three times with different arguments, and check if your expectation is met.
+
+**Important**: the function does not need to log anything.
+
+<details>
+  <summary>Possible solution</summary>
+
+```js static showConsole
+function getAverage(a, b) {
+  return (a + b) / 2;
+}
+
+console.log(getAverage(2, 3));
+console.log(getAverage(10, 20));
+console.log(getAverage(5, -5));
+// ** output **
+2.5
+15
+0
+```
+</details>
+
+### Max of two numbers
+
+Write a function called `max` that takes two numbers as parameters, and returns the greater of the two.
+
+Hint: you can use the `return` keyword inside an `if` block.
+
+Call the function three times with different arguments, and check if your expectation is met.
+
+**Important**: the function does not need to log anything.
+
+<details>
+  <summary>Possible solution</summary>
+
+```js static showConsole
+function max(a, b) {
+  if (a > b) {
+    return a;
+  }
+  return b;
+}
+
+console.log(max(2, 3));
+console.log(max(20, 10));
+console.log(max(5, -5));
+// ** output **
+3
+20
+5
+```
+</details>
