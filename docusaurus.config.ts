@@ -6,7 +6,7 @@ import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 
 const config: Config = {
-  title: 'JavaScript from zero',
+  title: 'JavaScript From Zero',
   tagline: 'Become an ace programmer!',
   favicon: 'img/planet.svg',
   url: 'https://moonwave99.github.com',
@@ -70,12 +70,12 @@ const config: Config = {
           position: 'left',
           label: 'Lessons',
         },
+        { to: 'https://runjs.co', label: 'Code Playground', position: 'left' },
         {
           to: '/about',
           position: 'left',
           label: 'About',
         },
-        { to: 'https://runjs.co', label: 'Code Playground', position: 'left' },
         {
           href: 'https://github.com/moonwave99/javascript-from-zero',
           label: 'GitHub',
@@ -85,31 +85,7 @@ const config: Config = {
     },
     footer: {
       style: 'dark',
-      links: [
-        {
-          title: 'Lessons',
-          items: [
-            {
-              label: 'Introduction',
-              to: '/lessons/intro',
-            },
-          ],
-        },
-        {
-          title: 'More',
-          items: [
-            {
-              label: 'Blog',
-              to: '/blog',
-            },
-            {
-              label: 'GitHub',
-              href: 'https://github.com/facebook/docusaurus',
-            },
-          ],
-        },
-      ],
-      copyright: `Copyright © ${new Date().getFullYear()} Diego Caponera. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} <a href="https://www.diegocaponera.com">Diego Caponera</a>.`,
     },
     prism: {
       theme: prismThemes.github,

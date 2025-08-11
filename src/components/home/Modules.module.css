@@ -1,0 +1,32 @@
+.modules {
+  background-color: #E0C144;
+  color: black;
+
+  .wrapper {
+    width: 996px;
+    margin: 0 auto;
+    padding: 4rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    max-width: 40rem;
+
+    >* {
+      margin: 0;
+    }
+
+    @media screen and (max-width: 996px) {
+      width: 100%;
+    }
+
+    h2 {
+      font-size: 3rem;
+    }
+
+    article {
+      p {
+        margin-bottom: 1rem;
+      }
+    }
+  }
+}

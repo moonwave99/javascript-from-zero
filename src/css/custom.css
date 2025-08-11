@@ -32,10 +32,9 @@
 }
 
 .homepage {
-  background-image: linear-gradient(0deg, rgba(2, 0, 36, 1) 0%, rgba(9, 9, 121, 1) 21%, rgba(0, 212, 255, 1) 62%);
-
   &.scrolled .navbar {
     background-color: var(--hero-background-color);
+    box-shadow: var(--ifm-navbar-shadow);
 
     .navbar__link,
     .navbar__brand {
@@ -44,12 +43,18 @@
   }
 }
 
-.homepage .navbar {
-  background-color: transparent;
-  transition: background-color .2s ease-in-out;
+.homepage {
+  .navbar {
+    background-color: transparent;
+    transition: background-color .2s ease-in-out;
+    position: fixed;
+    left: 0;
+    right: 0;
+    z-index: 1;
+    box-shadow: none;
 
-  .navbar__link,
-  .navbar__brand {
-    color: black;
+    .navbar__items--right {
+      display: none;
+    }
   }
 }

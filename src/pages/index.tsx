@@ -5,11 +5,11 @@ import Link from "@docusaurus/Link";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import Layout from "@theme/Layout";
 import Heading from "@theme/Heading";
+import Modules from "../components/home/Modules";
 
 import styles from "./index.module.css";
 
 function Hero() {
-    const { siteConfig } = useDocusaurusContext();
     return (
         <header className={styles.hero}>
             <div className={styles.content}>
@@ -22,14 +22,13 @@ function Hero() {
                     <br />
                     to concurrent programming
                 </p>
-                <div className={styles.buttons}>
-                    <Link
-                        className="button button--secondary button--lg"
-                        to="/lessons/intro"
-                    >
-                        Let's Get Started!
-                    </Link>
-                </div>
+
+                <Link
+                    className="button button--primary button--lg"
+                    to="/lessons/intro"
+                >
+                    Let's Get Started!
+                </Link>
             </div>
         </header>
     );
@@ -44,17 +43,18 @@ export default function Home(): ReactNode {
         window.addEventListener("scroll", onScroll);
         return () => window.removeEventListener("scroll", onScroll);
     }, []);
+
     return (
         <>
             <Head>
                 <body className="homepage" />
             </Head>
             <Layout
-                title={`Hello from ${siteConfig.title}`}
+                title={siteConfig.title}
                 description="Description will go into a meta tag in <head />"
             >
                 <Hero />
-                <main></main>
+                <Modules />
             </Layout>
         </>
     );
