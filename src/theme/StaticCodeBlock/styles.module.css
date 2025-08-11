@@ -8,6 +8,7 @@
   flex-direction: column;
   gap: 3px;
   font-size: 15px;
+  color: white;
 }
 
 .consoleWrapper summary {
