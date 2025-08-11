@@ -27,6 +27,13 @@
       p {
         margin-bottom: 1rem;
       }
+
+      h3 {
+        a {
+          color: black;
+          text-decoration: underline;
+        }
+      }
     }
   }
 }

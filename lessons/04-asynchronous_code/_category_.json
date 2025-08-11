@@ -1,0 +1,8 @@
+{
+    "label": "Asynchronous Code",
+    "position": 4,
+    "link": {
+        "type": "generated-index",
+        "description": "Callbacks, Promises, async/await keywords."
+    }
+}
