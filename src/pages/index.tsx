@@ -5,7 +5,7 @@ import Link from "@docusaurus/Link";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import Layout from "@theme/Layout";
 import Heading from "@theme/Heading";
-import Modules from "../components/home/Modules";
+import Block from "../components/home/Block";
 
 import styles from "./index.module.css";
 
@@ -54,7 +54,101 @@ export default function Home(): ReactNode {
                 description="Description will go into a meta tag in <head />"
             >
                 <Hero />
-                <Modules />
+                <Block className={styles.about}>
+                    <h2>Programming? I am not good with computers, thanks!</h2>
+                    <article>
+                        <p>
+                            I beg to disagree: if you can read and write your
+                            own language, you can understand a{" "}
+                            <em>programming language</em> as well. Just a little
+                            feel for logic is needed.
+                        </p>
+                        <p>
+                            Programming stimulates your brain and sharpens your{" "}
+                            <strong>problem setting</strong> and{" "}
+                            <strong>problem solving</strong> skills, and keeps
+                            you in a virtuous regime of{" "}
+                            <strong>perpetual learning</strong>.
+                        </p>
+                        <p>
+                            It's also a very creative and fun activity! You can
+                            mix it with your hobbies and passions. You can
+                            instantly share your efforts online, to promote your
+                            activities or to support your local community.
+                        </p>
+                        <p>
+                            We are surrounded by connected devices. A great
+                            portion of our lives relies on them. Knowing how to
+                            program them is not only relevant to professionals,
+                            but to all those that want to increase their{" "}
+                            <strong>digital awareness</strong>.
+                        </p>
+                    </article>
+                </Block>
+                <Block className={styles.modules}>
+                    <h2>The Course</h2>
+                    <p>The course is organized in the following modules:</p>
+                    <article>
+                        <h3>
+                            <a href="lessons/category/foundations">
+                                Module 01 - Foundations
+                            </a>
+                        </h3>
+                        <p>
+                            If you have never read a single line of code before,
+                            this is the right place to start.
+                        </p>
+                        <p>
+                            You will learn the core <strong>syntax</strong> of
+                            JavaScript, the concept of <strong>function</strong>
+                            , the basics of <strong>control flow</strong> and
+                            the purpose of <strong>variables</strong> and{" "}
+                            <strong>data types</strong>.
+                        </p>
+                    </article>
+                    <article>
+                        <h3>
+                            <a href="lessons/category/getting-comfortable">
+                                Module 02 - Getting comfortable
+                            </a>
+                        </h3>
+                        <p>
+                            Things get more interesting: the case for{" "}
+                            <strong>iteration</strong> and{" "}
+                            <strong>arrays</strong>,{" "}
+                            <strong>nested function calls</strong> and
+                            eventually your first <strong>algorithm</strong>.
+                        </p>
+                    </article>
+                    <article>
+                        <h3>
+                            <a href="lessons/category/idiomatic-javascript">
+                                Module 03 - Idiomatic JavaScript
+                            </a>
+                        </h3>
+                        <p>
+                            The language evolved over the years and introduced a
+                            lot of expressive constructs. You'll see how to
+                            solve problems in idiomatic ways by writing more
+                            concise and readable code.
+                        </p>
+                    </article>
+                    <article>
+                        <h3>
+                            <a href="lessons/category/asynchronous-code">
+                                Module 04 - Asynchronous Code
+                            </a>
+                        </h3>
+                        <p>
+                            A rite of passage for every programmer. A thorough
+                            introduction to concurrent programming in
+                            JavaScript, from <strong>callbacks</strong> and{" "}
+                            <strong>timeouts</strong> to{" "}
+                            <strong>async/await</strong> passing through{" "}
+                            <strong>Promises</strong>.
+                        </p>
+                    </article>
+                </Block>
             </Layout>
         </>
     );

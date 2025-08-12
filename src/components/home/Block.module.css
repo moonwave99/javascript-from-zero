@@ -1,6 +1,5 @@
-.modules {
-  background-color: #E0C144;
-  color: black;
+.block {
+  border-top: .25px solid #ddd;
 
   .wrapper {
     width: 996px;
@@ -21,6 +20,10 @@
 
     h2 {
       font-size: 3rem;
+
+      @media screen and (max-width: 640px) {
+        font-size: 2rem;
+      }
     }
 
     article {
