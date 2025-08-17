@@ -1,0 +1,8 @@
+{
+    "label": "Network Requests",
+    "position": 5,
+    "link": {
+        "type": "generated-index",
+        "description": "HTTP Protocol, Request/Response model, fetch library"
+    }
+}

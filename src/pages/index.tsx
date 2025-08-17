@@ -55,7 +55,10 @@ export default function Home(): ReactNode {
             >
                 <Hero />
                 <Block className={styles.about}>
-                    <h2>Programming? I am not good with computers, thanks!</h2>
+                    <h2>
+                        Programming?{" "}
+                        <em>I am not good with computers, thanks!</em>
+                    </h2>
                     <article>
                         <p>
                             I beg to disagree: if you can read and write your
@@ -80,14 +83,18 @@ export default function Home(): ReactNode {
                             We are surrounded by connected devices. A great
                             portion of our lives relies on them. Knowing how to
                             program them is not only relevant to professionals,
-                            but to all those that want to increase their{" "}
+                            but to all those who want to increase their{" "}
                             <strong>digital awareness</strong>.
                         </p>
                     </article>
                 </Block>
                 <Block className={styles.modules}>
                     <h2>The Course</h2>
-                    <p>The course is organized in the following modules:</p>
+                    <p>
+                        The course lessons are organized in modules, each one
+                        followed by <strong>recap questions</strong> and{" "}
+                        <strong>solved exercises</strong>.
+                    </p>
                     <article>
                         <h3>
                             <a href="lessons/category/foundations">
@@ -148,6 +155,39 @@ export default function Home(): ReactNode {
                             <strong>Promises</strong>.
                         </p>
                     </article>
+                    <article>
+                        <h3>
+                            <a href="lessons/category/network-requests">
+                                Module 05 - Network Requests
+                            </a>
+                        </h3>
+                        <p>
+                            Retrieving data from outer sources and sending it
+                            over to them: the main purpose of the Internet.
+                        </p>
+                    </article>
+                </Block>
+                <Block className={styles.starting}>
+                    <h2>What you need</h2>
+                    <p>
+                        Just desire to have a good time, and to achieve new
+                        skills!
+                    </p>
+                    <p>
+                        It would be ideal to{" "}
+                        <Link to="/setup">
+                            setup a local working environment
+                        </Link>
+                        , but if you don't succeed for any reason you can use{" "}
+                        <Link to="https://runjs.co/" target="_blank">
+                            an online code playground
+                        </Link>
+                        .
+                    </p>
+                    <p>
+                        Don't waste more time and{" "}
+                        <Link to="/lessons/intro">start your journey</Link>!
+                    </p>
                 </Block>
             </Layout>
         </>
