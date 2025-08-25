@@ -1,11 +1,11 @@
 import {
-    SandpackLayout,
-    SandpackConsole,
-    SandpackProvider,
-    SandpackCodeEditor,
-    useSandpackConsole,
-    SandpackPreview,
-    useSandpack,
+  SandpackLayout,
+  SandpackConsole,
+  SandpackProvider,
+  SandpackCodeEditor,
+  useSandpackConsole,
+  SandpackPreview,
+  useSandpack,
 } from "@codesandbox/sandpack-react";
 
 import { Console } from "console-feed";
@@ -13,134 +13,147 @@ import { Console } from "console-feed";
 import styles from "./styles.module.css";
 
 export const theme = {
-    colors: {
-        surface1: "#282A36",
-        surface2: "#252525",
-        surface3: "#2F2F2F",
-        clickable: "#999999",
-        base: "#808080",
-        disabled: "#4D4D4D",
-        hover: "#C5C5C5",
-        accent: "#0971F1",
-        error: "#ff453a",
-        errorSurface: "#ffeceb",
+  colors: {
+    surface1: "#282A36",
+    surface2: "#252525",
+    surface3: "#2F2F2F",
+    clickable: "#999999",
+    base: "#808080",
+    disabled: "#4D4D4D",
+    hover: "#C5C5C5",
+    accent: "#0971F1",
+    error: "#ff453a",
+    errorSurface: "#ffeceb",
+  },
+  syntax: {
+    plain: "#FFFFFF",
+    comment: {
+      color: "#757575",
+      fontStyle: "italic" as const,
     },
-    syntax: {
-        plain: "#FFFFFF",
-        comment: {
-            color: "#757575",
-            fontStyle: "italic",
-        },
-        keyword: "#0971F1",
-        tag: "#d28cf6",
-        punctuation: "#ffffff",
-        definition: "#9dc6f9",
-        property: "rgb(80, 250, 123)",
-        static: "#FF453A",
-        string: "#bf5af2",
-    },
-    font: {
-        body: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
-        mono: '"Fira Mono", "DejaVu Sans Mono", Menlo, Consolas, "Liberation Mono", Monaco, "Lucida Console", monospace',
-        size: "15.2px",
-        lineHeight: "20px",
-    },
+    keyword: "#0971F1",
+    tag: "#d28cf6",
+    punctuation: "#ffffff",
+    definition: "#9dc6f9",
+    property: "rgb(80, 250, 123)",
+    static: "#FF453A",
+    string: "#bf5af2",
+  },
+  font: {
+    body: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
+    mono: '"Fira Mono", "DejaVu Sans Mono", Menlo, Consolas, "Liberation Mono", Monaco, "Lucida Console", monospace',
+    size: "15.2px",
+    lineHeight: "20px",
+  },
 };
 
 type LiveCodeBlockProps = {
-    source: string;
-    language?: string;
-    showConsole?: boolean;
-    showLineNumbers?: boolean;
-    interactive?: boolean;
-    defer?: boolean;
+  source: string;
+  language?: string;
+  showConsole?: boolean;
+  showLineNumbers?: boolean;
+  interactive?: boolean;
+  defer?: boolean;
+  consoleEntries?: number;
 };
 
 export default function LiveCodeBlock({
-    source,
-    showConsole = false,
-    showLineNumbers = false,
-    interactive = false,
-    defer = false,
+  source,
+  showConsole = false,
+  showLineNumbers = false,
+  interactive = false,
+  defer = false,
+  consoleEntries,
 }: LiveCodeBlockProps) {
-    return (
-        <SandpackProvider
-            options={{
-                autorun: !defer,
-                bundlerURL:
-                    "https://codesandbox-client-sandbox-hooks-sigma.vercel.app/",
-            }}
-            files={{ "index.js": source.replace(/\n$/, "") }}
-            theme={theme}
-        >
-            <SandpackLayout className={styles.outer}>
-                <div className={styles.wrapper}>
-                    <div className={styles.editorWrapper}>
-                        <RefreshButton className={styles.refreshButton} />
-                        <SandpackCodeEditor
-                            readOnly={!interactive}
-                            showLineNumbers={showLineNumbers}
-                            showRunButton
-                            initMode="user-visible"
-                        />
-                    </div>
-                    <SandpackPreview style={{ display: "none" }} />
-                    <details
-                        className={styles.consoleWrapper}
-                        open={showConsole}
-                    >
-                        <summary>Show Results</summary>
-                        <ConsoleWrapper className={styles.console} />
-                    </details>
-                </div>
-            </SandpackLayout>
-        </SandpackProvider>
-    );
+  return (
+    <SandpackProvider
+      options={{
+        autorun: !defer,
+        bundlerURL:
+          "https://codesandbox-client-sandbox-hooks-sigma.vercel.app/",
+      }}
+      files={{ "index.js": source.replace(/\n$/, "") }}
+      theme={theme}
+    >
+      <SandpackLayout className={styles.outer}>
+        <div className={styles.wrapper}>
+          <div className={styles.editorWrapper}>
+            <RefreshButton className={styles.refreshButton} />
+            <SandpackCodeEditor
+              readOnly={!interactive}
+              showLineNumbers={showLineNumbers}
+              showRunButton
+              initMode="user-visible"
+            />
+          </div>
+          <SandpackPreview style={{ display: "none" }} />
+          <details className={styles.consoleWrapper} open={showConsole}>
+            <summary>Show Results</summary>
+            <ConsoleWrapper
+              showConsole={showConsole}
+              consoleEntries={consoleEntries}
+              className={styles.console}
+            />
+          </details>
+        </div>
+      </SandpackLayout>
+    </SandpackProvider>
+  );
 }
 
-type ConsoleWrapperProps = {
-    className?: string;
+type ConsoleWrapperProps = Pick<
+  LiveCodeBlockProps,
+  "consoleEntries" | "showConsole"
+> & {
+  className?: string;
 };
 
-function ConsoleWrapper({ className }: ConsoleWrapperProps) {
-    const { logs } = useSandpackConsole({
-        resetOnPreviewRestart: true,
-    });
-    return (
-        <div className={className}>
-            <Console
-                logs={logs}
-                variant="dark"
-                styles={{
-                    BASE_FONT_SIZE: 14,
-                    BASE_FONT_FAMILY:
-                        '"Fira Mono", "DejaVu Sans Mono", Menlo, Consolas, "Liberation Mono", Monaco, "Lucida Console", monospace',
-                    LOG_COLOR: "#bf5af2",
-                }}
-            />
-        </div>
-    );
+function ConsoleWrapper({
+  className,
+  showConsole,
+  consoleEntries,
+}: ConsoleWrapperProps) {
+  const { logs } = useSandpackConsole({
+    resetOnPreviewRestart: true,
+  });
+
+  const height = showConsole ? `${consoleEntries * 29 + 16}px` : null;
+
+  return (
+    <div className={className} style={{ height }}>
+      <Console
+        logs={logs}
+        variant="dark"
+        styles={{
+          BASE_FONT_SIZE: 14,
+          BASE_FONT_FAMILY:
+            '"Fira Mono", "DejaVu Sans Mono", Menlo, Consolas, "Liberation Mono", Monaco, "Lucida Console", monospace',
+          LOG_COLOR: "#bf5af2",
+        }}
+      />
+    </div>
+  );
 }
 
 type RefreshButtonProps = {
-    className?: string;
+  className?: string;
 };
 
 const RefreshButton = ({ className }: RefreshButtonProps) => {
-    const { dispatch } = useSandpack();
+  const { dispatch } = useSandpack();
 
-    function handleRefresh() {
-        dispatch({ type: "refresh" });
-    }
+  function handleRefresh() {
+    dispatch({ type: "refresh" });
+  }
 
-    return (
-        <button
-            type="button"
-            onClick={handleRefresh}
-            className={className}
-            aria-label="Refresh example"
-        >
-            Run Again
-        </button>
-    );
+  return (
+    <button
+      type="button"
+      onClick={handleRefresh}
+      className={className}
+      aria-label="Refresh example"
+    >
+      Run Again
+    </button>
+  );
 };

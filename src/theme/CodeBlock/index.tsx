@@ -56,6 +56,7 @@ export default function CodeBlock({
                 interactive={props.metastring.includes("interactive")}
                 defer={props.metastring.includes("defer")}
                 language={props.className.split("-").at(-1)}
+                consoleEntries={+props.metastring.split("consoleEntries=").at(1)}
             />
         );
     }

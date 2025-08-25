@@ -30,7 +30,7 @@ The story is more complex than this, see for instance [Web Workers][mdn:web-work
 
 JavaScript has a built-in tool called [`setTimeout`][mdn:setTimeout] that accepts a function and a number as parameters, and calls such function after the passed amount of milliseconds.
 
-```js live showConsole showLines interactive defer
+```js live showConsole showLines interactive defer consoleEntries=1
 function sayHello(name) {
   console.log(`Hello ${name}!`);
 }
@@ -46,7 +46,7 @@ Try to play with the second argument. Setting it to a much lower value (e.g. 100
 
 Let's put some log statements _before_ and _after_ the `setTimeout`:
 
-```js live showLines
+```js live showLines consoleEntries=3
 function sayHello(name) {
   console.log(`Hello ${name}!`);
 }
@@ -66,7 +66,7 @@ It may look counterintuitive for now, but remember our efficient diner: instead 
 
 One can also pass a named function to `setTimeout`. Mind that without further configuration such function receives no arguments, so we should pass a function without parameters:
 
-```js live showLines showConsole
+```js live showLines showConsole consoleEntries=3
 function sayHelloToCharlie() {
   console.log('Hello Charlie Brown!');
 }
@@ -80,7 +80,7 @@ console.log('after');
 
 Writing an inline arrow function like in the first example works as a playground to define what to do after the interval is passed. One can write more instructions there, for instance:
 
-```js live showLines
+```js live showLines consoleEntries=6
 function sayHello(name) {
   console.log(`Hello ${name}!`);
 }
@@ -100,7 +100,7 @@ console.log('after');
 
 What if we set the interval to zero (or omit it entirely)?
 
-```js live showLines showConsole
+```js live showLines showConsole consoleEntries=3
 function sayHello(name) {
   console.log(`Hello ${name}!`);
 }
@@ -120,7 +120,7 @@ The three logs appear (almost) at once, but Charlie gets still greeted at theend
 
 We already know how to pick a random entry from an array:
 
-```js live showConsole
+```js live showConsole consoleEntries=1
 const friends = [
   'Charlie Brown',
   'Sally Brown',
@@ -140,7 +140,7 @@ console.log(`Hello ${pickRandomEntry(friends)}!`);
 
 Lovely. Let's write a program that counts down from 10 to 0, then assigns a prize of `undefined ounces of gold` to the lucky one. Let's first write the `countdown` recursive function without `setTimeout`:
 
-```js live showConsole
+```js live showConsole consoleEntries=12
 function countdown(time) {
   console.log(time);
   if (time <= 0) {
@@ -164,7 +164,7 @@ To make things safe, we are checking the _lesser than_ case as well in order to 
 
 Let's add the timeout. If you don't mind we'll start from 3 to keep things short:
 
-```js live showConsole
+```js live showConsole consoleEntries=6
 function countdown(time) {
   console.log(time);
   if (time <= 0) {
@@ -182,7 +182,7 @@ console.log('after');
 
 The logs look weird? Gotcha! It's like in the previous example: delaying some operations via `setTimeout` doesn't block the execution of the program. We want to giveaway our prize after the countdown, how can we do it? You can be tempted to simply patch the early return branch:
 
-```js live showConsole
+```js live showConsole consoleEntries=7
 const friends = [
   'Charlie Brown',
   'Sally Brown',
@@ -215,7 +215,7 @@ console.log('after');
 
 Not bad! The problem with this code is that is tightly coupled with our problem and is not reusable for other cases. What can we do to execute whatever code we want after the time is out? The solution is **to pass a function as second parameter to the function**, and to call it at the end of the countdown:
 
-```js live showConsole
+```js live showConsole consoleEntries=7
 function countdown(time, callback) {
   console.log(time);
   if (time <= 0) {
@@ -240,7 +240,7 @@ See how the `done!` log appears as the last one finally. We named the parameter 
 
 Wrapping things up, with an arrow function if you don't mind:
 
-```js live showConsole
+```js live showConsole consoleEntries=6
 const friends = [
   'Charlie Brown',
   'Sally Brown',
